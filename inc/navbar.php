@@ -1,46 +1,6 @@
-<style>
-  .install-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    background-color: #007bff;
-    /* Primary color */
-    color: white;
-    padding: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
-    z-index: 1000;
-  }
-
-  .install-header span {
-    font-size: 16px;
-  }
-
-  #install-button {
-    margin-left: 10px;
-  }
-
-  .close-button {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 20px;
-    cursor: pointer;
-  }
-</style>
-
-<div id="install-header" class="install-header" style="display: none;">
-  <span>Install our app for a better experience!</span>
-  <button type="button" class="btn btn-primary btn-sm text-white" id="install-button">Install App</button>
-  <button type="button" class="close-button" id="close-install-header">✕</button>
-</div>
-
-
 <nav class="main-header navbar navbar-expand navbar-white navbar-light custom-fixed-top"
   style="background-color:#582fff;">
+
   <ul class="navbar-nav">
     <li class="nav-item m-auto text-center">
       <a class="nav-link" style="margin-top:-15px;">
@@ -64,6 +24,9 @@
         <span class="badge badge-warning notification-number navbar-badge"></span>
       </a>
     </li>
+
+    <button type="button" class="btn text-white" id="install-button" style="display:none;"><i
+        class="fas fa-download"></i></button>
 
     <li class="nav-item" style="margin-top:-2px;">
       <?php
