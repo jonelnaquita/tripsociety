@@ -106,7 +106,7 @@ include '../inc/config.php'; ?>
                                                                     $improvements = explode(',', $row['app_improvement']);
                                                                     foreach ($improvements as $improvement) {
                                                                         if (trim($improvement != 0)) {
-                                                                            echo '<span class="badge bg-gradient-primary" style="font-size:12px;">' . htmlspecialchars(trim($improvement)) . '</span> ';
+                                                                            echo '<br><span class="badge bg-gradient-primary" style="font-size:12px;">' . htmlspecialchars(trim($improvement)) . '</span> ';
 
                                                                         }
                                                                     }
