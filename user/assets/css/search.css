@@ -1,0 +1,86 @@
+.gallery-container {
+    position: relative;
+    overflow: hidden;
+}
+
+.gallery-wrapper {
+    display: flex;
+    transition: transform 0.5s ease;
+}
+
+.gallery-slide {
+    flex: 0 0 auto;
+    width: 100%;
+}
+
+.prev, .next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.prev {
+    left: 10px;
+}
+
+.next {
+    right: 10px;
+}
+.bg-secondary{
+    background-color:#a8a8a8 !important;
+}
+
+.input-group-append {
+    display: none; /* Hide the filter button initially */
+}
+
+.input-group-append.show {
+    display: block; /* Show the filter button when needed */
+}
+.dropdown-menu {
+            width: 100%;
+            max-width: none;
+        }
+.recent-searches {
+    padding: 10px;
+}
+.recent-searches p {
+    margin: 0;
+    padding: 5px;
+    cursor: pointer;
+}
+.recent-searches p:hover {
+    background-color: #f0f0f0;
+}
+
+@media (min-width: 500px) {
+    #img-gallery {
+        height: 200px;
+    }
+}
+
+@media (max-width: 500px) {
+    #img-gallery {
+        height: 100px;
+    }
+}
+
+.recommendation-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.recommendation-item i {
+    margin-right: 15px;
+}
+
+.recommendation-item h6 {
+    margin: 0;
+}

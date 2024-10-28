@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>User</title>
+
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+
+    <link rel="stylesheet" href="../plugins/fontawesome-free/css/all.min.css">
+
+    <link rel="stylesheet" href="../plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+
+    <link rel="stylesheet" href="../dist/css/adminlte.min.css?v=3.2.0">
+</head>
+
+<body class="hold-transition login-page bg-white">
+
+    <div class="login-box" style="padding: 20px; display: flex; flex-direction: column; align-items: center;">
+        <div class="login-logo text-center">
+            <img src="../img/logo.png" width="100px;">
+            <h1 class="font-weight-bold mt-1" style="color: #333; font-size: 28px;">Travel Spots</h1>
+            <p style="font-size: 22px; line-height: 26px; color: #555; margin: 10px 0;">
+                Explore Recommended <br> traveler spots in Batangas <br> near you, wherever you <br> may be.
+            </p>
+        </div>
+    </div>
+
+    <div class="position-absolute w-100 d-flex justify-content-center" style="bottom: 30px;">
+        <a href="register.php" class="btn btn-primary text-white shadow-sm"
+            style="width: 90%; max-width: 400px; font-size: 20px; border-radius: 50px; padding: 10px 0;">
+            Get Started
+        </a>
+    </div>
+
+    <script src="../plugins/jquery/jquery.min.js"></script>
+    <script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../dist/js/adminlte.min.js?v=3.2.0"></script>
+</body>
+
+
+</html>
