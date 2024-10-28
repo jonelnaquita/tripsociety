@@ -87,25 +87,32 @@ session_start();
     <script>
         let deferredPrompt;
 
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
+        window.addEventListener('beforeinstallprompt', (event) => {
+            // Prevent the mini-infobar from appearing on mobile
+            event.preventDefault();
+            // Stash the event so it can be triggered later
+            deferredPrompt = event;
+            // Show the install header
+            document.getElementById('install-header').style.display = 'flex';
+        });
 
-            // Show the install button
-            const installButton = document.getElementById('install-button');
-            installButton.style.display = 'block';
-
-            installButton.addEventListener('click', () => {
+        document.getElementById('install-button').addEventListener('click', async () => {
+            if (deferredPrompt) {
+                // Show the install prompt
                 deferredPrompt.prompt();
-                deferredPrompt.userChoice.then(choiceResult => {
-                    if (choiceResult.outcome === 'accepted') {
-                        console.log('User accepted the install prompt');
-                    } else {
-                        console.log('User dismissed the install prompt');
-                    }
-                    deferredPrompt = null;
-                });
-            });
+                // Wait for the user to respond to the prompt
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`User response to the install prompt: ${outcome}`);
+                // Hide the install header
+                document.getElementById('install-header').style.display = 'none';
+                // Reset the deferred prompt variable, it can only be used once.
+                deferredPrompt = null;
+            }
+        });
+
+        // Handle header close button
+        document.getElementById('close-install-header').addEventListener('click', () => {
+            document.getElementById('install-header').style.display = 'none';
         });
 
     </script>
