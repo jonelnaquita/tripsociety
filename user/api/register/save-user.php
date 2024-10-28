@@ -69,7 +69,7 @@ if (isset($_POST['name'], $_POST['email'], $_POST['username'], $_POST['password'
             $mail->addAddress($email, $name);
 
             // Email content
-            $verificationUrl = "http://localhost/tripsociety_latest/user/verify.php?token=$verificationToken";
+            $verificationUrl = "https://tripsociety.net/user/verify.php?token=$verificationToken";
 
             // Load the email template and replace placeholders with actual data
             $emailBody = file_get_contents('verify-email.php'); // Load the HTML file

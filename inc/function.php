@@ -1664,7 +1664,7 @@ function sendResetPasswordEmail($email, $userId)
     );
 
     try {
-        $verificationLink = "http://localhost/tripsociety_latest/admin/reset_password2.php?id=$userId";
+        $verificationLink = "https://tripsociety.net/admin/reset_password.php?id=$userId";
         $emailSubject = 'Reset Password | Trip Society';
         $emailContent = '<html><body><p>To reset your password please click the link <a href="' . $verificationLink . '">Reset Password</a></p></body></html>';
 
