@@ -1,5 +1,4 @@
 <?php
-include '../inc/session.php';
 include "includes/header.php"; ?>
 <!DOCTYPE html>
 <html lang="en">
