@@ -33,7 +33,7 @@
             style="width: 90%; max-width: 400px; font-size: 20px; border-radius: 50px; padding: 10px 0;">
             Get Started
         </a>
-        <button id="install-button" style="display:none;">Install App</button>
+        <button id="install-button" style="display:block;">Install App</button>
     </div>
 
     <script>
