@@ -81,6 +81,12 @@
       </div>
     </form>
 
+    <div class="row mt-3">
+      <div class="col text-center">
+        <p>Already a member? <a href="login.php" class="text-dark font-weight-bold">Sign In</a></p>
+      </div>
+    </div>
+
 
     <div class="modal fade" id="termsandconditionModal" tabindex="-1" role="dialog"
       aria-labelledby="deleteUserModalLabel" aria-hidden="true">
