@@ -98,15 +98,12 @@ include '../inc/config.php'; ?>
                                                                     </span>
                                                                     <span style="font-size:15px;">•
                                                                         <?php echo htmlspecialchars($row['location']); ?></span>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row ml-5 pl-1" style="margin-top:-3px;">
-                                                                <div class="col">
+
                                                                     <?php
                                                                     $improvements = explode(',', $row['app_improvement']);
                                                                     foreach ($improvements as $improvement) {
                                                                         if (trim($improvement != 0)) {
-                                                                            echo '<br><span class="badge bg-gradient-primary" style="font-size:12px;">' . htmlspecialchars(trim($improvement)) . '</span> ';
+                                                                            echo '<br><span class="badge bg-gradient-primary" style="font-size:10px;">' . htmlspecialchars(trim($improvement)) . '</span> ';
 
                                                                         }
                                                                     }
