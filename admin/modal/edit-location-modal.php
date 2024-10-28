@@ -17,7 +17,7 @@
                 <div class="container">
                     <div class="row">
                         <!-- First Column -->
-                        <input type="text" id="location-id">
+                        <input type="hidden" id="location-id">
                         <div class="col-md-6">
                             <div class="input-group input-group-outline my-3">
                                 <input type="text" id="location-name-update" class="form-control"
