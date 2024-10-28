@@ -15,7 +15,7 @@
                     </a>
                 </li>
                 <li class="nav-item px-3 d-flex align-items-center">
-                    <a href="account2.php" class="nav-link text-body p-0">
+                    <a href="account.php" class="nav-link text-body p-0">
                         <i class="material-symbols-rounded fixed-plugin-button-nav text-white">settings</i>
                     </a>
                 </li>

@@ -1671,7 +1671,7 @@ function sendResetPasswordEmail($email, $userId)
         // Send email
         $sendSmtpEmail = new \Brevo\Client\Model\SendSmtpEmail([
             'subject' => $emailSubject,
-            'sender' => ['name' => 'Trip Society', 'email' => 'tripsociety@gmail.com'],
+            'sender' => ['name' => 'Trip Society', 'email' => 'tripsociety0@gmail.com'],
             'to' => [['name' => 'User', 'email' => $email]],
             'htmlContent' => $emailContent
         ]);
