@@ -1,6 +1,9 @@
 <nav class="main-header navbar navbar-expand navbar-white navbar-light custom-fixed-top"
   style="background-color:#582fff;">
 
+  <button type="button" class="btn btn-primary text-white shadow-sm" id="install-button" style="display:none;">Install
+    App</button>
+
   <ul class="navbar-nav">
     <li class="nav-item m-auto text-center">
       <a class="nav-link" style="margin-top:-15px;">
