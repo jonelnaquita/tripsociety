@@ -93,7 +93,8 @@ session_start();
 
             // Show the install button
             const installButton = document.getElementById('install-button');
-            installButton.style.display = 'block';
+            const installButtonContainer = document.getElementById('install-button-container');
+            installButtonContainer.style.display = 'block';
 
             installButton.addEventListener('click', () => {
                 deferredPrompt.prompt();
