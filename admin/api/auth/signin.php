@@ -1,4 +1,5 @@
 <?php
+session_start();
 include '../../../inc/config.php'; // Database configuration file
 
 header('Content-Type: application/json');
@@ -19,6 +20,13 @@ try {
         if ($user) {
             // Verify the hashed password
             if (password_verify($password, $user['password'])) {
+                $_SESSION['role'] = $user['role'];
+                $_SESSION['admin'] = $user['id'];
+                $_SESSION['id'] = $user['id'];
+                $_SESSION['full_name'] = $user['full_name'];
+                $_SESSION['email'] = $user['email'];
+                $_SESSION['username'] = $user['username'];
+
                 echo json_encode(['success' => true, 'message' => 'Login successful!']);
             } else {
                 echo json_encode(['success' => false, 'message' => 'Incorrect password.']);
