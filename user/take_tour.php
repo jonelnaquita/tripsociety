@@ -1,4 +1,4 @@
-<?php 
+<?php
 include 'header.php';
 
 if (isset($_GET['id']) && is_numeric($_GET['id'])) {
@@ -10,21 +10,25 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     $locations = $stmt->fetchAll(PDO::FETCH_ASSOC);
     if ($locations) {
         foreach ($locations as $row) {
-            $tour_link = $row['tour_link'];    
+            $tour_link = $row['tour_link'];
         }
-    } 
+    }
 }
 ?>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pannellum/2.5.6/pannellum.css"
-integrity="sha512-UoT/Ca6+2kRekuB1IDZgwtDt0ZUfsweWmyNhMqhG4hpnf7sFnhrLrO0zHJr2vFp7eZEvJ3FN58dhVx+YMJMt2A=="
-crossorigin="anonymous" referrerpolicy="no-referrer" />
+    integrity="sha512-UoT/Ca6+2kRekuB1IDZgwtDt0ZUfsweWmyNhMqhG4hpnf7sFnhrLrO0zHJr2vFp7eZEvJ3FN58dhVx+YMJMt2A=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pannellum/2.5.6/pannellum.js"
-integrity="sha512-EmZuy6vd0ns9wP+3l1hETKq/vNGELFRuLfazPnKKBbDpgZL0sZ7qyao5KgVbGJKOWlAFPNn6G9naB/8WnKN43Q=="
-crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    integrity="sha512-EmZuy6vd0ns9wP+3l1hETKq/vNGELFRuLfazPnKKBbDpgZL0sZ7qyao5KgVbGJKOWlAFPNn6G9naB/8WnKN43Q=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 <div class="content-wrapper">
+    <button class="back-button" onclick="goBack()">
+        <span class="material-icons">arrow_back</span> Back
+    </button>
+
     <div class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
@@ -61,7 +65,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
     pannellum.viewer('panorama-360-view', {
         "type": "equirectangular",
-        "panorama": "<?php echo htmlspecialchars('../admin/panorama/'.$tour_link, ENT_QUOTES, 'UTF-8'); ?>",
+        "panorama": "<?php echo htmlspecialchars('../admin/panorama/' . $tour_link, ENT_QUOTES, 'UTF-8'); ?>",
         "autoLoad": true
     });
 </script>

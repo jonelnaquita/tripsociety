@@ -50,7 +50,7 @@ include 'modal/home.php';
                                 <div class="card-body">
                                 <div class="row">
                                 <div class="col-auto">
-                                <img src="' . $profile_img . '" class="img-circle" style="margin-top:-12px; width:20px;">
+                                <img src="' . $profile_img . '" class="img-circle elevation-2"  style="width:30px; height:30px; margin-top:-4px;">
                                 </div>
                                 <div class="col-auto" style="margin-left:-10px;">
                                 <h6 class="font-weight-bold" style="font-size:14px;">' . $location['name'] . '</h6>

@@ -1,6 +1,10 @@
 <?php
 session_start();
+if (isset($_SESSION['user'])) {
+    header('location: home.php');
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -37,7 +41,7 @@ session_start();
             <label class="font-weight-normal">Password</label>
             <div class="form-group has-feedback" style="position: relative;">
                 <input type="password" id="password" name="password" class="form-control" placeholder="Password"
-                    required style="padding-right: 50px;" id="password-input">
+                    required style="padding-right: 50px;">
                 <i id="toggle-password" class="fa fa-eye form-control-feedback"
                     style="position: absolute; right: 20px; top: 50%; transform: translateY(-50%); font-size: 20px; cursor: pointer;"></i>
             </div>
@@ -82,7 +86,7 @@ session_start();
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const togglePassword = document.getElementById('toggle-password');
-        const passwordInput = document.getElementById('password-input');
+        const passwordInput = document.getElementById('password');
 
         togglePassword.addEventListener('click', function () {
             // Toggle the type attribute

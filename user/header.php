@@ -118,6 +118,43 @@ session_start();
 
     </script>
 
+    <script>
+        // Function to go back to the last page
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+
+    <style>
+        /* Back Button Styles */
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 15px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            background-color: #f5f5f5;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+            margin-left: 20px;
+            margin-top: 30px;
+        }
+
+        .back-button:hover {
+            background-color: #e0e0e0;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        .back-button .material-icons {
+            font-size: 18px;
+            margin-right: 5px;
+        }
+    </style>
+
 
 </head>
 

@@ -93,7 +93,11 @@ if (isset($_GET['id'])) {
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css">
 
 <div class="content-wrapper">
-    <section class="content overflow-hidden" style="height: auto;">
+    <button class="back-button" onclick="goBack()">
+        <span class="material-icons">arrow_back</span> Back
+    </button>
+
+    <section class="content overflow-hidden" style="height: auto; margin-bottom: 50px;">
         <div class="container-fluid">
             <form action="../inc/function.php" method="POST" enctype="multipart/form-data">
                 <input type="hidden" value="<?php echo htmlspecialchars($_GET['id']); ?>" name="id">

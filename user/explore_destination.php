@@ -45,6 +45,9 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
 ?>
 
 <div class="content-wrapper">
+    <button class="back-button" onclick="goBack()">
+        <span class="material-icons">arrow_back</span> Back
+    </button>
 
 
 

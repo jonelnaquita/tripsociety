@@ -74,6 +74,10 @@ include 'header.php';
     }
 </style>
 <div class="content-wrapper">
+    <button class="back-button" onclick="goBack()">
+        <span class="material-icons">arrow_back</span> Back
+    </button>
+
     <section class="content overflow-hidden" style="height: 1000px;">
         <div class="container-fluid">
 

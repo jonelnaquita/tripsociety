@@ -24,6 +24,9 @@ if (isset($_SESSION['user'])) {
 ?>
 
 <div class="content-wrapper">
+    <button class="back-button" onclick="goBack()">
+        <span class="material-icons">arrow_back</span> Back
+    </button>
     <section class="content">
         <div class="container-fluid">
             <div class="container mt-4">
