@@ -1,4 +1,5 @@
 <?php
+include '../inc/session_user.php';
 include 'header.php';
 ?>
 
@@ -47,8 +48,8 @@ include 'header.php';
             <!-- Tab content -->
             <div class="tab-content mt-2" id="myTabContent">
                 <?php include 'components/notification/user-engagement.php'; ?>
-                <?php include 'components/notification/news-notification.php'; ?>
                 <?php include 'components/notification/companion-request.php'; ?>
+                <?php include 'components/notification/news-notification.php'; ?>
 
             </div>
         </div>

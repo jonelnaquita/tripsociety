@@ -1,5 +1,5 @@
-<?php 
-session_start();
+<?php
+include '../inc/session_user.php';
 ?>
 <!DOCTYPE html>
 <html>

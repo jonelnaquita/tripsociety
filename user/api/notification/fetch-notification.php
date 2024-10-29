@@ -40,11 +40,11 @@ function time_elapsed_string($datetime, $full = false)
 }
 
 // Fetch reactions
-$reactionQuery = "SELECT p.id, p.post, u.name, u.profile_img, r.date_created
+$reactionQuery = "SELECT p.id as post_id, p.post, u.name, u.profile_img, r.date_created
     FROM tbl_reaction r
     LEFT JOIN tbl_user u ON r.user_id = u.id
     LEFT JOIN tbl_post p ON r.post_id = p.id
-    WHERE p.user_id = :user_id AND r.user_id != :user_id
+    WHERE p.user_id = :user_id AND r.user_id != :user_id AND r.viewed = 0
 ";
 $stmt = $pdo->prepare($reactionQuery);
 $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
@@ -63,7 +63,7 @@ $commentQuery = "SELECT c.post_id, u.name, u.profile_img, c.message AS comment_t
 FROM tbl_post_comment c
 JOIN tbl_user u ON c.user_id = u.id
 JOIN tbl_post p ON c.post_id = p.id
-WHERE p.user_id = :user_id AND c.user_id != :user_id
+WHERE p.user_id = :user_id AND c.user_id != :user_id AND c.viewed = 0
 ";
 $stmt = $pdo->prepare($commentQuery);
 $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
@@ -91,4 +91,5 @@ $response = [
 ];
 
 echo json_encode($response);
+
 ?>

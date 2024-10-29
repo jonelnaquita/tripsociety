@@ -10,7 +10,7 @@ try {
         SELECT COUNT(*) AS reaction_count
         FROM tbl_reaction r
         JOIN tbl_post p ON r.post_id = p.id
-        WHERE p.user_id = :user_id AND r.user_id != :user_id
+        WHERE p.user_id = :user_id AND r.user_id != :user_id AND r.viewed = 0
     ";
     $stmt = $pdo->prepare($reactionQuery);
     $stmt->execute(['user_id' => $user_id]);
@@ -21,7 +21,7 @@ try {
         SELECT COUNT(*) AS comment_count
         FROM tbl_post_comment c
         JOIN tbl_post p ON c.post_id = p.id
-        WHERE p.user_id = :user_id AND c.user_id != :user_id
+        WHERE p.user_id = :user_id AND c.user_id != :user_id AND c.viewed = 0
     ";
     $stmt = $pdo->prepare($commentQuery);
     $stmt->execute(['user_id' => $user_id]);
@@ -32,8 +32,17 @@ try {
     $stmt = $pdo->query($announcementQuery);
     $announcementCount = $stmt->fetch(PDO::FETCH_ASSOC)['announcement_count'];
 
+    // Query for counting travel companion
+    $companionQuery = "SELECT COUNT(*) AS companion_count 
+                   FROM tbl_travel_companion 
+                   WHERE (companion_id = :user_id) AND viewed = 0";
+    $stmt = $pdo->prepare($companionQuery); // Use prepare instead of query for parameterized queries
+    $stmt->bindParam(':user_id', $user_id); // Assuming $userId is defined elsewhere
+    $stmt->execute();
+    $companionCount = $stmt->fetch(PDO::FETCH_ASSOC)['companion_count'];
+
     // Total notifications count
-    $totalNotifications = $reactionCount + $commentCount + $announcementCount;
+    $totalNotifications = $reactionCount + $commentCount + $announcementCount + $companionCount;
 
     // Return the total notification count as JSON
     echo json_encode(['total_notifications' => $totalNotifications]);

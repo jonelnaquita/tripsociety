@@ -1,4 +1,5 @@
 <?php
+include '../inc/session_user.php';
 include 'header.php';
 ?>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css">

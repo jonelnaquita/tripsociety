@@ -630,62 +630,27 @@ if (isset($_POST['add_travel_companion'])) {
 
 
 if (isset($_GET['get_travel_companion_request'])) {
-
-
     if (isset($_SESSION['user'])) {
         $sessionId = $_SESSION['user'];
 
         // Prepare the SQL statement to fetch travel companion requests
         $stmt = $pdo->prepare("
-        SELECT *, companion_id, tc.status, tc.date_created as date
-        FROM tbl_travel_companion tc
-        LEFT JOIN tbl_user tu ON tu.id = tc.user_id
-        WHERE companion_id = :sessionId 
-        AND tc.status = 'Requesting'
-    ");
+            SELECT *, tc.date_created as date
+            FROM tbl_travel_companion tc
+            LEFT JOIN tbl_user tu ON tu.id = tc.user_id
+            WHERE companion_id = :sessionId AND tc.viewed = 0
+            AND tc.status = 'Requesting'
+        ");
 
         // Execute the query with bound parameters
         $stmt->execute(['sessionId' => $sessionId]);
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        if ($results) {
-            foreach ($results as $row) {
-                $profile_img = $row['profile_img'];
-                $profile_img = !empty($profile_img) ? '../admin/profile_image/' . $profile_img : '../dist/img/avatar2.png';
-
-                // Construct the HTML output as a string
-                echo '<form action="../inc/function.php" method="POST">';
-                echo '    <div class="card p-2 border-0 shadow-none">';
-                echo '        <div class="row">';
-                echo '            <div class="col-auto">';
-                echo '                <a href="profile.php?id=' . htmlspecialchars($row['user_id']) . '">';
-                echo '                    <img src="' . htmlspecialchars($profile_img) . '" class="img-circle" style="width:30px;">';
-                echo '                </a>';
-                echo '            </div>';
-                echo '            <div class="col-7">';
-                echo '                <a href="profile.php?id=' . htmlspecialchars($row['user_id']) . '" class="text-dark">';
-                echo '                    <h6 class="font-weight-bold" style="font-size:13px;">' . htmlspecialchars($row['name']) . ' wants you to be his/her travel companion</h6>';
-                echo '                    <p style="font-size:13px; margin-top:-10px;" class="text-muted">' . htmlspecialchars($row['date']) . '</p>';
-                echo '                </a>';
-                echo '            </div>';
-                echo '            <div class="col ml-auto text-right">';
-                echo '<input value="' . $row['user_id'] . '" type="hidden" name="user_id">';
-                echo '                <button class="btn btn-dark btn-xs" type="submit" name="accept_travel_companion">Accept</button>';
-                echo '                <button class="btn btn-outline-dark btn-xs" type="submit" name="decline_travel_companion">Decline</button>';
-                echo '            </div>';
-                echo '        </div>';
-                echo '    </div>';
-                echo '</form>';
-            }
-        } else {
-            // No travel companion requests found
-            echo '<p>No travel companion requests found.</p>';
-        }
+        // Return the results as a JSON response
+        echo json_encode($results);
+        exit; // Make sure to exit to prevent any additional output
     }
 }
-
-
-
 
 
 
@@ -715,7 +680,7 @@ if (isset($_POST['accept_travel_companion'])) {
                 // Update the status of the existing travel companion request
                 $stmt = $pdo->prepare("
                     UPDATE tbl_travel_companion 
-                    SET status = :status 
+                    SET status = :status
                     WHERE companion_id = :companion_id 
                     AND user_id = :user_id
                 ");
@@ -1070,6 +1035,9 @@ if (isset($_POST['reset_password1'])) {
 
 
 if (isset($_POST['add_post'])) {
+    // Set default timezone
+    date_default_timezone_set('Asia/Manila');
+
     // Collect and sanitize form data
     $user_id = isset($_SESSION['user']) ? $_SESSION['user'] : null;
     $post = isset($_POST['post']) ? trim($_POST['post']) : "";
@@ -1088,24 +1056,31 @@ if (isset($_POST['add_post'])) {
 
 
 if (isset($_GET['add_reaction'])) {
+    date_default_timezone_set('Asia/Manila'); // Set timezone to Asia/Manila
     $userId = $_SESSION['user'];
     $postId = $_POST['post_id'];
+    $dateCreated = date('Y-m-d H:i:s'); // Get current date and time
+
+    // Check if the user has already reacted
     $query = $pdo->prepare('SELECT * FROM tbl_reaction WHERE user_id = ? AND post_id = ?');
     $query->execute([$userId, $postId]);
     $reaction = $query->fetch(PDO::FETCH_ASSOC);
+
     if ($reaction) {
+        // If reacted, remove the reaction
         $query = $pdo->prepare('DELETE FROM tbl_reaction WHERE user_id = ? AND post_id = ?');
         $query->execute([$userId, $postId]);
         $reacted = false;
     } else {
-        $query = $pdo->prepare('INSERT INTO tbl_reaction (user_id, post_id) VALUES (?, ?)');
-        $query->execute([$userId, $postId]);
+        // If not reacted, add the reaction with timestamp
+        $query = $pdo->prepare('INSERT INTO tbl_reaction (user_id, post_id, date_created) VALUES (?, ?, ?)');
+        $query->execute([$userId, $postId, $dateCreated]);
         $reacted = true;
     }
+
     header('Content-Type: application/json');
     echo json_encode(['reacted' => $reacted]);
 }
-
 
 
 
@@ -1764,14 +1739,20 @@ function getUserCount($pdo)
 
 function addPost($pdo, $post, $location, $user_id, $images)
 {
+    // Set default timezone
+    date_default_timezone_set('Asia/Manila');
+    $currentTimestamp = date('Y-m-d H:i:s'); // Format timestamp as 'YYYY-MM-DD HH:MM:SS'
+
     // Prepare the post insertion query
-    $query = "INSERT INTO tbl_post (user_id, post, location, image) VALUES (:user_id, :post, :location, :images)";
+    $query = "INSERT INTO tbl_post (user_id, post, location, image, date_created) 
+              VALUES (:user_id, :post, :location, :images, :date_created)";
     $stmt = $pdo->prepare($query);
 
     // Bind the parameters
     $stmt->bindParam(':user_id', $user_id);
     $stmt->bindParam(':post', $post);
     $stmt->bindParam(':location', $location);
+    $stmt->bindParam(':date_created', $currentTimestamp);
 
     // Process the images
     $imagePaths = [];

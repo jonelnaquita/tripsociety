@@ -1,4 +1,5 @@
 <?php
+include '../inc/session_user.php';
 include 'header.php';
 include 'modal/comment.php';
 include 'modal/home.php';
@@ -288,10 +289,18 @@ if (isset($_GET['id'])) {
 
                                             foreach ($posts as $post) {
                                                 $date = $post['date'];
-                                                $datePosted = new DateTime($date);
-                                                $now = new DateTime();
 
+                                                // Set the timezone to Manila
+                                                $manilaTimezone = new DateTimeZone('Asia/Manila');
+
+                                                // Create DateTime objects for the posted date and the current date
+                                                $datePosted = new DateTime($date, $manilaTimezone);
+                                                $now = new DateTime('now', $manilaTimezone);
+
+                                                // Calculate the interval
                                                 $interval = $datePosted->diff($now);
+
+                                                // Determine the time difference string
                                                 $timeDifference = '';
                                                 if ($interval->y > 0) {
                                                     $timeDifference = $interval->y . 'y';

@@ -3,8 +3,10 @@ include '../../../inc/config.php';
 session_start();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    date_default_timezone_set('Asia/Manila'); // Set timezone to Asia/Manila
     $userId = $_POST['user_id'];
     $postId = $_POST['post_id'];
+    $dateCreated = date('Y-m-d H:i:s'); // Get current date and time
 
     // Check if the user has already reacted
     $reaction_statement = $pdo->prepare("SELECT 1 FROM tbl_reaction WHERE user_id = ? AND post_id = ?");
@@ -17,9 +19,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $delete_statement->execute([$userId, $postId]);
         $icon_class = 'far fa-heart'; // Outline heart for unliked
     } else {
-        // If not reacted, add the reaction
-        $insert_statement = $pdo->prepare("INSERT INTO tbl_reaction (user_id, post_id) VALUES (?, ?)");
-        $insert_statement->execute([$userId, $postId]);
+        // If not reacted, add the reaction with date_created
+        $insert_statement = $pdo->prepare("INSERT INTO tbl_reaction (user_id, post_id, date_created) VALUES (?, ?, ?)");
+        $insert_statement->execute([$userId, $postId, $dateCreated]);
         $icon_class = 'fas fa-heart'; // Solid heart for liked
     }
 

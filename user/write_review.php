@@ -1,6 +1,7 @@
 <link rel="stylesheet" href="assets/css/write-review.css">
 
 <?php
+include '../inc/session_user.php';
 include 'header.php';
 include '../inc/config.php';
 if (isset($_SESSION['user'])) {

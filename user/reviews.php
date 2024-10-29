@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<?php include 'header.php'; ?>
+<?php
+include '../inc/session_user.php';
+include 'header.php'; ?>
 
 <head>
     <link rel="stylesheet" href="assets/css/review.css">

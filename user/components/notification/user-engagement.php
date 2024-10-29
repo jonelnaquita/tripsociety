@@ -51,35 +51,67 @@
                     $.each(response.notifications, function (index, notification) {
                         var notificationHtml;
                         if (notification.type === 'reaction') {
-                            notificationHtml = `<div class="p-3 d-flex align-items-center bg-light border-bottom osahan-post-header">
-                    <div class="dropdown-list-image mr-3">
-                        <img class="rounded-circle" src="../admin/profile_image/${notification.profile_img}" alt />
-                    </div>
-                    <div class="mr-3">
-                        <div><span class="font-weight-bold">${notification.name}</span> reacted on your post.</div>
-                    </div>
-                    <span class="ml-auto mb-auto">
-                        <br />
-                        <div class="text-right text-muted pt-1">${notification.elapsed_time}</div>
-                    </span>
-                </div>`;
+                            notificationHtml = `
+                            <a href="#" class="text-decoration-none notification" data-post-id="${notification.post_id}" data-type="reaction">
+                                <div class="p-3 d-flex align-items-center bg-light border-bottom osahan-post-header">
+                                    <div class="dropdown-list-image mr-3">
+                                        <img class="rounded-circle" src="../admin/profile_image/${notification.profile_img}" alt />
+                                    </div>
+                                    <div class="mr-3">
+                                        <div><span class="font-weight-bold">${notification.name}</span> reacted on your post.</div>
+                                    </div>
+                                    <span class="ml-auto mb-auto">
+                                        <br />
+                                        <div class="text-right text-muted pt-1">${notification.elapsed_time}</div>
+                                    </span>
+                                </div>
+                            </a>`;
                         } else if (notification.type === 'comment') {
-                            notificationHtml = `<div class="p-3 d-flex align-items-center bg-light border-bottom osahan-post-header">
-                    <div class="dropdown-list-image mr-3">
-                        <img class="rounded-circle" src="../admin/profile_image/${notification.profile_img}" alt />
-                    </div>
-                    <div class="mr-3">
-                        <div><span class="font-weight-bold">${notification.name}</span> commented "<span class="font-weight-bold">${notification.comment_text}</span>" on your post.</div>
-                    </div>
-                    <span class="ml-auto mb-auto">
-                        <br />
-                        <div class="text-right text-muted pt-1">${notification.elapsed_time}</div>
-                    </span>
-                </div>`;
+                            notificationHtml = `
+                            <a href="#" class="text-decoration-none notification" data-post-id="${notification.post_id}" data-type="comment">
+                                <div class="p-3 d-flex align-items-center bg-light border-bottom osahan-post-header">
+                                    <div class="dropdown-list-image mr-3">
+                                        <img class="rounded-circle" src="../admin/profile_image/${notification.profile_img}" alt />
+                                    </div>
+                                    <div class="mr-3">
+                                        <div><span class="font-weight-bold">${notification.name}</span> commented "<span class="font-weight-bold">${notification.comment_text}</span>" on your post.</div>
+                                    </div>
+                                    <span class="ml-auto mb-auto">
+                                        <br />
+                                        <div class="text-right text-muted pt-1">${notification.elapsed_time}</div>
+                                    </span>
+                                </div>
+                            </a>`;
                         }
                         $('#home .box-body').append(notificationHtml);
                     });
                 }
+
+                // Add click event for notifications
+                $('.notification').click(function (event) {
+                    event.preventDefault(); // Prevent default link behavior
+                    var postId = $(this).data('post-id');
+                    var type = $(this).data('type');
+
+                    // Update the viewed status
+                    $.ajax({
+                        url: 'api/notification/update-notification.php',
+                        type: 'POST',
+                        data: { post_id: postId, type: type },
+                        dataType: 'json',
+                        success: function (updateResponse) {
+                            if (updateResponse.success) {
+                                // Redirect to post.php
+                                window.location.href = `post.php?id=${postId}`;
+                            } else {
+                                alert(updateResponse.message); // Show error message
+                            }
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            console.error("Error updating notification:", textStatus, errorThrown);
+                        }
+                    });
+                });
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 console.error("Error fetching notifications:", textStatus, errorThrown);

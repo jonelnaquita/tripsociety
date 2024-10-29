@@ -1,4 +1,5 @@
 <?php
+include '../inc/session_user.php';
 include 'header.php';
 include '../inc/config.php';
 
