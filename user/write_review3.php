@@ -164,13 +164,13 @@ if (isset($_GET['id'])) {
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="text-center"> <!-- Centering container -->
-                            <button type="submit" name="add_review" class="btn btn-primary submit-btn"
-                                style="border-radius: 30px; padding: 12px 20px;">
-                                <i class="fas fa-check-circle"></i> Submit Review
-                            </button>
+                            <div class="text-center"> <!-- Centering container -->
+                                <button type="submit" name="add_review" class="btn btn-primary submit-btn"
+                                    style="border-radius: 30px; padding: 12px 20px; margin-bottom: 50px;">
+                                    <i class="fas fa-check-circle"></i> Submit Review
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
