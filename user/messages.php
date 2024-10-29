@@ -25,8 +25,6 @@ include 'header.php';
                                             <button class="btn btn-default border-none btn-sm" type="button"><i
                                                     class="fas fa-search"></i></button>
                                         </div>
-                                        <a href="request-message.php" class="btn btn-outline-secondary btn-sm ml-2"><i
-                                                class="fas fa-envelope"></i></a>
                                     </div>
                                 </div>
                             </div>

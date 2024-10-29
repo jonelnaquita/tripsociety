@@ -175,7 +175,7 @@ if (!empty($posts)) {
                                                         data-id="' . htmlspecialchars($post['id']) . '" id="editPostBtn">
                                                         <i class="fas fa-edit"></i> Edit Post
                                                         </a>';
-                                                echo '<a class="dropdown-item text-left delete-post-btn" data-id="' . htmlspecialchars($post['id']) . '" href="#"><i class="fas fa-trash"></i> Delete</a>';
+                                                echo '<a class="dropdown-item text-left delete-post-btn" style="font-size:13px;" data-id="' . htmlspecialchars($post['id']) . '" href="#"><i class="fas fa-trash"></i> Delete</a>';
                                             } else {
                                                 $post_id = $post['id'];
                                                 echo '<a class="dropdown-item text-center" style="font-size:13px;" href="#" data-id="' . htmlspecialchars($post_id, ENT_QUOTES, 'UTF-8') . '" data-toggle="modal" data-target="#reportPostModal">';

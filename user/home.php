@@ -253,40 +253,72 @@ include 'footer.php';
             $('#imageInput').click();
         });
 
-        // Handle file input change event
+        // Limit file input to maxImages
         $('#imageInput').change(function () {
-            const files = this.files;
+            const files = Array.from(this.files).slice(0, maxImages); // Only consider up to 4 images
             const previewPostContainer = $('#imagePostPreviewContainer');
             previewPostContainer.empty(); // Clear the preview container
 
-            // Check if the number of files exceeds the maximum limit
-            if (files.length > maxImages) {
-                alert(`You can only upload a maximum of ${maxImages} images.`);
-                $('#imageInput').val(''); // Clear file input
-                return;
-            }
-
-            // Process each selected file
-            Array.from(files).forEach(file => {
+            // Process each selected image file up to the max limit
+            files.forEach(file => {
                 const reader = new FileReader();
                 reader.onload = function (e) {
-                    // Create an image element and append to preview container
-                    const img = $('<img>').attr('src', e.target.result).css({
-                        'width': '200px',      // Set width to 200px
-                        'height': '200px',     // Set height to 200px for square format
-                        'object-fit': 'cover',  // Maintain aspect ratio
+                    // Create a wrapper div for each image with delete button
+                    const imgWrapper = $('<div>').css({
+                        'position': 'relative',
+                        'display': 'inline-block',
                         'margin': '5px'
                     });
-                    previewPostContainer.append(img);
+
+                    // Create the image element
+                    const img = $('<img>').attr('src', e.target.result).css({
+                        'width': '200px',
+                        'height': '200px',
+                        'object-fit': 'cover'
+                    });
+
+                    // Create the delete button
+                    const deleteButton = $('<span>').text('×').css({
+                        'position': 'absolute',
+                        'top': '5px',
+                        'right': '5px',
+                        'height': '20px',
+                        'width': '20px',
+                        'background': 'rgba(0,0,0,0.5)',
+                        'color': 'white',
+                        'border-radius': '50%', // Circle shape
+                        'display': 'flex',       // Center content with flexbox
+                        'align-items': 'center', // Vertical center
+                        'justify-content': 'center', // Horizontal center
+                        'cursor': 'pointer',
+                        'font-size': '14px',     // Adjusted size for centering
+                        'font-weight': 'bold'
+                    }).click(function () {
+                        imgWrapper.remove(); // Remove the image wrapper on delete button click
+                        updateFileNames(); // Update hidden input field with current file names
+                    });
+
+
+                    // Append image and delete button to wrapper, then to preview container
+                    imgWrapper.append(img).append(deleteButton);
+                    previewPostContainer.append(imgWrapper);
                 };
                 reader.readAsDataURL(file);
             });
 
-            // Create a comma-separated list of file names and set it in the hidden input field
-            const filePaths = Array.from(files).map(file => file.name).join(',');
-            $('#imagePaths').val(filePaths);
+            // Update hidden input with current file names
+            const updateFileNames = () => {
+                const fileNames = Array.from(previewPostContainer.find('img')).map(img => img.src.split('/').pop());
+                $('#imagePaths').val(fileNames.join(','));
+            };
+
+            updateFileNames();
         });
     });
+
+
+
+
 
     document.addEventListener('DOMContentLoaded', function () {
         var textarea = document.querySelector('.postDetail');
@@ -296,21 +328,22 @@ include 'footer.php';
         var locationSelect = document.getElementById('locationSelect');
         var selectedLocationDisplay = document.getElementById('selectedLocation');
 
-        textarea.addEventListener('focus', function () {
-            bottomSheet.classList.add('show');
+        $('.postDetail').on('focus', function () {
+            $('#bottomSheet').addClass('show');
         });
 
-        closeSheetButton.addEventListener('click', function () {
-            bottomSheet.classList.remove('show');
+        // Close button functionality
+        $('#closeSheet').on('click', function () {
+            $('#bottomSheet').removeClass('show');
         });
 
-        // Event listener for adding selected location
-        addLocationButton.addEventListener('click', function () {
-            var selectedLocation = locationSelect.value; // Get the selected location
+        // Add location button functionality
+        $('#addLocation').on('click', function () {
+            const selectedLocation = $('#locationSelect').val();
             if (selectedLocation) {
-                selectedLocationDisplay.textContent = selectedLocation; // Update the display
+                $('#selectedLocation').text(selectedLocation);
             }
-            $('#pinMapModal').modal('hide'); // Close the modal
+            $('#pinMapModal').modal('hide');
         });
 
 

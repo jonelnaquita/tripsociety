@@ -2,6 +2,9 @@
 include 'header.php';
 ?>
 
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 <style>
     .nav-tabs .nav-link {
         border: none;
@@ -128,9 +131,24 @@ include 'header.php';
                                                     placeholder="Email Address" required>
                                             </div>
                                             <div class="form-group">
-                                                <label>Address</label>
-                                                <input type="text" class="form-control" id="location"
-                                                    placeholder="Address" required>
+                                                <label for="location">City</label>
+                                                <select class="form-control" id="location" required>
+                                                    <option value="" disabled selected>Select your city</option>
+                                                    <!-- City options go here -->
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="travel_preferences">Travel Preferences</label>
+                                                <select class="form-control" id="travel_preferences" multiple="multiple"
+                                                    style="width: 100%;">
+                                                    <option value="Nature">Nature</option>
+                                                    <option value="Mountain">Mountain</option>
+                                                    <option value="Historical">Historical</option>
+                                                    <option value="Beach">Beach</option>
+                                                    <option value="Church">Church</option>
+                                                    <option value="Cultural">Cultural</option>
+                                                    <option value="Relaxation">Relaxation</option>
+                                                </select>
                                             </div>
                                             <div class="form-group">
                                                 <label for="password">Password</label>
@@ -192,8 +210,34 @@ include 'footer.php';
 </script>
 
 <script>
+    const cities = [
+        'Batangas City', 'Lipa City', 'Tanauan City', 'Balayan', 'Batangas',
+        'Calaca', 'Calatagan', 'Cuenca', 'Lemery', 'Lian', 'Mabini', 'Malvar',
+        'Matabungkay', 'Nasugbu', 'San Jose', 'San Juan', 'San Luis', 'San Nicolás',
+        'San Pascual', 'Santa Teresa', 'Taal', 'Talisay', 'Taysan', 'Vaughn'
+    ];
+
+    // Populate the city dropdown
+    const citySelect = document.getElementById('location');
+    cities.forEach(city => {
+        const option = document.createElement('option');
+        option.value = city;
+        option.textContent = city;
+        citySelect.appendChild(option);
+    });
+
+</script>
+
+<script>
     $(document).ready(function () {
-        // Fetch existing user data using AJAX on page load
+        // Initialize Select2 for travel_preferences
+        $('#travel_preferences').select2({
+            placeholder: 'Select your travel preferences',
+            width: 'resolve',
+            theme: "classic"
+        });
+
+        // Fetch existing user data including travel_preferences
         $.ajax({
             url: 'api/setting/fetch-user-information.php',
             type: 'GET',
@@ -206,6 +250,12 @@ include 'footer.php';
                     $('#username').val(data.username);
                     $('#email').val(data.email);
                     $('#location').val(data.location);
+
+                    // Populate travel_preferences as an array
+                    if (data.travel_preferences) {
+                        const preferences = data.travel_preferences.split(', ');
+                        $('#travel_preferences').val(preferences).trigger('change');
+                    }
                 }
             },
             error: function () {
@@ -213,23 +263,24 @@ include 'footer.php';
             }
         });
 
+        // Submit form data including travel_preferences
         $('#updateAccountForm').on('submit', function (e) {
-            e.preventDefault(); // Prevent form from submitting normally
+            e.preventDefault();
 
-            // Create an object to hold the form data
-            var formData = {
+            const formData = {
                 name: $('#name').val(),
                 username: $('#username').val(),
                 email: $('#email').val(),
                 location: $('#location').val(),
-                password: $('#password').val()
+                password: $('#password').val(),
+                travel_preferences: $('#travel_preferences').val().join(', ') // Join selected options as a comma-separated string
             };
 
             $.ajax({
                 url: 'api/setting/update-user.php',
                 type: 'POST',
-                data: formData, // Send the form data as an object
-                dataType: 'json', // Expect a JSON response
+                data: formData,
+                dataType: 'json',
                 success: function (response) {
                     if (response && response.success) {
                         toastr.success(response.message, 'Success');
@@ -239,8 +290,6 @@ include 'footer.php';
                     }
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
-                    console.error('AJAX Error:', textStatus, errorThrown);
-                    console.error('Response:', jqXHR.responseText); // Log the entire response text
                     toastr.error('An error occurred while processing your request.');
                 }
             });

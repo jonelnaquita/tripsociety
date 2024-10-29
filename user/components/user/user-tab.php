@@ -15,8 +15,9 @@
 
         <li class="nav-item ml-auto">
             <div class="dropdown mt-1">
-                <button class="btn btn-dark btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown"
-                    aria-haspopup="true" aria-expanded="false" style="font-size:13px;">
+                <button class="btn btn-primary btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false"
+                    style="font-size:13px; background-color: #333; border-radius: 5px;">
                     Edit
                 </button>
                 <div class="dropdown-menu" style="margin-right:115px;" aria-labelledby="dropdownMenuButton">

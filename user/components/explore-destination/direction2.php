@@ -39,6 +39,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
 ?>
 
 <style>
+    /* Bottom Sheet Container */
     .bottom-sheet {
         position: fixed;
         bottom: 0;
@@ -54,118 +55,90 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
         z-index: 1;
     }
 
+    /* Show state for Bottom Sheet */
     .bottom-sheet.show {
         opacity: 1;
         pointer-events: auto;
-        /* Enable interaction when visible */
     }
 
+    /* Bottom Sheet Content */
     .bottom-sheet .content {
-        width: 100%;
-        position: relative;
+        width: 90%;
+        max-width: 500px;
         background: #fff;
-        max-height: 100vh;
-        height: 60vh;
-        max-width: 1150px;
-        padding: 25px 30px;
+        height: 40vh;
         transform: translateY(100%);
         border-radius: 12px 12px 0 0;
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.03);
-        transition: 0.3s ease;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
     }
 
+    /* Show full height when open */
     .bottom-sheet.show .content {
-        transform: translateY(0%);
-        /* Show full height when open */
+        transform: translateY(0);
     }
 
-    /* Ensure the map is clickable */
-    #map {
-        pointer-events: auto;
-    }
-
-    .bottom-sheet .sheet-overlay {
+    /* Overlay */
+    .sheet-overlay {
         position: fixed;
         top: 0;
         left: 0;
         z-index: -1;
         width: 100%;
         height: 100%;
-        opacity: 0.2;
-        background: #000;
+        background: rgba(0, 0, 0, 0.2);
     }
 
-    .bottom-sheet.dragging .content {
-        transition: none;
-    }
-
-    .bottom-sheet.fullscreen .content {
-        border-radius: 0;
-        overflow-y: hidden;
-    }
-
-    .bottom-sheet .header {
+    /* Drag Icon */
+    .drag-icon {
         display: flex;
         justify-content: center;
-    }
-
-    .header .drag-icon {
         cursor: grab;
-        user-select: none;
         padding: 15px;
-        margin-top: -15px;
     }
 
-    .header .drag-icon span {
-        height: 4px;
-        width: 40px;
+    .drag-icon span {
         display: block;
+        width: 40px;
+        height: 4px;
         background: #C7D0E1;
         border-radius: 50px;
     }
 
-    .bottom-sheet .body {
-        height: 100%;
-        overflow-y: auto;
-        padding: 15px 0 40px;
-        scrollbar-width: none;
+    .body {
+        padding: 15px 20px;
+        text-align: center;
     }
 
-    .bottom-sheet .body::-webkit-scrollbar {
-        width: 0;
-    }
-
-    .bottom-sheet .body h2 {
-        font-size: 1.8rem;
-    }
-
-    .bottom-sheet .body p {
-        margin-top: 20px;
-        font-size: 1.05rem;
-    }
-
-    .timeline-container {
-        max-height: 300px;
-        overflow-y: hidden;
-        position: relative;
-        padding-right: 15px;
-    }
-
-    .timeline-container:hover {
-        overflow-y: auto;
-    }
-
-    .timeline::-webkit-scrollbar {
-        width: 0px;
-        /* Removes the scrollbar */
-    }
-
-    @media (min-width: 992px) {
-        .bottom-sheet {
-            max-width: 50%;
-            /* Adjust width as needed */
-            margin-left: 500px;
+    @media (max-width: 600px) {
+        .bottom-sheet .content {
+            width: 100%;
         }
+    }
+
+    #get-directions,
+    #get-navigation,
+    #share {
+        border-radius: 30px;
+        padding: 8px 12px;
+        /* Adjusted padding for better spacing */
+    }
+
+    /* Optional: Add hover effects for better UX */
+    #get-directions:hover,
+    #get-navigation:hover,
+    #share:hover {
+        background-color: rgba(0, 0, 0, 0.1);
+        /* Light background on hover */
+    }
+
+    .instructions-container {
+        text-align: left;
+        /* Ensures text is aligned to the left */
+    }
+
+    .instructions-container strong {
+        display: block;
     }
 </style>
 
@@ -177,7 +150,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
         </div>
         <div class="body">
             <h5><?php echo $location_name; ?></h5>
-            <div class="row">
+            <div class="row bottom-sheet-header">
                 <div class="col">
                     <h6 class="font-weight-bold">
                         <?php echo $rating; ?> &nbsp
@@ -199,64 +172,60 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
                     </h6>
                     <h6 class="text-muted"><?php echo $categories; ?></h6>
 
-                    <button class="btn btn-secondary btn-sm" id="get-directions">Direction</button>
-                    <button class="btn btn-outline-secondary btn-sm ml-1" id="get-navigation">Start</button>
-                    <button class="btn btn-outline-secondary btn-sm ml-1">Share</button>
+                    <button class="btn btn-secondary btn-sm rounded-pill" id="get-directions">
+                        <i class="fas fa-directions"></i> Direction
+                    </button>
+                    <button class="btn btn-outline-secondary btn-sm ml-1 rounded-pill" id="get-navigation">
+                        <i class="fas fa-play"></i> Start
+                    </button>
+                    <button class="btn btn-outline-secondary btn-sm ml-1 rounded-pill" id="share">
+                        <i class="fas fa-share-alt"></i> Share
+                    </button>
+
+
                 </div>
             </div>
 
             <div class="row mt-3">
-                <div class="col">
+                <div class="col instructions-container">
                     <h5 class="font-weight-bold">How to get there?</h5>
-                    <?php
-                    $location_instructions = explode(',', $instruction);
-                    echo '<div class="timeline-container"><div class="timeline">';
-                    foreach ($location_instructions as $location_instruction) {
-                        $parts = explode('-', $location_instruction);
-                        if (count($parts) === 2) {
-                            list($location, $detail_instruction) = $parts;
-                            echo "<div><i class='fas fa-dot-circle' style='font-size:5px;'></i><div class='timeline-item'><div class='timeline-body'><strong>$location</strong><br>$detail_instruction</div></div></div>";
-                        }
-                    }
-                    echo '</div></div>';
-                    ?>
+                    <!-- Instructions will be dynamically injected here by AJAX -->
                 </div>
             </div>
+
         </div>
     </div>
 </div>
 
 <script>
     document.addEventListener("DOMContentLoaded", () => {
+        const viewRouteBtn = document.getElementById("viewRouteBtn");
         const bottomSheet = document.querySelector(".bottom-sheet");
         const overlay = document.querySelector(".sheet-overlay");
-        const content = document.querySelector(".content");
         const dragIcon = document.querySelector(".drag-icon");
-        const showModalButton = document.querySelector(".show-modal");
-
         let isDragging = false;
-        let isBottomSheetVisible = false; // Track visibility state
         let startY, startHeight;
 
-        // Show/Hide Bottom Sheet
-        const toggleBottomSheet = (show = true) => {
-            isBottomSheetVisible = show;
+        // Toggle Bottom Sheet Visibility
+        const toggleBottomSheet = (show) => {
             bottomSheet.classList.toggle("show", show);
             document.body.style.overflowY = show ? "hidden" : "auto";
-
-            if (show) {
-                content.style.height = "60vh"; // Reset to initial height on show
-            } else {
-                content.style.height = "0";    // Explicitly set to zero on hide
-            }
         };
 
-        // Handle Dragging
+        // Show Bottom Sheet on Button Click
+        viewRouteBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            toggleBottomSheet(true);
+        });
+
+        // Hide Bottom Sheet on Overlay Click
+        overlay.addEventListener("click", () => toggleBottomSheet(false));
+
+        // Dragging Functionality
         const dragStart = (e) => {
             isDragging = true;
             startY = e.pageY || e.touches[0].pageY;
-            startHeight = parseInt(window.getComputedStyle(content).height);
-            bottomSheet.classList.add("dragging");
+            startHeight = parseInt(window.getComputedStyle(bottomSheet.querySelector(".content")).height);
         };
 
         const dragging = (e) => {
@@ -264,40 +233,23 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
             const currentY = e.pageY || e.touches[0].pageY;
             const delta = startY - currentY;
             const newHeight = Math.max(15, Math.min(startHeight + delta, window.innerHeight * 0.9));
-            content.style.height = `${newHeight}px`;
+            bottomSheet.querySelector(".content").style.height = `${newHeight}px`;
         };
 
         const dragStop = () => {
             isDragging = false;
-            bottomSheet.classList.remove("dragging");
-            const sheetHeight = parseInt(content.style.height);
-            toggleBottomSheet(sheetHeight > window.innerHeight * 0.5);
         };
 
+        // Event Listeners for Dragging
         dragIcon.addEventListener("mousedown", dragStart);
         document.addEventListener("mousemove", dragging);
         document.addEventListener("mouseup", dragStop);
         dragIcon.addEventListener("touchstart", dragStart);
         document.addEventListener("touchmove", dragging);
         document.addEventListener("touchend", dragStop);
-
-        // Toggle Bottom Sheet on Overlay Click
-        overlay.addEventListener("click", () => toggleBottomSheet(false));
-
-        // Button to Show Modal
-        showModalButton.addEventListener("click", () => {
-            if (isBottomSheetVisible) {
-                toggleBottomSheet(false); // Close first if already visible
-                setTimeout(() => toggleBottomSheet(true), 300); // Re-open after a short delay
-            } else {
-                toggleBottomSheet(true); // Open directly if not visible
-            }
-        });
     });
 
 </script>
-
-
 
 <!-- Direction Script -->
 <script>
@@ -399,5 +351,50 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
                 }
             });
         });
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const locationId = new URLSearchParams(window.location.search).get('id'); // Get the location_id from URL
+
+        // Function to fetch instructions
+        const fetchInstructions = () => {
+            fetch(`api/search/fetch-instruction.php?location_id=${locationId}`)
+                .then(response => response.json())
+                .then(data => {
+                    const instructionsContainer = document.querySelector('.instructions-container');
+                    instructionsContainer.innerHTML = ''; // Clear existing content
+
+                    if (data.length > 0) {
+                        const timelineContainer = document.createElement('div');
+                        timelineContainer.className = 'timeline-container';
+                        const timeline = document.createElement('div');
+                        timeline.className = 'timeline';
+
+                        data.forEach(item => {
+                            const timelineItem = document.createElement('div');
+                            timelineItem.innerHTML = `
+                            <i class='fas fa-dot-circle' style='font-size:5px;'></i>
+                            <div class='timeline-item'>
+                                <div class='timeline-body'>
+                                    <strong>${item.location}</strong><br>${item.instruction}
+                                </div>
+                            </div>
+                        `;
+                            timeline.appendChild(timelineItem);
+                        });
+
+                        timelineContainer.appendChild(timeline);
+                        instructionsContainer.appendChild(timelineContainer);
+                    } else {
+                        instructionsContainer.innerHTML = '<p>No instructions available.</p>';
+                    }
+                })
+                .catch(error => console.error('Error fetching instructions:', error));
+        };
+
+        // Call the function to fetch instructions on page load
+        fetchInstructions();
     });
 </script>

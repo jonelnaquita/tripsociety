@@ -71,7 +71,8 @@
 
                         <div class="row" style="margin-left:37px; margin-top:-10px;">
                             <div class="col">
-                                <input type="file" id="imageInput" name="images[]" multiple style="display: none;">
+                                <input type="file" id="imageInput" name="images[]" multiple accept="image/*"
+                                    style="display: none;">
                                 <button class="btn btn-default btn-custom" type="button" id="addPhotoButton">
                                     <i class="far fa-images" style="font-size:12px;"></i>&nbsp; Add photo
                                 </button>
@@ -87,7 +88,7 @@
                         <div class="row ml-2 mr-2">
                             <div class="col">
                                 <textarea class="form-control border-0" id="messageTextarea" name="post" rows="6"
-                                    placeholder="What's on your mind?"></textarea>
+                                    placeholder="Tell me about your adventure"></textarea>
                             </div>
                         </div>
 
@@ -95,7 +96,7 @@
                         <div class="row mt-3">
                             <div class="col">
                                 <div class="image-preview" id="imagePostPreviewContainer">
-                                    <!-- Image preview elements will be appended here -->
+                                    <!-- Image preview elements with delete button will be appended here -->
                                 </div>
                             </div>
                         </div>

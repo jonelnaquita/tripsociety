@@ -131,25 +131,6 @@ include 'header.php';
                                                     Mountain
                                                 </label>
                                             </div>
-
-
-                                            <div class="radio-group mt-3">
-                                                <h6>LOCATIONS</h6>
-                                                <label>
-                                                    <input type="checkbox" name="location[]" value="option1">
-                                                    Location 1
-                                                </label>
-                                                <br>
-                                                <label>
-                                                    <input type="checkbox" name="location[]" value="option2">
-                                                    Location 2
-                                                </label>
-                                                <br>
-                                                <label>
-                                                    <input type="checkbox" name="location[]" value="option3">
-                                                    Location 3
-                                                </label>
-                                            </div>
                                         </div>
                                     </div>
 

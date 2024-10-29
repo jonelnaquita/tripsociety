@@ -1,6 +1,9 @@
 <?php
 include 'modal/comment.php';
+include 'modal/home.php';
 ?>
+
+<link rel="stylesheet" href="assets/css/post.css">
 
 <style>
     @media (max-width: 576px) {
@@ -14,6 +17,24 @@ include 'modal/comment.php';
         .comment-section-modal-content {
             height: 100%;
             border-radius: 0;
+        }
+
+        .modal-edit-post {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        .modal-edit-post .modal-content {
+            height: 100%;
+            border-radius: 0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .modal-edit-post .modal-body {
+            overflow-y: auto;
         }
 
         .comment-section-modal-body {
@@ -36,7 +57,7 @@ include 'modal/comment.php';
         <div class="input-group-prepend">
             <span class="input-group-text bg-transparent border-0"><i class="fas fa-map-marker-alt"></i></span>
         </div>
-        <input class="form-control form-control-border bg-transparent" value="<?php echo $row['location']; ?>">
+        <input class="form-control form-control-border bg-transparent" value="<?php echo $row['location']; ?>" readonly>
     </div>
     <br>
     <?php
@@ -130,6 +151,32 @@ include 'modal/comment.php';
                                         </h6>
                                     </div>
 
+                                    <div class="col mr-auto text-right">
+                                        <div class="dropdown">
+                                            <button class="btn btn-white btn-sm border-0 dropdown-toggle" type="button"
+                                                id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                                                aria-expanded="false">
+                                                <i class="fas fa-ellipsis-h"></i>
+                                            </button>
+                                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                                                <?php if (isset($_SESSION['user'])) {
+                                                    if ($_SESSION['user'] == $post['user_id']) {
+                                                        echo '<a class="dropdown-item text-left" style="font-size:13px;" href="#" 
+                                                        data-toggle="modal" data-target="#editPostModal" 
+                                                        data-id="' . htmlspecialchars($post['id']) . '" id="editPostBtn">
+                                                        <i class="fas fa-edit"></i> Edit Post
+                                                        </a>';
+                                                        echo '<a class="dropdown-item text-left delete-post-btn" style="font-size:13px;" data-id="' . htmlspecialchars($post['id']) . '" href="#"><i class="fas fa-trash"></i> Delete</a>';
+                                                    } else {
+                                                        $post_id = $post['id'];
+                                                        echo '<a class="dropdown-item text-center" style="font-size:13px;" href="#" data-id="' . htmlspecialchars($post_id, ENT_QUOTES, 'UTF-8') . '" data-toggle="modal" data-target="#reportPostModal">';
+                                                        echo '<i class="fas fa-flag"></i> Report Post</a>';
+                                                    }
+                                                } ?>
+                                            </div>
+                                        </div>
+                                    </div>
+
 
                                 </div>
 
@@ -178,7 +225,7 @@ include 'modal/comment.php';
                                             </button>
                                             <span class="badge bg-secondary position-relative"
                                                 id="reaction-count-<?php echo $post['id']; ?>"
-                                                style="font-size:10px;top: -0.5em; margin-left:-8px;"><?php echo $reaction_count; ?></span>
+                                                style="font-size:10px;top: -0.5em; margin-left:-25px;"><?php echo $reaction_count; ?></span>
                                         </div>
                                     </div>
 
@@ -190,7 +237,7 @@ include 'modal/comment.php';
                                                 <i class="far fa-comment-alt text-dark" style="font-size:15px;"></i>
                                             </button>
                                             <span class="badge bg-secondary position-relative"
-                                                style="font-size:10px;top: -0.5em; margin-left:-8px;"><?php echo $comment_count; ?></span>
+                                                style="font-size:10px;top: -0.5em; margin-left:-25px;;"><?php echo $comment_count; ?></span>
                                         </div>
                                     </div>
 
@@ -388,6 +435,82 @@ include 'modal/comment.php';
             });
         });
 
+    });
+
+</script>
+
+
+<!-- Edit Post -->
+<script>
+    $(document).on('click', '#editPostBtn', function () {
+        var postId = $(this).data('id');
+
+        $.ajax({
+            url: 'api/home/fetch-post.php', // A PHP file to fetch the post data
+            type: 'POST',
+            data: { post_id: postId },
+            dataType: 'json',
+            success: function (response) {
+                // Log the entire response data
+                console.log("Fetched Post Data:", response);
+
+                $('#editPostId').val(response.id);
+                $('#editPostText').val(response.post);
+                $('#editLocation').val(response.location);
+                $('.location-selected').text(response.location);
+
+                // Display the image preview if exists
+                if (response.images && response.images.length > 0) {
+                    // Log each image fetched
+                    console.log("Image Paths:", response.images);
+                    $('#imagePreviewContainer').html('');
+                    response.images.forEach(function (img) {
+                        $('#imagePreviewContainer').append('<img src="' + img + '" class="img-fluid">');
+                        $('.image-preview').val(response.images);
+                    });
+                } else {
+                    console.log("No images found for this post.");
+                    $('#imagePreviewContainer').html(''); // Clear preview if no images
+                }
+            },
+            error: function (xhr, status, error) {
+                // Log any errors that occurred during the AJAX request
+                console.error("AJAX Error:", status, error);
+            }
+        });
+    });
+</script>
+
+<!--Delete Post-->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var postIdToDelete;
+
+        // Open the confirmation modal when delete button is clicked
+        document.querySelectorAll('.delete-post-btn').forEach(function (button) {
+            button.addEventListener('click', function () {
+                postIdToDelete = this.getAttribute('data-id');
+                $('#deleteConfirmationModal').modal('show');
+            });
+        });
+
+        // Handle the confirm delete action
+        document.getElementById('confirmDeleteBtn').addEventListener('click', function () {
+            $.ajax({
+                url: 'api/home/delete-post.php', // Your PHP delete handler
+                type: 'POST',
+                data: { post_id: postIdToDelete },
+                success: function (response) {
+                    if (response === 'success') {
+                        $('#deleteConfirmationModal').modal('hide');
+                        // Optionally refresh the page or remove the post from the DOM
+                        location.reload();
+                    } else {
+                        alert('Error deleting post.');
+                    }
+                }
+            });
+        });
     });
 
 </script>

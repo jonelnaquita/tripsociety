@@ -1039,25 +1039,8 @@ if (isset($_GET['view_destination'])) {
         foreach ($results as $row) {
             echo '<a class="dropdown-item" href="write_review3.php?id=' . $row['id'] . '">' . htmlspecialchars($row['location_name']) . '</a>';
         }
-        echo '
-            <div class="recent-searches">
-                 <h6 class="text-left font-weight-bold">Recent</h6>
-                <a class="text-dark" href="write_review3.php?id=1">Destination 1</a><br>
-                <a class="text-dark" href="write_review3.php?id=1">Destination 2</a><br>
-                <a class="text-dark" href="write_review3.php?id=1">Destination 3</a><br>
-            </div>
-        ';
     } else {
         echo '<a class="dropdown-item" href="#">No results found</a>';
-
-        echo '
-            <div class="recent-searches">
-                 <h6 class="text-left font-weight-bold">Recent</h6>
-                <a class="text-dark" href="write_review3.php?id=1">Destination 1</a><br>
-                <a class="text-dark" href="write_review3.php?id=1">Destination 2</a><br>
-                <a class="text-dark" href="write_review3.php?id=1">Destination 3</a><br>
-            </div>
-        ';
     }
 
 

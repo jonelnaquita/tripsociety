@@ -28,6 +28,13 @@ session_start();
     <link rel="stylesheet" href="../plugins/summernote/summernote-bs4.min.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
+
+    <!-- Select2 CSS and JS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+
+
     <script src="../plugins/jquery/jquery.min.js"></script>
     <script src="../plugins/jquery-ui/jquery-ui.min.js"></script>
     <script>

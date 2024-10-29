@@ -49,7 +49,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
         $count = $hazard_counts[$hazard];
         $percentage = ($total_reviews > 0) ? ($count / $total_reviews) * 100 : 0;
 
-        echo '<div class="row mb-5">'; // Added mb-2 for margin-bottom between rows
+        echo '<div class="row">'; // Added mb-2 for margin-bottom between rows
         echo '<div class="col-4">'; // Adjusted column size to better fit the content
         echo '<p class="hazard-label">' . htmlspecialchars($label) . '</p>'; // Ensure safe output
         echo '</div>';

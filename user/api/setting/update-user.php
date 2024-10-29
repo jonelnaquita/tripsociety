@@ -15,6 +15,7 @@ try {
     $username = $_POST['username'];
     $email = $_POST['email'];
     $location = $_POST['location'];
+    $travel_preferences = $_POST['travel_preferences'];
     $password = $_POST['password'];
 
     if (empty($name) || empty($username) || empty($email) || empty($location) || empty($password)) {
@@ -31,13 +32,14 @@ try {
 
     if ($user && password_verify($password, $user['password'])) {
         // Update user data
-        $stmt = $pdo->prepare("UPDATE tbl_user SET name = :name, username = :username, email = :email, location = :location WHERE id = :id");
+        $stmt = $pdo->prepare("UPDATE tbl_user SET name = :name, username = :username, email = :email, location = :location, travel_preferences = :travel_preferences WHERE id = :id");
         $stmt->execute([
             'name' => $name,
             'username' => $username,
             'email' => $email,
             'location' => $location,
-            'id' => $_SESSION['user'] // Ensure this matches session variable
+            'travel_preferences' => $travel_preferences,
+            'id' => $_SESSION['user']
         ]);
 
         echo json_encode(['success' => true, 'message' => 'Account updated successfully.']);

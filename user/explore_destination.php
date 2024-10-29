@@ -95,7 +95,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
             include 'components/explore-destination/write-review.php';
             include 'components/explore-destination/review.php';
             include 'components/explore-destination/hazard.php';
-            include 'components/explore-destination/direction.php';
+            include 'components/explore-destination/direction2.php';
             ?>
         </div>
     </section>
