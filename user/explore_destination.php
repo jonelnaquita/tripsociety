@@ -51,8 +51,6 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     </button>
 
 
-
-
     <section class="content" style="height:1000px;">
         <div class="container-fluid">
             <style>

@@ -172,12 +172,16 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
                     </h6>
                     <h6 class="text-muted"><?php echo $categories; ?></h6>
 
+                    <!-- Direction Button -->
                     <button class="btn btn-secondary btn-sm rounded-pill" id="get-directions">
                         <i class="fas fa-directions"></i> Direction
                     </button>
+
+                    <!-- Navigation Button -->
                     <button class="btn btn-outline-secondary btn-sm ml-1 rounded-pill" id="get-navigation">
                         <i class="fas fa-play"></i> Start
                     </button>
+
                     <button class="btn btn-outline-secondary btn-sm ml-1 rounded-pill" id="share">
                         <i class="fas fa-share-alt"></i> Share
                     </button>
@@ -255,9 +259,14 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
 <script>
     $(document).ready(function () {
         $('#get-directions').click(function () {
-            const locationId = '<?php echo $_GET['id']; ?>'; // Dynamic ID
+            const button = $(this);
+            const icon = button.find('i');
+            const locationId = '<?php echo $_GET['id']; ?>';
 
-            // Make AJAX request to fetch latitude and longitude
+            // Show spinner, disable button
+            icon.removeClass('fa-directions').addClass('fa-spinner fa-spin');
+            button.prop('disabled', true);
+
             $.ajax({
                 url: 'api/search/fetch-location.php',
                 type: 'POST',
@@ -274,21 +283,37 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
                                 const currentLat = position.coords.latitude;
                                 const currentLng = position.coords.longitude;
 
-                                // Open Google Maps Directions URL
+                                // Construct Google Maps URL and redirect
                                 const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${currentLat},${currentLng}&destination=${destinationLat},${destinationLng}&travelmode=driving`;
+
+                                // Redirect to Google Maps
                                 window.location.href = googleMapsUrl;
+
+                                // Reset button after navigation
+                                setTimeout(() => {
+                                    button.text("Direction").prop('disabled', false);
+                                    icon.removeClass('fa-spinner fa-spin').addClass('fa-directions');
+                                }, 1500);
                             }, function (error) {
                                 alert("Error getting current location: " + error.message);
+                                button.text("Direction").prop('disabled', false);
+                                icon.removeClass('fa-spinner fa-spin').addClass('fa-directions');
                             });
                         } else {
                             alert("Geolocation is not supported by this browser.");
+                            button.text("Direction").prop('disabled', false);
+                            icon.removeClass('fa-spinner fa-spin').addClass('fa-directions');
                         }
                     } else {
                         alert("Location not found");
+                        button.text("Direction").prop('disabled', false);
+                        icon.removeClass('fa-spinner fa-spin').addClass('fa-directions');
                     }
                 },
                 error: function () {
                     alert("Failed to fetch location data");
+                    button.text("Direction").prop('disabled', false);
+                    icon.removeClass('fa-spinner fa-spin').addClass('fa-directions');
                 }
             });
         });
@@ -299,9 +324,14 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
 <script>
     $(document).ready(function () {
         $('#get-navigation').click(function () {
-            const locationId = '<?php echo $_GET['id']; ?>'; // Dynamic ID
+            const button = $(this);
+            const icon = button.find('i');
+            const locationId = '<?php echo $_GET['id']; ?>';
 
-            // Make AJAX request to fetch latitude and longitude
+            // Show spinner, disable button
+            icon.removeClass('fa-play').addClass('fa-spinner fa-spin');
+            button.prop('disabled', true);
+
             $.ajax({
                 url: 'api/search/fetch-location.php',
                 type: 'POST',
@@ -318,11 +348,10 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
                                 const currentLat = position.coords.latitude;
                                 const currentLng = position.coords.longitude;
 
-                                // Detect the user's device platform (Android or iOS)
+                                // Detect platform
                                 const isAndroid = /android/i.test(navigator.userAgent);
                                 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
-                                // Open the appropriate maps app based on the device
                                 if (isAndroid) {
                                     // Open Google Maps on Android
                                     const googleMapsUrl = `google.navigation:q=${destinationLat},${destinationLng}&mode=d`;
@@ -332,27 +361,38 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
                                     const appleMapsUrl = `maps://?q=${destinationLat},${destinationLng}&dirflg=d`;
                                     window.location.href = appleMapsUrl;
                                 } else {
-                                    // Fallback for other devices or platforms (desktop)
+                                    // Fallback for unsupported devices
                                     alert("Navigation is only supported on Android and iOS devices.");
+                                    resetButton();
                                 }
                             }, function (error) {
                                 alert("Error getting current location: " + error.message);
+                                resetButton();
                             });
                         } else {
                             alert("Geolocation is not supported by this browser.");
+                            resetButton();
                         }
                     } else {
-
                         alert("Location not found");
+                        resetButton();
                     }
                 },
                 error: function () {
                     alert("Failed to fetch location data");
+                    resetButton();
                 }
             });
+
+            // Reset button function
+            function resetButton() {
+                button.text("Start").prop('disabled', false);
+                icon.removeClass('fa-spinner fa-spin').addClass('fa-play');
+            }
         });
     });
 </script>
+
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
