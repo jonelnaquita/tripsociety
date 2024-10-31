@@ -3,10 +3,12 @@
 
 <?php
 include '../inc/session_user.php';
-include 'header.php'; ?>
+include 'header.php';
+include 'modal/report.php'; ?>
 
 <head>
     <link rel="stylesheet" href="assets/css/review.css">
+    <link rel="stylesheet" href="assets/css/report.css">
 </head>
 
 <body>
@@ -62,6 +64,23 @@ include 'header.php'; ?>
                                </button>`
                                     : ''; // No button if it's the user's own review
 
+                            // Dropdown menu item
+                            let dropdownMenu = !isOwnReview ? `
+                        <div class="dropdown float-right">
+                            <button class="btn btn-white btn-sm border-0 dropdown-toggle" type="button"
+                                id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                                aria-expanded="false">
+                                <i class="fas fa-ellipsis-h"></i>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item text-center" style="font-size:13px;" href="#" data-id="${location.id}" data-toggle="modal" data-target="#reportPostModal">
+                                    Report Post
+                                </a>
+                                <!-- Add more dropdown items here if needed -->
+                            </div>
+                        </div>
+                    ` : '';
+
                             let reviewHTML = `
                         <div class="card mt-3 elevation-2" data-review-id="${location.id}">
                             <div class="card-body">
@@ -74,7 +93,6 @@ include 'header.php'; ?>
                                                     style="width: 40px; height: 40px; object-fit: cover;">
                                             </a>
                                         </div>
-
                                     </div>
                                     <div class="col" style="margin-top:-4px; margin-left:-10px;">
                                         <h6 class="font-weight-bold">
@@ -89,6 +107,7 @@ include 'header.php'; ?>
                                             ${'<i class="far fa-star text-warning"></i>'.repeat(emptyStars)}
                                         </div>
                                     </div>
+                                    ${dropdownMenu} <!-- Include the dropdown menu here -->
                                 </div> 
                                 <p class="ml-2 mr-2">${location.review}</p>
                                 <div class="container">
@@ -260,4 +279,44 @@ if (isset($_SESSION['user'])) {
         modalImage.src = src;
         $('#customImageModal').modal('show'); // Show the Bootstrap modal
     }
+</script>
+
+<!-- Add Report -->
+<script>
+    $(document).on('click', '[data-toggle="modal"]', function () {
+        var postId = $(this).data('id');
+        $('#postIdInput').val(postId); // Set the post ID in the hidden input
+    });
+
+    $('#submitReport').on('click', function () {
+        var postId = $('#postIdInput').val();
+        var userId = $('input[name="user_id"]').val();
+        var violation = $('#violationSelect').val();
+
+        if (violation) {
+            $.ajax({
+                url: 'api/review/add-report.php', // The PHP script to handle the report
+                type: 'POST',
+                data: {
+                    post_id: postId,
+                    user_id: userId,
+                    violation: violation
+                },
+                dataType: 'json',
+                success: function (response) {
+                    if (response.success) {
+                        toastr.success(response.message);
+                        $('#reportPostModal').modal('hide'); // Hide the modal
+                    } else {
+                        toasr.error(response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('AJAX Error:', error);
+                }
+            });
+        } else {
+            toastr.error('Please select a violation reason.');
+        }
+    });
 </script>

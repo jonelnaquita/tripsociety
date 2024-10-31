@@ -289,10 +289,10 @@ include 'modal/comment.php';
                 dataType: 'json',
                 success: function (response) {
                     if (response.success) {
-                        alert(response.message);
+                        toastr.success(response.message);
                         $('#reportPostModal').modal('hide'); // Hide the modal
                     } else {
-                        alert(response.message);
+                        toastr.error(response.message);
                     }
                 },
                 error: function (xhr, status, error) {
@@ -300,7 +300,7 @@ include 'modal/comment.php';
                 }
             });
         } else {
-            alert('Please select a violation reason.');
+            toastr.error('Please select a violation reason.');
         }
     });
 </script>

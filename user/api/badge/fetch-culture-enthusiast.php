@@ -30,6 +30,29 @@ try {
     $visited_museums = $museo_miguel_malvar + $apolinario_mabini_museum;
     $progress_percentage = ($visited_museums / $total_museums) * 100;
 
+    // Check if badge already exists for the user
+    $badge_check_sql = "SELECT COUNT(*) FROM tbl_badge_accomplishment WHERE user_id = :user_id AND badge = :badge";
+    $badge_check_stmt = $pdo->prepare($badge_check_sql);
+    $badge_check_stmt->execute([
+        'user_id' => $user_id,
+        'badge' => 'Culture Enthusiast'
+    ]);
+    $badge_exists = $badge_check_stmt->fetchColumn() > 0;
+
+    // Insert the badge accomplishment if progress is 100% and badge does not exist
+    if ($progress_percentage == 100 && !$badge_exists) {
+        $badge_sql = "INSERT INTO tbl_badge_accomplishment (user_id, badge, color, icon, date_created) 
+                      VALUES (:user_id, :badge, :color, :icon, :date_created)";
+        $badge_stmt = $pdo->prepare($badge_sql);
+        $badge_stmt->execute([
+            'user_id' => $user_id,
+            'badge' => 'Culture Enthusiast',
+            'color' => '#20639B',
+            'icon' => 'fa-passport',
+            'date_created' => (new DateTime('now', new DateTimeZone('Asia/Manila')))->format('Y-m-d H:i:s')
+        ]);
+    }
+
     // Return the result as JSON
     echo json_encode([
         'museo_miguel_malvar' => $museo_miguel_malvar,
@@ -40,3 +63,4 @@ try {
 } catch (PDOException $e) {
     echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
 }
+?>

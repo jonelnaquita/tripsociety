@@ -338,12 +338,12 @@ include 'footer.php';
                     $('#frontPreview').html('<i class="fas fa-plus-circle fa-3x"></i><h6 class="mt-1 font-weight-bold">Upload the <u>front</u> of your document</h6><p class="p-2">No front image uploaded</p>'); // Reset front preview
                     $('#backPreview').html('<i class="fas fa-plus-circle fa-3x"></i><h6 class="mt-1 font-weight-bold">Upload the <u>back</u> of your document</h6><p class="p-2">No back image uploaded</p>'); // Reset back preview
                 } else {
-                    alert(response.message); // Alert with the message if not successful
+                    toastr.success(response.message); // Alert with the message if not successful
                 }
             },
             error: function (xhr, status, error) {
                 console.log("Error: " + error); // Log the error for debugging
-                alert("An error occurred during the upload process. Please try again.");
+                toastr.error("An error occurred during the upload process. Please try again.");
             },
         });
 

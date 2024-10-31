@@ -69,9 +69,6 @@ include 'header.php';
 <div class="content-wrapper">
 
     <div class="content-header">
-
-
-
         <section class="content">
             <div class="container-fluid">
 
@@ -93,12 +90,10 @@ include 'header.php';
                 </div>
 
 
-                <div class="row mt-2">
+                <div class="row mt-2 mb-5">
                     <div class="col">
-                        <h5 class="font-weight-bold">Badges</h5>
-
-
                         <div class="container">
+                            <h5 class="font-weight-bold">Badges</h5>
                             <div class="row">
                                 <!-- Icon 1 -->
                                 <div class="col-6 col-md-4 text-center">
@@ -121,7 +116,7 @@ include 'header.php';
                                         <i class="fas fa-passport fa-2x text-secondary"></i>
                                         <p class="mt-2" style="font-size:12px;">Unlock Culture Enthusiast</p>
                                         <!-- Progress Bar -->
-                                        <div class="progress">
+                                        <div class="progress"></div> 
                                             <div class="progress-unlockCultureEnthusiast progress-bar bg-warning"
                                                 role="progressbar" style="width: 0%;" aria-valuenow="0"
                                                 aria-valuemin="0" aria-valuemax="100"></div>

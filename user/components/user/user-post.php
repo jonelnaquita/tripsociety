@@ -148,10 +148,14 @@ include 'modal/home.php';
 
                                     <div class="col-8" style="margin-left:-10px;">
                                         <p class="font-weight-bold">
-                                            <?php echo htmlspecialchars($post['name']); ?> <span class="font-weight-normal"
-                                                style="font-size:14px;"><?php if ($post['location'] != "") {
-                                                    echo '<i>is at ' . $post['location'] . '</i>';
-                                                } ?></span>
+                                            <?php echo htmlspecialchars($post['name']); ?>
+                                            <?php if ($post['status'] == 1): ?>
+                                                <i class="fas fa-check-circle" style="color: #582fff; margin-left: 3px;"
+                                                    title="Verified"></i>
+                                            <?php endif; ?>
+                                            <span class="font-weight-normal" style="font-size:14px;"><?php if ($post['location'] != "") {
+                                                echo '<i>is at ' . $post['location'] . '</i>';
+                                            } ?></span>
                                         </p>
                                         <h6 style="margin-top:-17px;" class="text-muted">
                                             <?php echo '@' . htmlspecialchars($post['username']); ?>
@@ -200,25 +204,22 @@ include 'modal/home.php';
                                     </div>
                                 </div>
 
-                                <div class="row">
-                                    <?php if (empty($imageFiles)): ?>
-                                        <div class="col-12 text-center">
-                                        </div>
-                                    <?php else: ?>
+                                <?php if (!empty($post_images)): // Only render the row if there are image files ?>
+                                    <div class="row">
                                         <?php foreach ($imageFiles as $file): ?>
                                             <div class="col-6 col-md-4 col-lg-3 mb-3">
-                                                <div class="d-flex justify-content-center"
-                                                    style="height: 0; padding-bottom: 100%; position: relative;">
-                                                    <img src="../admin/post_image/<?php echo htmlspecialchars($file); ?>" alt="Image"
-                                                        class="img-fluid rounded"
+                                                <div class="d-flex justify-content-center" style="height: 0; padding-bottom: 100%; position: relative;">
+                                                    <img src="../admin/post_image/<?php echo htmlspecialchars($file); ?>" alt="Image" class="img-fluid rounded"
                                                         style="position: absolute; top: 0; left: 0; height: 100%; width: 100%; object-fit: cover;"
                                                         data-toggle="modal" data-target="#imageModal"
                                                         data-src="../admin/post_image/<?php echo htmlspecialchars($file); ?>">
                                                 </div>
                                             </div>
                                         <?php endforeach; ?>
-                                    <?php endif; ?>
-                                </div>
+                                    </div>
+                                <?php else: ?>
+                                    <!-- Nothing will be displayed if there are no images -->
+                                <?php endif; ?>
 
 
 

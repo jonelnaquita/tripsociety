@@ -44,8 +44,7 @@ $reactionQuery = "SELECT p.id as post_id, p.post, u.name, u.profile_img, r.date_
     FROM tbl_reaction r
     LEFT JOIN tbl_user u ON r.user_id = u.id
     LEFT JOIN tbl_post p ON r.post_id = p.id
-    WHERE p.user_id = :user_id AND r.user_id != :user_id AND r.viewed = 0
-";
+    WHERE p.user_id = :user_id AND r.user_id != :user_id AND r.viewed = 0";
 $stmt = $pdo->prepare($reactionQuery);
 $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
 $stmt->execute();
@@ -54,7 +53,6 @@ $reactions = $stmt->fetchAll(PDO::FETCH_ASSOC);
 // Format the date_created for reactions
 foreach ($reactions as &$reaction) {
     $reaction['elapsed_time'] = time_elapsed_string($reaction['date_created']);
-    // Add a type for sorting later
     $reaction['type'] = 'reaction';
 }
 
@@ -63,8 +61,7 @@ $commentQuery = "SELECT c.post_id, u.name, u.profile_img, c.message AS comment_t
 FROM tbl_post_comment c
 JOIN tbl_user u ON c.user_id = u.id
 JOIN tbl_post p ON c.post_id = p.id
-WHERE p.user_id = :user_id AND c.user_id != :user_id AND c.viewed = 0
-";
+WHERE p.user_id = :user_id AND c.user_id != :user_id AND c.viewed = 0";
 $stmt = $pdo->prepare($commentQuery);
 $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
 $stmt->execute();
@@ -73,12 +70,29 @@ $comments = $stmt->fetchAll(PDO::FETCH_ASSOC);
 // Format the date_created for comments
 foreach ($comments as &$comment) {
     $comment['elapsed_time'] = time_elapsed_string($comment['date_created']);
-    // Add a type for sorting later
     $comment['type'] = 'comment';
 }
 
-// Merge reactions and comments
-$notifications = array_merge($reactions, $comments);
+// Fetch reviews
+$reviewQuery = "SELECT tr.*, tu.name, tu.profile_img, trr.id AS review_id, trr.date_created AS reaction_date
+FROM tbl_review tr
+JOIN tbl_review_reaction trr ON tr.id = trr.review_id
+JOIN tbl_user tu ON trr.user_id = tu.id
+WHERE tr.user_id = :user_id AND trr.user_id != :user_id AND trr.viewed = 0";
+$stmt = $pdo->prepare($reviewQuery);
+$stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+$stmt->execute();
+$reviews = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
+// Format the date_created for reviews
+foreach ($reviews as &$review) {
+    $review['elapsed_time'] = time_elapsed_string($review['date_created']);
+    $review['type'] = 'review';
+}
+
+// Merge reactions, comments, and reviews
+$notifications = array_merge($reactions, $comments, $reviews);
 
 // Sort notifications by date_created in descending order
 usort($notifications, function ($a, $b) {
@@ -91,5 +105,4 @@ $response = [
 ];
 
 echo json_encode($response);
-
 ?>

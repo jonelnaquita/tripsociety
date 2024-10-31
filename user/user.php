@@ -51,11 +51,8 @@ include 'components/user/user-hero.php'
     ?>
 
 
-<div class="content-wrapper" style="margin-top:-50px;">
+<div class="content-wrapper" style="margin-top: -30px;">
     <section class="content">
-
-
-
         <div class="" style="height:700px;">
             <div class="row mt-2">
                 <div class="col">

@@ -24,6 +24,29 @@ $max_criteria = 2; // You need 2 posts and 2 reviews
 $total_progress = ($post_count + $review_count);
 $progress_percentage = min(($total_progress / 4) * 100, 100); // max 100%
 
+// Check if badge already exists for the user
+$badge_check_sql = "SELECT COUNT(*) FROM tbl_badge_accomplishment WHERE user_id = :user_id AND badge = :badge";
+$badge_check_stmt = $pdo->prepare($badge_check_sql);
+$badge_check_stmt->execute([
+    'user_id' => $user_id,
+    'badge' => 'New Contributor'
+]);
+$badge_exists = $badge_check_stmt->fetchColumn() > 0;
+
+// Insert the badge accomplishment if progress is 100% and badge does not exist
+if ($progress_percentage == 100 && !$badge_exists) {
+    $badge_sql = "INSERT INTO tbl_badge_accomplishment (user_id, badge, color, icon, date_created) 
+                  VALUES (:user_id, :badge, :color, :icon, :date_created)";
+    $badge_stmt = $pdo->prepare($badge_sql);
+    $badge_stmt->execute([
+        'user_id' => $user_id,
+        'badge' => 'New Contributor',
+        'color' => '#173F5F',
+        'icon' => 'fa-medal',
+        'date_created' => (new DateTime('now', new DateTimeZone('Asia/Manila')))->format('Y-m-d H:i:s')
+    ]);
+}
+
 // Return response
 $response = [
     'post_count' => min($post_count, $max_criteria), // max 2

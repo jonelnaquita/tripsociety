@@ -27,6 +27,19 @@ try {
     $stmt->execute(['user_id' => $user_id]);
     $commentCount = $stmt->fetch(PDO::FETCH_ASSOC)['comment_count'];
 
+    // Query for counting reviews
+    $reviewQuery = "
+        SELECT COUNT(*) AS review_count
+        FROM tbl_review_reaction trr
+        JOIN tbl_review tr ON trr.review_id = tr.id
+        WHERE tr.user_id = :user_id AND trr.user_id != :user_id AND trr.viewed = 0
+    ";
+    $stmt = $pdo->prepare($reviewQuery);
+    $stmt->execute(['user_id' => $user_id]);
+    $reviewCount = $stmt->fetch(PDO::FETCH_ASSOC)['review_count'];
+
+
+
     // Query for counting announcements
     $announcementQuery = "SELECT COUNT(*) AS announcement_count FROM tbl_announcement";
     $stmt = $pdo->query($announcementQuery);
@@ -42,7 +55,7 @@ try {
     $companionCount = $stmt->fetch(PDO::FETCH_ASSOC)['companion_count'];
 
     // Total notifications count
-    $totalNotifications = $reactionCount + $commentCount + $announcementCount + $companionCount;
+    $totalNotifications = $reactionCount + $commentCount + $reviewCount + $announcementCount + $companionCount;
 
     // Return the total notification count as JSON
     echo json_encode(['total_notifications' => $totalNotifications]);

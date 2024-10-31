@@ -10,6 +10,8 @@ if ($type === 'reaction') {
     $updateQuery = "UPDATE tbl_reaction SET viewed = 1 WHERE post_id = :post_id";
 } elseif ($type === 'comment') {
     $updateQuery = "UPDATE tbl_post_comment SET viewed = 1 WHERE post_id = :post_id";
+} elseif ($type === 'review') {
+    $updateQuery = "UPDATE tbl_review_reaction SET viewed = 1 WHERE id = :post_id";
 } else {
     // Invalid type
     echo json_encode(['success' => false, 'message' => 'Invalid type']);
