@@ -1,3 +1,10 @@
+<?php
+session_start();
+if (isset($_SESSION['user'])) {
+  header('location: user/home.php');
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -63,7 +70,7 @@
       setTimeout(() => {
         // Redirect to get_started.php after 9 seconds
         window.location.href = 'user/get_started.php';
-      }, 9000); // 9 seconds
+      }, 5000); // 9 seconds
     }
 
     // Run the splash screen function on page load
