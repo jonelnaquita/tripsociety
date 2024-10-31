@@ -96,7 +96,8 @@ include 'modal/confirm-user-status.php';
                     tableBody.empty(); // Clear the table body
 
                     data.forEach(function (row) {
-                        const statusBadge = getStatusBadge(row.status);
+                        const statusBadge = getStatusBadge(row.status, row.id_front, row.id_back);
+                        const locationText = row.location ? row.location : 'No Selected City';
                         const tableRow = `
                         <tr>
                             <td class="text-center">
@@ -105,7 +106,7 @@ include 'modal/confirm-user-status.php';
                             <td class="ml-4 mb-0 text-sm">${row.name}</td>
                             <td class="mb-0 text-sm">${row.email}</td>
                             <td class="mb-0 text-sm">${row.travel_preferences}</td>
-                            <td class="mb-0 text-sm">${row.location}</td>
+                            <td class="mb-0 text-sm">${locationText}</td>
                             <td class="mb-0 text-sm">${statusBadge}</td>
                             <td class="mb-0 text-sm">
                                 <button class="btn btn-light viewId" data-id="${row.id}">
@@ -144,12 +145,14 @@ include 'modal/confirm-user-status.php';
             });
         }
 
-        function getStatusBadge(status) {
-            if (status == '1') {
+        function getStatusBadge(status, idFront, idBack) {
+            if (!idFront && !idBack) {
+                return '<span class="badge bg-gradient-danger">No ID Uploaded</span>';
+            } else if (status == '1') {
                 return '<span class="badge bg-gradient-info">Approved</span>';
             } else if (status == '0') {
                 return '<span class="badge bg-gradient-secondary">Declined</span>';
-            } else if (status == '') {
+            } else if (status === '' && idFront && idBack) {
                 return '<span class="badge bg-gradient-warning">Pending</span>';
             }
         }

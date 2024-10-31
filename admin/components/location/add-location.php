@@ -122,8 +122,9 @@
 
                             <div class="col-lg-12 mb-4 mt-4">
                                 <label for="imageInput">Upload Location Images</label><br>
-                                <input type="file" id="imageInput" name="images" accept="image/*">
+                                <input type="file" id="imageInput" name="images[]" accept="image/*" multiple>
                             </div>
+
 
                             <div class="col-lg-12 mb-4">
                                 <label for="file-upload">Upload 360° Virtual Tour</label>
@@ -314,13 +315,19 @@
             formData.append('location_name', locationName);
             formData.append('location', locationCoords);
             formData.append('description', description);
-            formData.append('category', categories.join(', ')); // Join categories for submission
+            formData.append('category', categories.join(', '));
             formData.append('city-municipality', city);
+
+            // Handle multiple image uploads
             if ($('#imageInput')[0].files.length > 0) {
-                formData.append('image', $('#imageInput')[0].files[0]); // Append image if available
+                $.each($('#imageInput')[0].files, function (i, file) {
+                    formData.append('images[]', file); // Append each image file
+                });
             }
+
+            // Handle tour link upload if available
             if ($('#file-upload')[0].files.length > 0) {
-                formData.append('tour_link', $('#file-upload')[0].files[0]); // Append tour link if available
+                formData.append('tour_link', $('#file-upload')[0].files[0]);
             }
 
             // Append instructions
@@ -330,7 +337,7 @@
 
             // AJAX call
             $.ajax({
-                url: 'api/location/save-location.php', // Your PHP file to process the data
+                url: 'api/location/save-location.php',
                 type: 'POST',
                 data: formData,
                 processData: false,
@@ -338,23 +345,23 @@
                 success: function (response) {
                     const result = JSON.parse(response);
                     if (result.status === 'success') {
-                        toastr.success(result.message); // Display success message
+                        toastr.success(result.message);
                         // Clear all input fields
                         $('#location-name').val('');
                         $('#location').val('');
                         $('#description').val('');
-                        $('#category').val('').trigger('change'); // Reset select2
-                        $('#city-municipality').val('').trigger('change'); // Reset city select2
-                        $('#instructions-container').empty(); // Clear the instructions container
-                        $('#imageInput').val(''); // Clear image input
-                        $('#file-upload').val(''); // Clear tour link input
+                        $('#category').val('').trigger('change');
+                        $('#city-municipality').val('').trigger('change');
+                        $('#instructions-container').empty();
+                        $('#imageInput').val('');
+                        $('#file-upload').val('');
                     } else {
-                        toastr.error(result.message); // Display error message
+                        toastr.error(result.message);
                     }
                 },
                 error: function (xhr, status, error) {
                     console.error('Error:', error);
-                    toastr.error('An error occurred while saving the location. Please try again.'); // Show general error message
+                    toastr.error('An error occurred while saving the location. Please try again.');
                 }
             });
         });

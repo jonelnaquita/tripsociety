@@ -270,8 +270,8 @@ include "includes/header.php"; ?>
         function renderLocationChart(data) {
             const ctx = document.getElementById('userLocationChart').getContext('2d');
 
-            // Extract locations and user counts
-            const labels = data.map(item => item.location);
+            // Extract locations and user counts, replacing empty locations with "No City Selected"
+            const labels = data.map(item => item.location || 'No City Selected');
             const userCounts = data.map(item => item.user_count);
 
             new Chart(ctx, {
@@ -311,6 +311,7 @@ include "includes/header.php"; ?>
         fetchUserLocations();
     });
 </script>
+
 
 
 <script>

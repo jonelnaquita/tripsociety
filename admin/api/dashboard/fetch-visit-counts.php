@@ -5,7 +5,7 @@ include '../../../inc/config.php';
 
 try {
     $sql = "SELECT tl.location_name, COUNT(tr.location_id) as visit_count
-            FROM tbl_review tr
+            FROM tbl_travel_log tr
             LEFT JOIN tbl_location tl ON tr.location_id = tl.id
             GROUP BY tl.location_name
             ORDER BY visit_count DESC";

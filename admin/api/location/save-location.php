@@ -2,57 +2,62 @@
 include '../../../inc/config.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Get main location data
     $locationName = $_POST['location_name'];
     $locationCoords = $_POST['location'];
     $description = $_POST['description'];
     $categories = $_POST['category'];
     $city = $_POST['city-municipality'];
 
-    // Initialize variables for image and tour link paths
-    $imagePath = null;
+    $imageNames = [];
     $tourLinkPath = null;
 
     try {
-        // Handle image upload
-        if (isset($_FILES['image']) && $_FILES['image']['error'] == UPLOAD_ERR_OK) {
-            $imageName = basename($_FILES['image']['name']); // Get the original filename
-            $imagePath = '../../images/' . $imageName; // Construct the path with original filename
+        // Handle multiple image uploads
+        if (isset($_FILES['images'])) {
+            foreach ($_FILES['images']['tmp_name'] as $index => $tmpName) {
+                if ($_FILES['images']['error'][$index] == UPLOAD_ERR_OK) {
+                    $imageName = basename($_FILES['images']['name'][$index]);
+                    $imagePath = '../../images/' . $imageName;
 
-            // Create directory if it doesn't exist
-            if (!is_dir('../../images/')) {
-                mkdir('../../images/', 0755, true);
-            }
+                    // Create directory if it doesn't exist
+                    if (!is_dir('../../images/')) {
+                        mkdir('../../images/', 0755, true);
+                    }
 
-            // Move the uploaded file to the specified path
-            if (!move_uploaded_file($_FILES['image']['tmp_name'], $imagePath)) {
-                throw new Exception('Failed to move uploaded file for image.');
+                    // Move each uploaded file to the target directory
+                    if (move_uploaded_file($tmpName, $imagePath)) {
+                        $imageNames[] = $imageName; // Add image name to array
+                    } else {
+                        throw new Exception('Failed to move uploaded file for image: ' . $imageName);
+                    }
+                }
             }
         }
 
-        // Handle tour link upload
-        if (isset($_FILES['tour_link']) && $_FILES['tour_link']['error'] == UPLOAD_ERR_OK) {
-            $tourLinkName = basename($_FILES['tour_link']['name']); // Get the original filename
-            $tourLinkPath = '../../panorama/' . $tourLinkName; // Construct the path with original filename
+        // Concatenate image names with commas
+        $imageNameString = implode(',', $imageNames);
 
-            // Create directory if it doesn't exist
+        // Handle tour link upload if available
+        if (isset($_FILES['tour_link']) && $_FILES['tour_link']['error'] == UPLOAD_ERR_OK) {
+            $tourLinkName = basename($_FILES['tour_link']['name']);
+            $tourLinkPath = '../../panorama/' . $tourLinkName;
+
             if (!is_dir('../../panorama/')) {
                 mkdir('../../panorama/', 0755, true);
             }
 
-            // Move the uploaded file to the specified path
             if (!move_uploaded_file($_FILES['tour_link']['tmp_name'], $tourLinkPath)) {
                 throw new Exception('Failed to move uploaded file for tour link.');
             }
         }
 
-        // Insert into tbl_location
+        // Insert location data, including image names as a comma-separated string
         $stmt = $pdo->prepare("INSERT INTO tbl_location (location_name, location, description, category, city, image, tour_link) VALUES (?, ?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$locationName, $locationCoords, $description, $categories, $city, $imageName, $tourLinkName]);
-        $locationId = $pdo->lastInsertId(); // Get last inserted ID
+        $stmt->execute([$locationName, $locationCoords, $description, $categories, $city, $imageNameString, $tourLinkName]);
 
-        // Process instructions
+        // Process instructions if available
         if (isset($_POST['instructions'])) {
+            $locationId = $pdo->lastInsertId(); // Get last inserted ID
             foreach ($_POST['instructions'] as $instruction) {
                 list($route, $details) = explode('|', $instruction);
                 $stmt = $pdo->prepare("INSERT INTO tbl_instruction (location_id, location, instruction) VALUES (?, ?, ?)");

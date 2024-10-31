@@ -125,7 +125,7 @@
             </div>
             <div class="card-body px-0 pb-2">
                 <div class="table-responsive p-0">
-                    <table class="table align-items-center mb-0">
+                    <table id="locationTable" class="table align-items-center mb-0">
                         <thead>
                             <tr>
                                 <th
@@ -170,6 +170,7 @@ include 'modal/delete-location-modal.php'; ?>
 
 <script>
     $(document).ready(function () {
+        // Initialize DataTable after appending rows
         // Initial fetch of locations
         fetchLocations();
 
@@ -188,8 +189,9 @@ include 'modal/delete-location-modal.php'; ?>
                         var row = `
                             <tr>
                                 <td class="text-center">
-                                    <img src="images/${location.image}" class="avatar avatar-sm me-3 border-radius-lg" alt="${location.location_name}">
+                                    <img src="images/${location.image.split(',')[0]}" class="avatar avatar-sm me-3 border-radius-lg" alt="${location.location_name}">
                                 </td>
+
                                 <td class="mb-0 text-sm font-weight-bold">${location.location_name}</td>
                                 <td class="mb-0 text-sm">${location.city}</td>
                                 <td class="description-limited mb-0 text-sm">${location.description}</td>
@@ -227,11 +229,26 @@ include 'modal/delete-location-modal.php'; ?>
                             </tr>`;
                         $("table tbody").append(row);
                     });
+
+                    $('#locationTable').DataTable({
+                        "destroy": true,
+                        "paging": true,
+                        "searching": true,
+                        "pagingType": "simple",
+                        "language": {
+                            "paginate": {
+                                "next": '<i class="fas fa-chevron-right"></i>',
+                                "previous": '<i class="fas fa-chevron-left"></i>'
+                            },
+                            "emptyTable": "No data available"
+                        }
+                    });
                 },
                 error: function (xhr, status, error) {
                     console.error("Error fetching locations: ", status, error);
                 }
             });
+
         }
 
         // Set interval to fetch locations every 5 seconds (5000 ms)
