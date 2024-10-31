@@ -39,11 +39,25 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
             $name = $row['location_name'];
             $imageList = $row['image'];
             $imageArray = explode(',', $imageList);
-            $firstImage = isset($imageArray[0]) ? $imageArray[0] : 'default.jpg';
+            // Prepare image URLs for the slider
+            $imageUrls = [];
+            foreach ($imageArray as $image) {
+                $imageUrls[] = trim($image); // Ensure there are no leading/trailing spaces
+            }
+            $firstImage = isset($imageUrls[0]) ? $imageUrls[0] : 'default.jpg';
         }
     }
 }
 ?>
+
+<!-- Slick Slider CSS -->
+<link rel="stylesheet" type="text/css"
+    href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css" />
+<link rel="stylesheet" type="text/css"
+    href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css" />
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+
 
 <div class="content-wrapper">
     <button class="back-button" onclick="goBack()">
@@ -69,10 +83,74 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
                     <h4 class="font-weight-bold mt-4">Explore <?php echo $row['location_name']; ?> <i
                             class="far fa-check-circle" style="font-size:10px;"></i></h4>
 
-                    <div class="card">
-                        <img src="../admin/images/<?php echo $firstImage; ?>" class="card-img" alt="Image">
 
+                    <div class="image-slider">
+                        <?php foreach ($imageUrls as $imageUrl): ?>
+                            <div>
+                                <img src="../admin/images/<?php echo htmlspecialchars($imageUrl); ?>"
+                                    alt="<?php echo htmlspecialchars($name); ?>" />
+                            </div>
+                        <?php endforeach; ?>
                     </div>
+
+                    <script>
+                        $(document).ready(function () {
+                            $('.image-slider').slick({
+                                dots: true, // Show navigation dots
+                                infinite: true, // Infinite scrolling
+                                speed: 500, // Transition speed
+                                slidesToShow: 1, // Number of slides to show
+                                slidesToScroll: 1, // Number of slides to scroll
+                                autoplay: true, // Enable autoplay
+                                autoplaySpeed: 2000, // Autoplay speed
+                                arrows: true, // Show next/prev arrows
+                                responsive: [
+                                    {
+                                        breakpoint: 768, // Mobile devices
+                                        settings: {
+                                            slidesToShow: 1, // Show 1 slide on mobile
+                                            slidesToScroll: 1, // Scroll 1 slide
+                                            dots: true, // Keep dots on mobile
+                                            arrows: false, // Hide arrows on mobile (optional)
+                                        }
+                                    },
+                                    {
+                                        breakpoint: 1024, // Tablet devices
+                                        settings: {
+                                            slidesToShow: 1, // Show 1 slide on tablet
+                                            slidesToScroll: 1, // Scroll 1 slide
+                                        }
+                                    },
+                                    {
+                                        breakpoint: 1200, // Large devices
+                                        settings: {
+                                            slidesToShow: 1, // Show 1 slide on larger screens
+                                            slidesToScroll: 1, // Scroll 1 slide
+                                        }
+                                    }
+                                ]
+                            });
+                        });
+                    </script>
+
+                    <style>
+                        .image-slider img {
+                            width: 100%;
+                            height: 500px;
+                            /* Default height for larger screens */
+                            object-fit: cover;
+                            display: block;
+                        }
+
+                        /* Media query for mobile view */
+                        @media (max-width: 768px) {
+                            .image-slider img {
+                                height: 300px;
+                                /* Adjusted height for mobile view */
+                            }
+                        }
+                    </style>
+
 
                 </div>
             </div>

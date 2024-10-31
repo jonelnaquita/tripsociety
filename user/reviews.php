@@ -89,7 +89,7 @@ include 'header.php'; ?>
                                             ${'<i class="far fa-star text-warning"></i>'.repeat(emptyStars)}
                                         </div>
                                     </div>
-                                </div>
+                                </div> 
                                 <p class="ml-2 mr-2">${location.review}</p>
                                 <div class="container">
                                     <div class="row">

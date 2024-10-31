@@ -182,11 +182,6 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
                         <i class="fas fa-play"></i> Start
                     </button>
 
-                    <button class="btn btn-outline-secondary btn-sm ml-1 rounded-pill" id="share">
-                        <i class="fas fa-share-alt"></i> Share
-                    </button>
-
-
                 </div>
             </div>
 
@@ -255,7 +250,6 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
 
 </script>
 
-<!-- Direction Script -->
 <script>
     $(document).ready(function () {
         $('#get-directions').click(function () {
@@ -289,38 +283,35 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
                                 // Redirect to Google Maps
                                 window.location.href = googleMapsUrl;
 
-                                // Reset button after navigation
-                                setTimeout(() => {
-                                    button.text("Direction").prop('disabled', false);
-                                    icon.removeClass('fa-spinner fa-spin').addClass('fa-directions');
-                                }, 1500);
                             }, function (error) {
                                 alert("Error getting current location: " + error.message);
-                                button.text("Direction").prop('disabled', false);
-                                icon.removeClass('fa-spinner fa-spin').addClass('fa-directions');
+                                resetButtonState(button, icon);
                             });
                         } else {
                             alert("Geolocation is not supported by this browser.");
-                            button.text("Direction").prop('disabled', false);
-                            icon.removeClass('fa-spinner fa-spin').addClass('fa-directions');
+                            resetButtonState(button, icon);
                         }
                     } else {
                         alert("Location not found");
-                        button.text("Direction").prop('disabled', false);
-                        icon.removeClass('fa-spinner fa-spin').addClass('fa-directions');
+                        resetButtonState(button, icon);
                     }
                 },
                 error: function () {
                     alert("Failed to fetch location data");
-                    button.text("Direction").prop('disabled', false);
-                    icon.removeClass('fa-spinner fa-spin').addClass('fa-directions');
+                    resetButtonState(button, icon);
                 }
             });
         });
+
+        // Function to reset the button state
+        function resetButtonState(button, icon) {
+            button.text("Direction").prop('disabled', false);
+            icon.removeClass('fa-spinner fa-spin').addClass('fa-directions');
+        }
     });
 </script>
 
-<!-- Navigation Script -->
+
 <script>
     $(document).ready(function () {
         $('#get-navigation').click(function () {
@@ -338,6 +329,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
                 data: { id: locationId },
                 dataType: 'json',
                 success: function (response) {
+                    // Check if latitude and longitude are present
                     if (response.latitude && response.longitude) {
                         const destinationLat = response.latitude;
                         const destinationLng = response.longitude;
@@ -352,19 +344,23 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
                                 const isAndroid = /android/i.test(navigator.userAgent);
                                 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
+                                // Prepare navigation URL
+                                let navigationUrl;
                                 if (isAndroid) {
-                                    // Open Google Maps on Android
-                                    const googleMapsUrl = `google.navigation:q=${destinationLat},${destinationLng}&mode=d`;
-                                    window.location.href = googleMapsUrl;
+                                    navigationUrl = `google.navigation:q=${destinationLat},${destinationLng}&mode=d`;
                                 } else if (isIOS) {
-                                    // Open Apple Maps on iOS
-                                    const appleMapsUrl = `maps://?q=${destinationLat},${destinationLng}&dirflg=d`;
-                                    window.location.href = appleMapsUrl;
+                                    navigationUrl = `maps://?q=${destinationLat},${destinationLng}&dirflg=d`;
                                 } else {
-                                    // Fallback for unsupported devices
                                     alert("Navigation is only supported on Android and iOS devices.");
                                     resetButton();
+                                    return; // Exit the function
                                 }
+
+                                // Redirect after a slight delay to allow spinner to stop
+                                setTimeout(() => {
+                                    window.location.href = navigationUrl;
+                                }, 100); // Adjust delay as needed (100ms)
+
                             }, function (error) {
                                 alert("Error getting current location: " + error.message);
                                 resetButton();
@@ -394,6 +390,24 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
 </script>
 
 
+
+<!-- CSS to make the container scrollable -->
+<style>
+    .instructions-container {
+        max-height: 500px;
+        border-radius: 10px;
+        /* Set a maximum height */
+        overflow-y: auto;
+        /* Enable vertical scrolling */
+        border: 1px solid #ccc;
+        /* Optional: Add a border for visibility */
+        padding: 10px;
+        /* Optional: Add padding for aesthetics */
+        margin-top: 10px;
+    }
+</style>
+
+<!-- JavaScript to fetch instructions -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const locationId = new URLSearchParams(window.location.search).get('id'); // Get the location_id from URL
@@ -405,6 +419,11 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
                 .then(data => {
                     const instructionsContainer = document.querySelector('.instructions-container');
                     instructionsContainer.innerHTML = ''; // Clear existing content
+
+                    // Add "How To Get There" heading
+                    const heading = document.createElement('h6');
+                    heading.innerHTML = '<strong>How To Get There</strong>'; // Using strong tag for bold
+                    instructionsContainer.appendChild(heading)
 
                     if (data.length > 0) {
                         const timelineContainer = document.createElement('div');
@@ -428,7 +447,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
                         timelineContainer.appendChild(timeline);
                         instructionsContainer.appendChild(timelineContainer);
                     } else {
-                        instructionsContainer.innerHTML = '<p>No instructions available.</p>';
+                        instructionsContainer.innerHTML += '<p>No instructions available.</p>';
                     }
                 })
                 .catch(error => console.error('Error fetching instructions:', error));

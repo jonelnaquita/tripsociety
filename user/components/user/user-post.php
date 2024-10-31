@@ -57,7 +57,8 @@ include 'modal/home.php';
         <div class="input-group-prepend">
             <span class="input-group-text bg-transparent border-0"><i class="fas fa-map-marker-alt"></i></span>
         </div>
-        <input class="form-control form-control-border bg-transparent" value="<?php echo $row['location']; ?>" readonly>
+        <input class="form-control form-control-border bg-transparent"
+            value="<?php echo !empty($row['location']) ? $row['location'] : 'No City Selected'; ?>" readonly>
     </div>
     <br>
     <?php

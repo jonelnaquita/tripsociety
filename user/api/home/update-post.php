@@ -8,12 +8,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $location = $_POST['editLocation'];
     $images = isset($_FILES['images']) ? $_FILES['images'] : null;
 
+    // Fetch existing images from the database
+    $stmt = $pdo->prepare("SELECT image FROM tbl_post WHERE id = :post_id");
+    $stmt->bindParam(':post_id', $editPostId);
+    $stmt->execute();
+    $existingImages = $stmt->fetchColumn(); // Get existing images
+    $existingImagesArray = !empty($existingImages) ? explode(',', $existingImages) : [];
+
     // Prepare the SQL statement
     $sql = "UPDATE tbl_post SET post = :post, location = :location";
 
     // Check if images were uploaded
     if ($images && count($images['name']) > 0) {
-        // Prepare for images
         $imageNames = [];
         for ($i = 0; $i < count($images['name']); $i++) {
             if ($images['error'][$i] === 0) {
@@ -22,9 +28,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $imageNames[] = $imageName;
             }
         }
-        // Join the image names with commas
-        $imageList = implode(',', $imageNames);
+        // Merge existing images with newly uploaded images
+        $allImages = array_merge($existingImagesArray, $imageNames);
+        $imageList = implode(',', $allImages); // Join the image names with commas
         $sql .= ", image = :image"; // Add to the SQL statement
+    } else {
+        $imageList = implode(',', $existingImagesArray); // No new images, keep existing
     }
 
     $sql .= " WHERE id = :post_id"; // Complete the SQL statement with WHERE clause
@@ -35,8 +44,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt->bindParam(':location', $location);
     $stmt->bindParam(':post_id', $editPostId);
 
-    // Bind image parameter only if images were uploaded
-    if (isset($imageList)) {
+    // Bind image parameter only if images were uploaded or exist
+    if (!empty($imageList)) {
         $stmt->bindParam(':image', $imageList);
     }
 

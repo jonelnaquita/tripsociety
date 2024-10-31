@@ -26,7 +26,8 @@ if (isset($_POST['post_id'])) {
                 'id' => $post['id'],
                 'post' => $post['post'],
                 'location' => $post['location'],
-                'images' => $image_paths // Send back all image paths
+                'image' => $post['image'],
+                'images' => !empty($image_paths) ? $image_paths : [] // Send back all image paths if available
             ]);
         } else {
             echo json_encode(['error' => 'Post not found']);

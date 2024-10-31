@@ -343,6 +343,7 @@ include 'footer.php';
             const selectedLocation = $('#locationSelect').val();
             if (selectedLocation) {
                 $('#selectedLocation').text(selectedLocation);
+                $('#location-selected').val(selectedLocation);
             }
             $('#pinMapModal').modal('hide');
         });

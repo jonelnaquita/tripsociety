@@ -3,10 +3,7 @@
 
     <?php if (isset($_SESSION['user'])) { ?>
 
-        <form action="../inc/function.php" id="postForm" method="POST" enctype="multipart/form-data">
-            <input type="hidden" id="hiddenImages" name="images">
-            <input type="hidden" id="hiddenPost" name="post">
-            <input type="hidden" id="hiddenLocation" name="location">
+        <form enctype="multipart/form-data">
 
             <div class="card mb-1 elevation-3">
                 <div class="row align-items-center p-1">
@@ -42,8 +39,8 @@
                             </div>
                             <!-- Publish Button -->
                             <div class="col-4 text-right">
-                                <button type="submit" name="add_post"
-                                    class="btn btn-default btn-custom font-weight-bold shadow-sm" id="publishButton">
+                                <button type="button" class="btn btn-default btn-custom font-weight-bold shadow-sm"
+                                    id="publishButton">
                                     <i class="fas fa-calendar-check"></i> Publish
                                 </button>
                             </div>
@@ -77,6 +74,7 @@
                                     <i class="far fa-images" style="font-size:12px;"></i>&nbsp; Add photo
                                 </button>
                                 <input type="hidden" id="imagePaths" name="imagePaths">
+                                <input type="hidden" id="location-selected">
 
                                 <button class="btn btn-default btn-custom ml-2" type="button" data-toggle="modal"
                                     data-target="#pinMapModal" style="font-size:12px;">
@@ -106,3 +104,67 @@
         </form>
     <?php } ?>
 </div>
+
+
+<script>
+    $(document).ready(function () {
+        const publishButton = $('#publishButton');
+        const postTextarea = $('#messageTextarea');
+        const imageInput = $('#imageInput');
+        const locationSelect = $('#location-selected');
+
+        // Disable the publish button initially
+        publishButton.prop('disabled', true);
+
+        // Function to toggle publish button state
+        function togglePublishButton() {
+            const isPostContentPresent = postTextarea.val().trim() !== '';
+            const isImagePresent = imageInput[0].files.length > 0;
+
+            // Enable button if post content or image is present
+            publishButton.prop('disabled', !(isPostContentPresent || isImagePresent));
+        }
+
+        // Enable/disable button based on post content and image input changes
+        postTextarea.on('input', togglePublishButton);
+        imageInput.on('change', togglePublishButton);
+
+        // Publish button click event
+        publishButton.on('click', function (e) {
+            e.preventDefault();  // Prevent default form submission behavior
+
+            const formData = new FormData();
+            formData.append('post', postTextarea.val());
+            formData.append('location', locationSelect.val());
+
+            const images = imageInput[0].files;
+            for (let i = 0; i < images.length; i++) {
+                formData.append('images[]', images[i]);
+            }
+
+            // Send AJAX request
+            $.ajax({
+                url: 'api/home/add-post.php',  // Replace with actual PHP script path
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    try {
+                        const res = JSON.parse(response);
+                        alert(res.message);
+                        if (res.success) {
+                            location.reload();  // Reload the page on success
+                        }
+                    } catch (e) {
+                        console.error("Invalid JSON response from server:", response);
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.error('AJAX Error:', textStatus, errorThrown);
+                    alert('Failed to submit post.');
+                }
+            });
+        });
+    });
+</script>

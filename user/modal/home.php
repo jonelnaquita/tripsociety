@@ -87,7 +87,8 @@
                     $pdo_statement = $pdo->prepare("SELECT id, location_name FROM tbl_location");
                     $pdo_statement->execute();
                     $locations = $pdo_statement->fetchAll(PDO::FETCH_ASSOC);
-                    $options = '';
+                    $options = '<option value="" disabled selected>Select a location</option>'; // Add blank option
+                    
                     foreach ($locations as $location) {
                         $options .= '<option value="' . htmlspecialchars($location['location_name']) . '">' . htmlspecialchars($location['location_name']) . '</option>';
                     }
@@ -188,7 +189,6 @@
     });
 </script>
 
-
 <!-- Edit Post Modal -->
 <div class="modal fade" id="editPostModal" tabindex="-1" role="dialog" aria-labelledby="editPostModalLabel"
     aria-hidden="true">
@@ -223,7 +223,7 @@
                         <div class="col mt-3">
                             <p class="font-weight-bold"><?php echo $_SESSION['name']; ?></p>
                             <div style=" float:right; margin-top:-34px;">
-                                <h6 style="font-size:15px;"><span class=" location-selected"></span></h6>
+                                <h6 style="font-size:15px;"><span class="location-selected"></span></h6>
                             </div>
                         </div>
                     </div>
@@ -232,13 +232,14 @@
                         <div class="col">
 
                             <input type="file" id="selected-images" name="images[]" multiple style="display: none;">
+                            <input type="hidden" id="existing-image-path" name="existing-image-path">
                             <input type="hidden" id="image-path" name="image-path">
                             <input type="hidden" id="editLocation" class="form-control" name="editLocation"
                                 placeholder="Select Location">
                             <input type="hidden" id="editPostId" name="post_id">
 
-                            <button class="btn btn-default btn-custom" type="button" id="add-photo-btn"">
-                                <i class=" far fa-images" style="font-size:12px;"></i>&nbsp; Add photo
+                            <button class="btn btn-default btn-custom" type="button" id="add-photo-btn">
+                                <i class="far fa-images" style="font-size:12px;"></i>&nbsp; Add photo
                             </button>
 
                             <button class="btn btn-default btn-custom ml-2" type="button" onclick="openLocationModal();"
@@ -270,6 +271,7 @@
 </div>
 </div>
 
+
 <style>
     .image-preview img {
         width: 200px;
@@ -283,98 +285,13 @@
         border-radius: 5px;
         /* Optional: rounded corners */
     }
+
+    .image-wrapper {
+        position: relative;
+        display: inline-block;
+        margin-right: 10px;
+    }
 </style>
-
-<script>
-    $(document).ready(function () {
-        const maxImages = 4;
-
-        // Handle button click to trigger file input
-        $('#add-photo-btn').click(function () {
-            $('#selected-images').click();
-        });
-
-        // Handle file input change event
-        $('#selected-images').change(function () {
-            const files = this.files;
-            const previewContainer = $('#imagePreviewContainer');
-            previewContainer.empty(); // Clear the preview container
-
-            // Check if the number of files exceeds the maximum limit
-            if (files.length > maxImages) {
-                alert(`You can only upload a maximum of ${maxImages} images.`);
-                $('#selected-images').val(''); // Clear file input
-                return;
-            }
-
-            // Process each selected file
-            Array.from(files).forEach(file => {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    // Create an image element and append to preview container
-                    const img = $('<img>').attr('src', e.target.result).css({
-                        'width': '200px',      // Set width to 200px
-                        'height': '200px',     // Set height to 200px for square format
-                        'object-fit': 'cover',  // Maintain aspect ratio
-                        'margin': '5px'
-                    });
-                    previewContainer.append(img);
-                };
-                reader.readAsDataURL(file);
-            });
-
-            // Create a comma-separated list of file names and set it in the hidden input field
-            const filePaths = Array.from(files).map(file => file.name).join(',');
-            $('#image-path').val(filePaths);
-        });
-    });
-
-</script>
-
-<!--Update Post-->
-<script>
-    $(document).ready(function () {
-        $('#editPostForm').on('submit', function (event) {
-            event.preventDefault(); // Prevent the default form submission
-
-            // Get values from form fields
-            var postId = $('#editPostId').val();
-            var postText = $('#editPostText').val();
-            var location = $('#editLocation').val();
-            var images = $('#selected-images')[0].files; // Get the file input
-
-            // Create a FormData object
-            var formData = new FormData();
-            formData.append('post_id', postId);
-            formData.append('post', postText);
-            formData.append('editLocation', location);
-
-            // Append images to FormData if there are any
-            if (images.length > 0) {
-                for (var i = 0; i < images.length; i++) {
-                    formData.append('images[]', images[i]);
-                }
-            }
-
-            // Send AJAX request
-            $.ajax({
-                url: "api/home/update-post.php", // Update the URL to your PHP file
-                type: "POST",
-                data: formData,
-                contentType: false, // Important for FormData
-                processData: false, // Important for FormData
-                success: function (response) {
-                    alert("Post updated successfully!");
-                    // Optionally, you can close the modal or refresh the post section here
-                    // Example: location.reload();
-                },
-                error: function () {
-                    alert("Error updating post. Please try again.");
-                }
-            });
-        });
-    });
-</script>
 
 
 <!--Comment Section-->

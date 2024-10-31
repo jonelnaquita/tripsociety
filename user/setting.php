@@ -134,7 +134,7 @@ include 'header.php';
                                             <div class="form-group">
                                                 <label for="location">City</label>
                                                 <select class="form-control" id="location" required>
-                                                    <option value="" disabled selected>Select your city</option>
+                                                    <option value="" disabled selected>No City Selected</option>
                                                     <!-- City options go here -->
                                                 </select>
                                             </div>
@@ -215,7 +215,7 @@ include 'footer.php';
         'Batangas City', 'Lipa City', 'Tanauan City', 'Balayan', 'Batangas',
         'Calaca', 'Calatagan', 'Cuenca', 'Lemery', 'Lian', 'Mabini', 'Malvar',
         'Matabungkay', 'Nasugbu', 'San Jose', 'San Juan', 'San Luis', 'San Nicolás',
-        'San Pascual', 'Santa Teresa', 'Taal', 'Talisay', 'Taysan', 'Vaughn'
+        'San Pascual', 'Santa Teresa', 'Taal', 'Talisay', 'Taysan', 'Vaughn', 'Outside Batangas'
     ];
 
     // Populate the city dropdown

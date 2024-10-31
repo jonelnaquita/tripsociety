@@ -149,15 +149,17 @@ if (!empty($posts)) {
                                             title="Verified"></i>
                                     <?php endif; ?>
                                     <span class="font-weight-normal" style="font-size:14px;">
-                                        <?php if ($post['location'] != "") {
-                                            echo '<i>is at ' . $post['location'] . '</i>';
-                                        } ?>
+                                        <?php if (!empty($post['location']) && $post['location'] !== 'null') { // Check if location is not empty and not 'null'
+                                                        echo '<i>is at ' . htmlspecialchars($post['location']) . '</i>';
+                                                    } ?>
                                     </span>
                                 </p>
                                 <p style="margin-top:-17px; font-size:13px;" class="text-muted">
                                     <?php echo '@' . htmlspecialchars($post['username']); ?> • <?php echo $timeDifference; ?>
                                 </p>
                             </div>
+
+
 
 
                             <div class="col mr-auto text-right">
@@ -197,11 +199,8 @@ if (!empty($posts)) {
                             </div>
                         </div>
 
-                        <div class="row">
-                            <?php if (empty($imageFiles)): ?>
-                                <div class="col-12 text-center">
-                                </div>
-                            <?php else: ?>
+                        <?php if (!empty($post_images)): // Only render the row if there are image files ?>
+                            <div class="row">
                                 <?php foreach ($imageFiles as $file): ?>
                                     <div class="col-6 col-md-4 col-lg-3 mb-3">
                                         <div class="d-flex justify-content-center"
@@ -214,8 +213,14 @@ if (!empty($posts)) {
                                         </div>
                                     </div>
                                 <?php endforeach; ?>
-                            <?php endif; ?>
-                        </div>
+                            </div>
+                        <?php else: ?>
+                            <!-- Nothing will be displayed if there are no images -->
+                        <?php endif; ?>
+
+
+
+
                     </div>
                     <div class="card-footer card-outline card-light" style=" margin-top:-30px;">
                         <div class="row">
@@ -366,46 +371,182 @@ include 'modal/comment.php';
 
 </script>
 
-<!-- Edit Post -->
 <script>
     $(document).on('click', '#editPostBtn', function () {
         var postId = $(this).data('id');
 
         $.ajax({
-            url: 'api/home/fetch-post.php', // A PHP file to fetch the post data
+            url: 'api/home/fetch-post.php',
             type: 'POST',
             data: { post_id: postId },
             dataType: 'json',
             success: function (response) {
-                // Log the entire response data
                 console.log("Fetched Post Data:", response);
-
                 $('#editPostId').val(response.id);
                 $('#editPostText').val(response.post);
                 $('#editLocation').val(response.location);
                 $('.location-selected').text(response.location);
 
-                // Display the image preview if exists
+                // Clear previous image previews
+                $('#imagePreviewContainer').html('');
+
+                // Check if images exist before displaying them
                 if (response.images && response.images.length > 0) {
-                    // Log each image fetched
                     console.log("Image Paths:", response.images);
-                    $('#imagePreviewContainer').html('');
                     response.images.forEach(function (img) {
-                        $('#imagePreviewContainer').append('<img src="' + img + '" class="img-fluid">');
-                        $('.image-preview').val(response.images);
+                        addImagePreview(img, true); // Pass true to indicate it's an existing image
                     });
+                    // Store existing images in a hidden input
+                    $('#existing-image-path').val(response.images.join(','));
                 } else {
                     console.log("No images found for this post.");
-                    $('#imagePreviewContainer').html(''); // Clear preview if no images
+                    // If there are no images, ensure that the existing image path is cleared
+                    $('#existing-image-path').val('');
                 }
             },
             error: function (xhr, status, error) {
-                // Log any errors that occurred during the AJAX request
                 console.error("AJAX Error:", status, error);
             }
         });
     });
+
+    $(document).ready(function () {
+        const maxImages = 4;
+
+        $('#add-photo-btn').click(function () {
+            $('#selected-images').click();
+        });
+
+        $('#selected-images').change(function () {
+            const files = this.files;
+
+            // Check if the number of files exceeds the maximum limit
+            if (files.length > maxImages) {
+                alert(`You can only upload a maximum of ${maxImages} images.`);
+                $('#selected-images').val(''); // Clear file input
+                return;
+            }
+
+            // Process each selected file
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    addImagePreview(e.target.result); // Add the new image to the preview
+                };
+                reader.readAsDataURL(file);
+            });
+
+            // Update the hidden input field with file names, including existing images
+            updateFileNames();
+        });
+    });
+
+    // Add Image Preview Function
+    function addImagePreview(src, isExisting = false) {
+        const imgWrapper = $('<div class="image-wrapper" style="position: relative; display: inline-block; margin-right: 10px;">');
+        const img = $('<img>').attr('src', src).css({
+            'width': '200px',
+            'height': '200px',
+            'object-fit': 'cover',
+            'border-radius': '5px'
+        });
+
+        const deleteButton = $('<span>').text('×').css({
+            'position': 'absolute',
+            'top': '5px',
+            'right': '5px',
+            'height': '20px',
+            'width': '20px',
+            'background': 'rgba(0,0,0,0.5)',
+            'color': 'white',
+            'border-radius': '50%',
+            'display': 'flex',
+            'align-items': 'center',
+            'justify-content': 'center',
+            'cursor': 'pointer',
+            'font-size': '14px',
+            'font-weight': 'bold'
+        }).click(function () {
+            imgWrapper.remove(); // Remove the image wrapper on delete button click
+            updateFileNames(src, isExisting); // Update hidden input field with current file names
+        });
+
+        imgWrapper.append(img).append(deleteButton);
+        $('#imagePreviewContainer').append(imgWrapper);
+        updateFileNames(); // Update the file names after adding new image
+    }
+
+    // Update hidden input with current file names
+    const updateFileNames = (deletedImagePath = '', isExisting = false) => {
+        const existingImages = $('#existing-image-path').val().split(',').filter(Boolean); // Get existing images
+        const newImages = Array.from($('#imagePreviewContainer').find('img')).map(img => img.src);
+
+        // Remove the deleted image from the list if it is an existing image
+        if (isExisting && deletedImagePath) {
+            const index = existingImages.indexOf(deletedImagePath);
+            if (index > -1) {
+                existingImages.splice(index, 1); // Remove the deleted image path
+            }
+        }
+
+        const allImages = existingImages.concat(newImages);
+        $('#image-path').val(allImages.join(',')); // Update the hidden input field
+    };
+
 </script>
+
+<!--Update Post-->
+<script>
+    // Update Post
+    $(document).ready(function () {
+        $('#editPostForm').on('submit', function (event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            // Get values from form fields
+            var postId = $('#editPostId').val();
+            var postText = $('#editPostText').val();
+            var location = $('#editLocation').val();
+            var images = $('#selected-images')[0].files; // Get the file input
+
+            // Create a FormData object
+            var formData = new FormData();
+            formData.append('post_id', postId);
+            formData.append('post', postText);
+            formData.append('editLocation', location);
+
+            // Append images to FormData if there are any
+            if (images.length > 0) {
+                for (var i = 0; i < images.length; i++) {
+                    formData.append('images[]', images[i]);
+                }
+            } else {
+                // If no new images, append the existing images
+                const existingImages = $('#existing-image-path').val().split(',');
+                existingImages.forEach(image => {
+                    formData.append('images[]', image); // Append existing images
+                });
+            }
+
+            // Send AJAX request
+            $.ajax({
+                url: "api/home/update-post.php", // Update the URL to your PHP file
+                type: "POST",
+                data: formData,
+                contentType: false, // Important for FormData
+                processData: false, // Important for FormData
+                success: function (response) {
+                    alert("Post updated successfully!");
+                    location.reload();
+                },
+                error: function () {
+                    alert("Error updating post. Please try again.");
+                }
+            });
+        });
+    });
+</script>
+
+
 
 <!--Display, Post and Get Comment-->
 <script>

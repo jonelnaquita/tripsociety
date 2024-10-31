@@ -267,7 +267,8 @@ if (isset($_GET['id'])) {
                                                     class="fas fa-map-marker-alt"></i></span>
                                         </div>
                                         <input class="form-control form-control-border bg-transparent"
-                                            value="<?php echo $row['location']; ?>" readonly>
+                                            value="<?php echo !empty($row['location']) ? $row['location'] : 'No City Selected'; ?>"
+                                            readonly>
                                     </div>
                                     <br>
                                     <?php

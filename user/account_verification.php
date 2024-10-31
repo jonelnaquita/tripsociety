@@ -147,44 +147,111 @@ include 'header.php';
                                 <li>All corners of the document should be visible</li>
                             </ul>
 
-                            <form method="POST" enctype="multipart/form-data">
-                                <div class="row">
-                                    <div class="col-12 col-md-6">
-                                        <div class="file-input-container">
-                                            <input type="file" class="file-input" id="fileFront" name="fileFront"
-                                                onchange="previewImage(this, 'frontPreview')">
-                                            <label for="fileFront" class="file-label" id="frontPreview">
-                                                <i class="fas fa-plus-circle fa-3x"></i>
-                                                <h6 class="mt-1 font-weight-bold">Upload the <u>front</u> of your
-                                                    document</h6>
-                                                <p class="p-2">No front image uploaded</p>
-                                                <div class="preview"></div>
-                                            </label>
-                                        </div>
-                                        <div class="error-message" id="frontError"></div>
-                                    </div>
+                            <?php
+                            include '../inc/config.php';
 
-                                    <div class="col-12 col-md-6">
-                                        <div class="file-input-container">
-                                            <input type="file" class="file-input" id="fileBack" name="fileBack"
-                                                onchange="previewImage(this, 'backPreview')">
-                                            <label for="fileBack" class="file-label" id="backPreview">
-                                                <i class="fas fa-plus-circle fa-3x"></i>
-                                                <h6 class="mt-1 font-weight-bold">Upload the <u>back</u> of your
-                                                    document</h6>
-                                                <p class="p-2">No back image uploaded</p>
-                                                <div class="preview"></div>
-                                            </label>
-                                        </div>
-                                        <div class="error-message" id="backError"></div>
-                                    </div>
+                            // Replace with the user ID or retrieve it from the session
+                            $userId = $_SESSION['user'];
 
-                                    <div class="col-12 col-md-3">
-                                        <button type="button" class="btn btn-block btn-primary btn-verify"
-                                            onclick="submitForm()">Submit</button>
+                            // Prepare and execute the query
+                            $stmt = $pdo->prepare("SELECT status, id_front, id_back FROM tbl_user WHERE id = ?");
+                            $stmt->execute([$userId]);
+                            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                            // Determine what to display based on the conditions
+                            $showForm = ($user['status'] == 0 || ($user['status'] == '' && empty($user['id_front']) && empty($user['id_back'])));
+                            $showPending = (!empty($user['id_front']) && !empty($user['id_back']) && $user['status'] === '');
+                            $showVerified = ($user['status'] == 1);
+                            ?>
+
+                            <?php if ($showForm): ?>
+                                <!-- Display Form if status is 0 -->
+                                <form method="POST" enctype="multipart/form-data">
+                                    <div class="row">
+                                        <div class="col-12 col-md-6">
+                                            <div class="file-input-container">
+                                                <input type="file" class="file-input" id="fileFront" name="fileFront"
+                                                    onchange="previewImage(this, 'frontPreview')">
+                                                <label for="fileFront" class="file-label" id="frontPreview">
+                                                    <i class="fas fa-plus-circle fa-3x"></i>
+                                                    <h6 class="mt-1 font-weight-bold">Upload the <u>front</u> of your
+                                                        document</h6>
+                                                    <p class="p-2">No front image uploaded</p>
+                                                    <div class="preview"></div>
+                                                </label>
+                                            </div>
+                                            <div class="error-message" id="frontError"></div>
+                                        </div>
+
+                                        <div class="col-12 col-md-6">
+                                            <div class="file-input-container">
+                                                <input type="file" class="file-input" id="fileBack" name="fileBack"
+                                                    onchange="previewImage(this, 'backPreview')">
+                                                <label for="fileBack" class="file-label" id="backPreview">
+                                                    <i class="fas fa-plus-circle fa-3x"></i>
+                                                    <h6 class="mt-1 font-weight-bold">Upload the <u>back</u> of your
+                                                        document</h6>
+                                                    <p class="p-2">No back image uploaded</p>
+                                                    <div class="preview"></div>
+                                                </label>
+                                            </div>
+                                            <div class="error-message" id="backError"></div>
+                                        </div>
+
+                                        <div class="col-12 col-md-3">
+                                            <button type="button" class="btn btn-block btn-primary btn-verify"
+                                                onclick="submitForm()">Submit</button>
+                                        </div>
                                     </div>
+                                </form>
+
+                            <?php elseif ($showPending): ?>
+                                <!-- Display Pending Verification Card -->
+                                <div class="verification-card mt-5">
+                                    <h3>Pending Verification</h3>
+                                    <p>Your documents are currently under review. You will get a verification badge once
+                                        verification is complete.</p>
                                 </div>
-                            </form>
+
+                            <?php elseif ($showVerified): ?>
+                                <!-- Display Verified Message -->
+                                <div class="verification-card mt-5">
+                                    <h3>You are now verified</h3>
+                                    <p>Congratulations! Your account has been successfully verified.</p>
+                                </div>
+
+                            <?php endif; ?>
+
+                            <style>
+                                .verification-card {
+                                    display: flex;
+                                    flex-direction: column;
+                                    align-items: center;
+                                    justify-content: center;
+                                    padding: 20px;
+                                    margin: 20px;
+                                    background-color: #f5f5f5;
+                                    color: #333;
+                                    border-radius: 8px;
+                                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                                    text-align: center;
+                                    max-width: 400px;
+                                    margin: auto;
+                                }
+
+                                .verification-card h3 {
+                                    font-size: 1.5em;
+                                    font-weight: bold;
+                                    color: #333;
+                                    margin-bottom: 10px;
+                                }
+
+                                .verification-card p {
+                                    font-size: 1em;
+                                    color: #666;
+                                    margin-bottom: 0;
+                                }
+                            </style>
 
                         </div>
                     </div>

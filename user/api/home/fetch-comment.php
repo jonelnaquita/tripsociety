@@ -7,7 +7,7 @@ if (isset($_POST['post_id'])) {
 
     // SQL Query to fetch comments and user info
     $query = "
-        SELECT pc.message, pc.date_created, u.profile_img, u.username 
+        SELECT pc.user_id,pc.message, pc.date_created, u.profile_img, u.username 
         FROM tbl_post_comment pc 
         JOIN tbl_user u ON pc.user_id = u.id 
         WHERE pc.post_id = :post_id 
@@ -49,14 +49,17 @@ if (isset($_POST['post_id'])) {
 
             $output .= '
                 <div class="d-flex">
-                    <img src="' . (!empty($row['profile_img']) ? '../admin/profile_image/' . $row['profile_img'] : 'https://via.placeholder.com/40') . '" 
-                         alt="User Comment Picture" class="rounded-circle me-3" style="width: 40px; height: 40px;">
+                    <a href="profile.php?id=' . $row['user_id'] . '" class="user-profile">
+                        <img src="' . (!empty($row['profile_img']) ? '../admin/profile_image/' . $row['profile_img'] : 'https://via.placeholder.com/40') . '" 
+                            alt="User Comment Picture" class="rounded-circle me-3" style="width: 40px; height: 40px;">
+                    </a>
                     <div class="user-info ml-2">
                         <h6 class="mb-0">' . htmlspecialchars($row['username']) . '</h6>
                         <small class="text-muted">@' . htmlspecialchars($row['username']) . ' · ' . $timeDifference . ' ago</small>
                         <p>' . htmlspecialchars($row['message']) . '</p>
                     </div>
                 </div>';
+
         }
 
         // Output the comments or a message if none exist

@@ -53,12 +53,12 @@ if (isset($_GET['id'])) {
     }
 
     .star-rating .fa-star {
-        color: #ccc;
+        color: blue;
     }
 
     .star-rating .fa-star.hover,
     .star-rating .fa-star.highlighted {
-        color: #f39c12;
+        color: blue;
     }
 
     .image-preview {
@@ -88,6 +88,21 @@ if (isset($_GET['id'])) {
     .submit-btn:hover {
         background-color: #001F4D;
     }
+
+    .image-wrapper {
+        position: relative;
+        display: inline-block;
+        margin: 5px;
+    }
+
+    .remove-image {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        border-radius: 50%;
+    }
 </style>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css">
@@ -100,86 +115,83 @@ if (isset($_GET['id'])) {
 
     <section class="content overflow-hidden" style="height: auto; margin-bottom: 50px;">
         <div class="container-fluid">
-            <form action="../inc/function.php" method="POST" enctype="multipart/form-data">
-                <input type="hidden" value="<?php echo htmlspecialchars($_GET['id']); ?>" name="id">
-                <div class="row mt-3">
-                    <div class="col">
-                        <div class="card mt-4 rounded-0 shadow">
-                            <div class="card-header rounded-0">
+            <input type="hidden" value="<?php echo htmlspecialchars($_GET['id']); ?>" name="id" id="location-id">
+            <div class="row mt-3">
+                <div class="col">
+                    <div class="card mt-4 rounded-0 shadow">
+                        <div class="card-header rounded-0">
+                            <div class="row">
+                                <div class="col-4 m-auto">
+                                    <img src="../admin/images/<?php echo $firstImage; ?>" class="img-fluid rounded"
+                                        alt="<?php echo htmlspecialchars($name); ?>">
+                                </div>
+                                <div class="col-8 m-auto">
+                                    <h4 class="font-weight-bold text-white mt-2">
+                                        <?php echo htmlspecialchars($name); ?>
+                                    </h4>
+                                    <p class="text-white" style="font-size:13px; margin-top:-6px;">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <?php echo htmlspecialchars($location['city']); ?>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="font-weight-bold">Rate your experiences:</h5>
+                            <div class="star-rating">
+                                <i class="far fa-star fa-2x" data-value="1"></i>
+                                <i class="far fa-star fa-2x" data-value="2"></i>
+                                <i class="far fa-star fa-2x" data-value="3"></i>
+                                <i class="far fa-star fa-2x" data-value="4"></i>
+                                <i class="far fa-star fa-2x" data-value="5"></i>
+                            </div>
+                            <input type="hidden" id="rating-input" name="rating" value="0" required>
+
+                            <h5 class="mt-3 font-weight-bold">Have you encountered any hazard?</h5>
+                            <select class="form-control w-50" id="hazard-input" name="hazard" required>
+                                <option value="">Select a hazard level</option>
+                                <option value="No Hazard">No Hazard</option>
+                                <option value="Very low hazard">Very low hazard</option>
+                                <option value="Low hazard">Low hazard</option>
+                                <option value="Moderate hazard">Moderate hazard</option>
+                                <option value="High hazard">High hazard</option>
+                                <option value="Extreme hazard">Extreme hazard</option>
+                            </select>
+
+                            <div class="mt-3">
+                                <h5 class="font-weight-bold">Write your review</h5>
+                                <textarea class="form-control" name="review" rows="4"
+                                    placeholder="Share your thoughts..." required></textarea>
+                            </div>
+
+                            <div class="mt-3">
+                                <h5 class="font-weight-bold">Share some photos of your visit</h5>
                                 <div class="row">
-                                    <div class="col-4 m-auto">
-                                        <img src="../admin/images/<?php echo $firstImage; ?>" class="img-fluid rounded"
-                                            alt="<?php echo htmlspecialchars($name); ?>">
+                                    <div class="col-auto">
+                                        <div class="image-preview" id="image-preview"></div>
                                     </div>
-                                    <div class="col-8 m-auto">
-                                        <h4 class="font-weight-bold text-white mt-2">
-                                            <?php echo htmlspecialchars($name); ?>
-                                        </h4>
-                                        <p class="text-white" style="font-size:13px; margin-top:-6px;">
-                                            <i class="fas fa-map-marker-alt"></i>
-                                            <?php echo htmlspecialchars($location['city']); ?>
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <h5 class="font-weight-bold">Rate your experiences:</h5>
-                                <div class="star-rating">
-                                    <i class="far fa-star fa-2x"></i>
-                                    <i class="far fa-star fa-2x"></i>
-                                    <i class="far fa-star fa-2x"></i>
-                                    <i class="far fa-star fa-2x"></i>
-                                    <i class="far fa-star fa-2x"></i>
-                                </div>
-                                <input type="hidden" id="rating-input" name="rating" value="0">
-
-                                <h5 class="mt-3 font-weight-bold">Have you encountered any hazard?</h5>
-                                <select class="form-control w-50" name="hazard" required>
-                                    <option value="">Select a hazard level</option> <!-- Placeholder option -->
-                                    <option value="No Hazard">No Hazard</option>
-                                    <option value="Very low hazard">Very low hazard</option>
-                                    <option value="Low hazard">Low hazard</option>
-                                    <option value="Moderate hazard">Moderate hazard</option>
-                                    <option value="High hazard">High hazard</option>
-                                    <option value="Extreme hazard">Extreme hazard</option>
-                                </select>
-
-                                <div class="mt-3">
-                                    <h5 class="font-weight-bold">Write your review</h5>
-                                    <textarea class="form-control" name="review" rows="4"
-                                        placeholder="Share your thoughts..." required></textarea>
-                                </div>
-
-                                <div class="mt-3">
-                                    <h5 class="font-weight-bold">Share some photos of your visit</h5>
-                                    <div class="row">
-                                        <div class="col-auto">
-                                            <div class="image-preview" id="image-preview"></div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <label for="file-input" class="file-input-label ml-2"
-                                                style="margin-top:25px;">
-                                                <i class="far fa-images fa-2x text-secondary"></i>
-                                                <i class="fas fa-plus-circle shadow"
-                                                    style="margin-left:-10px; margin-top:14px;"></i>
-                                                <input type="file" name="images[]" id="file-input" class="file-input"
-                                                    multiple required>
-                                            </label>
-                                        </div>
+                                    <div class="col-auto">
+                                        <label for="file-input" class="file-input-label ml-2" style="margin-top:25px;">
+                                            <i class="far fa-images fa-2x text-secondary"></i>
+                                            <i class="fas fa-plus-circle shadow"
+                                                style="margin-left:-10px; margin-top:14px;"></i>
+                                            <input type="file" name="images[]" accept="image/*" id="file-input"
+                                                class="file-input" multiple required>
+                                        </label>
                                     </div>
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="text-center"> <!-- Centering container -->
-                                <button type="submit" name="add_review" class="btn btn-primary submit-btn"
-                                    style="border-radius: 30px; padding: 12px 20px; margin-bottom: 50px;">
-                                    <i class="fas fa-check-circle"></i> Submit Review
-                                </button>
-                            </div>
+                        <div class="text-center">
+                            <button type="button" name="add_review" class="btn btn-primary submit-btn"
+                                style="border-radius: 30px; padding: 12px 20px; margin-bottom: 50px;">
+                                <i class="fas fa-check-circle"></i> Submit Review
+                            </button>
                         </div>
                     </div>
                 </div>
-            </form>
+            </div>
         </div>
     </section>
 </div>
@@ -188,50 +200,108 @@ if (isset($_GET['id'])) {
 <?php include 'footer.php'; ?>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const fileInput = document.getElementById('file-input');
-        const previewContainer = document.getElementById('image-preview');
+    $(document).ready(function () {
+        $('#file-input').on('change', function () {
+            const files = this.files;
+            const previewContainer = $('#image-preview');
+            previewContainer.empty(); // Clear previous previews
 
-        fileInput.addEventListener('change', function (event) {
-            previewContainer.innerHTML = ''; // Clear previous previews
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const reader = new FileReader();
 
-            const files = event.target.files;
+                reader.onload = function (e) {
+                    const imageHtml = `
+                    <div class="image-wrapper position-relative">
+                        <img src="${e.target.result}" alt="Image" class="img-thumbnail" style="width: 100px; height: 100px;">
+                        <button class="btn btn-danger btn-sm remove-image" style="position: absolute; top: 0; right: 0;">&times;</button>
+                    </div>
+                `;
+                    previewContainer.append(imageHtml);
+                };
 
-            for (const file of files) {
-                if (file && file.type.startsWith('image/')) {
-                    const reader = new FileReader();
-
-                    reader.onload = function (e) {
-                        const img = document.createElement('img');
-                        img.src = e.target.result;
-                        previewContainer.appendChild(img);
-                    };
-
-                    reader.readAsDataURL(file);
-                }
+                reader.readAsDataURL(file);
             }
         });
 
-        const stars = document.querySelectorAll('.star-rating .fa-star');
-        const ratingInput = document.getElementById('rating-input');
-
-        stars.forEach((star, index) => {
-            star.addEventListener('mouseover', () => {
-                stars.forEach((s, i) => {
-                    s.classList.toggle('hover', i <= index);
-                });
-            });
-
-            star.addEventListener('mouseout', () => {
-                stars.forEach(s => s.classList.remove('hover'));
-            });
-
-            star.addEventListener('click', () => {
-                ratingInput.value = index + 1;
-                stars.forEach((s, i) => {
-                    s.classList.toggle('highlighted', i <= index);
-                });
-            });
+        // Handle removing images
+        $(document).on('click', '.remove-image', function () {
+            $(this).closest('.image-wrapper').remove();
         });
     });
+
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('.star-rating i').on('click', function () {
+            const rating = $(this).data('value');
+            $('#rating-input').val(rating);
+            console.log("Rating selected: ", rating); // Log rating value
+            $('.star-rating i').removeClass('fas blue-star').addClass('far'); // Reset stars
+            $(this).prevAll().addBack().removeClass('far').addClass('fas blue-star'); // Fill stars
+        });
+
+
+        // AJAX request to submit review
+        $('.submit-btn').on('click', function () {
+            const rating = $('#rating-input').val();
+            const hazard = $('#hazard-input').val();
+            const review = $('textarea[name="review"]').val(); // Accessing the textarea correctly
+
+            console.log("Submitting review..."); // Log submission
+            console.log("Rating: ", rating, "Hazard: ", hazard, "Review: ", review); // Log all inputs
+
+            // Validate required fields
+            if (rating === '0' || hazard === '') {
+                toastr.error('Please provide a rating and select a hazard level.');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('id', $('#location-id').val());
+            formData.append('rating', rating);
+            formData.append('hazard', hazard);
+            formData.append('review', review);
+
+            // Append images to formData if available
+            const files = $('#file-input')[0].files;
+            for (let i = 0; i < files.length; i++) {
+                formData.append('images[]', files[i]);
+            }
+
+            $.ajax({
+                url: 'api/review/add-review.php',
+                type: 'POST',
+                data: formData,
+                contentType: false, // Important for file uploads
+                processData: false, // Important for file uploads
+                success: function (response) {
+                    console.log("Response from server: ", response); // Log server response
+                    if (response.status === 'success') {
+                        toastr.success('Review submitted successfully!', 'Success');
+                        // Reset form fields
+                        resetForm(); // Call the reset function
+                    } else {
+                        alert('Error: ' + response.message);
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.error("AJAX Error: ", textStatus, errorThrown); // Log AJAX errors
+                    toastr.error('An error occurred while submitting your review. Please try again.');
+                }
+            });
+        });
+
+        // Function to reset the form fields
+        function resetForm() {
+            $('#rating-input').val('0');
+            $('#hazard-input').val('');
+            $('textarea[name="review"]').val(''); // Clear the textarea
+            $('.star-rating i').removeClass('fas').addClass('far'); // Reset stars
+            $('#image-preview').empty(); // Clear image previews
+            $('#file-input').val(''); // Reset file input
+        }
+    });
+
 </script>

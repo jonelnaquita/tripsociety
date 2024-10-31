@@ -9,6 +9,9 @@ include 'header.php';
     <section class="content">
         <div class="container-fluid">
             <div class="row mt-2">
+                <h5 class="mb-3 mt-4 ml-4 font-weight-bold">Travel Log History</h5>
+            </div>
+            <div class="row">
                 <div class="col">
                     <div class="timeline mt-3">
                         <!-- Timeline items will be inserted here by the AJAX script -->
@@ -16,7 +19,6 @@ include 'header.php';
                 </div>
             </div>
         </div>
-
     </section>
 
 </div>
@@ -38,23 +40,25 @@ include 'footer.php';
                     }
 
                     let timelineHTML = '';
-                    let previousDate = null;;
 
-                    data.forEach(function (log, index) {
-                        const logDate = new Date(log.date_created);
-
-                        timelineHTML += `
-                            <div>
-                                <i class="fas fa-map-marked-alt text-white" style="font-size:16px !important;"></i>
-                                <div class="timeline-item">
-                                    <div class="timeline-body">
-                                        <strong>${log.location_name}</strong>
-                                        • ${log.formatted_date} <br>
+                    // Check if there are any logs
+                    if (data.length === 0) {
+                        timelineHTML = '<p>No Travel Logs History</p>';
+                    } else {
+                        data.forEach(function (log) {
+                            timelineHTML += `
+                                <div>
+                                    <i class="fas fa-map-marked-alt text-white" style="font-size:16px !important;"></i>
+                                    <div class="timeline-item">
+                                        <div class="timeline-body">
+                                            <strong>${log.location_name}</strong>
+                                            • ${log.formatted_date} <br>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        `;
-                    });
+                            `;
+                        });
+                    }
 
                     $('.timeline').html(timelineHTML);
                 },

@@ -85,7 +85,7 @@
                             <div class="col-6 col-md-4 col-lg-3">
                                 <a href="explore_destination.php?id=${location.id}" class="text-dark">
                                     <div class="recommendation-item">
-                                        <img src="../admin/images/${location.image}" alt="${location.location_name}" class="img-fluid recommendation-img">
+                                        <img src="../admin/images/${location.image.split(',')[0]}" alt="${location.location_name}" class="img-fluid recommendation-img">
                                         <div class="recommendation-text">
                                             <h6 class="font-weight-bold">${location.location_name}</h6>
                                         </div>
