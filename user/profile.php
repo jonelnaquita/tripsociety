@@ -319,6 +319,7 @@ if (isset($_GET['id'])) {
 
 
 
+
                                                 // Check if the user has reacted to this post
                                                 $reaction_statement = $pdo->prepare("SELECT 1 FROM tbl_reaction WHERE user_id = ? AND post_id = ?");
                                                 $reaction_statement->execute([$userId, $post['id']]);
@@ -341,7 +342,7 @@ if (isset($_GET['id'])) {
                                                 $imageFiles = explode(',', $post_images);
 
                                                 ?>
-                                                <div class="row">
+                                                <div class="row" style="margin-bottom:-10px; margin-left:-1px; margin-right:1px;">
                                                     <div class="col">
                                                         <div class="card elevation-2">
                                                             <div class="card-body">
@@ -366,16 +367,19 @@ if (isset($_GET['id'])) {
                                                                             <?php endif; ?>
                                                                             <span class="font-weight-normal"
                                                                                 style="font-size:14px;">
-                                                                                <?php if ($post['location'] != "") {
-                                                                                    echo '<i>is at ' . $post['location'] . '</i>';
-                                                                                } ?>
+                                                                                <?php if (!empty($post['location']) && $post['location'] !== 'null') { // Check if location is not empty and not 'null'
+                                                                                                    echo '<i>is at ' . htmlspecialchars($post['location']) . '</i>';
+                                                                                                } ?>
                                                                             </span>
                                                                         </p>
-                                                                        <h6 style="margin-top:-17px;" class="text-dark">
+                                                                        <p style="margin-top:-17px; font-size:13px;"
+                                                                            class="text-muted">
                                                                             <?php echo '@' . htmlspecialchars($post['username']); ?>
                                                                             • <?php echo $timeDifference; ?>
-                                                                        </h6>
+                                                                        </p>
                                                                     </div>
+
+
 
 
                                                                     <div class="col mr-auto text-right">
@@ -396,7 +400,7 @@ if (isset($_GET['id'])) {
                                                         data-id="' . htmlspecialchars($post['id']) . '" id="editPostBtn">
                                                         <i class="fas fa-edit"></i> Edit Post
                                                         </a>';
-                                                                                        echo '<a class="dropdown-item text-left delete-post-btn" style="font-size:13px; data-id="' . htmlspecialchars($post['id']) . '" href="#"><i class="fas fa-trash"></i> Delete</a>';
+                                                                                        echo '<a class="dropdown-item text-left delete-post-btn" style="font-size:13px;" data-id="' . htmlspecialchars($post['id']) . '" href="#"><i class="fas fa-trash"></i> Delete</a>';
                                                                                     } else {
                                                                                         $post_id = $post['id'];
                                                                                         echo '<a class="dropdown-item text-center" style="font-size:13px;" href="#" data-id="' . htmlspecialchars($post_id, ENT_QUOTES, 'UTF-8') . '" data-toggle="modal" data-target="#reportPostModal">';
@@ -418,11 +422,8 @@ if (isset($_GET['id'])) {
                                                                     </div>
                                                                 </div>
 
-                                                                <div class="row">
-                                                                    <?php if (empty($imageFiles)): ?>
-                                                                        <div class="col-12 text-center">
-                                                                        </div>
-                                                                    <?php else: ?>
+                                                                <?php if (!empty($post_images)): // Only render the row if there are image files ?>
+                                                                    <div class="row">
                                                                         <?php foreach ($imageFiles as $file): ?>
                                                                             <div class="col-6 col-md-4 col-lg-3 mb-3">
                                                                                 <div class="d-flex justify-content-center"
@@ -435,39 +436,12 @@ if (isset($_GET['id'])) {
                                                                                 </div>
                                                                             </div>
                                                                         <?php endforeach; ?>
-                                                                    <?php endif; ?>
-                                                                </div>
-
-
-                                                                <!-- Modal -->
-                                                                <div class="modal fade" id="imageModal" tabindex="-1" role="dialog"
-                                                                    aria-labelledby="imageModalLabel" aria-hidden="true">
-                                                                    <div class="modal-dialog modal-dialog-centered" role="document">
-                                                                        <div class="modal-content border-0 bg-transparent">
-                                                                            <div class="position-relative">
-                                                                                <img src="" id="modalImage" class="img-fluid"
-                                                                                    alt="Large Image">
-                                                                                <button type="button"
-                                                                                    class="close position-absolute"
-                                                                                    style="top: 10px; right: 10px;"
-                                                                                    data-dismiss="modal" aria-label="Close">
-                                                                                    <span aria-hidden="true">&times;</span>
-                                                                                </button>
-                                                                            </div>
-                                                                        </div>
                                                                     </div>
-                                                                </div>
+                                                                <?php else: ?>
+                                                                    <!-- Nothing will be displayed if there are no images -->
+                                                                <?php endif; ?>
 
 
-                                                                <script>
-                                                                    $(document).ready(function () {
-                                                                        // When an image is clicked, set the src of the modal image
-                                                                        $('[data-toggle="modal"]').click(function () {
-                                                                            var imageSrc = $(this).data('src');
-                                                                            $('#modalImage').attr('src', imageSrc);
-                                                                        });
-                                                                    });
-                                                                </script>
 
 
                                                             </div>
@@ -477,16 +451,17 @@ if (isset($_GET['id'])) {
                                                                     <div class="col-auto" style="margin-left:-10px;">
                                                                         <div class="d-inline-flex align-items-start">
                                                                             <button
-                                                                                class="btn btn-light bg-transparent btn-sm border-0 reactionButton"
+                                                                                class="btn-count btn btn-light bg-transparent btn-sm border-0 reactionButton"
                                                                                 data-id="<?php echo $post['id']; ?>"
                                                                                 data-current-icon="<?php echo $icon_class; ?>">
-                                                                                <!-- Ensure this matches the icon class -->
                                                                                 <i class="<?php echo $icon_class; ?> text-danger"
                                                                                     style="font-size:15px;"></i>
                                                                             </button>
                                                                             <span class="badge bg-secondary position-relative"
-                                                                                id="reaction-count-<?php echo $post['id']; ?>"
-                                                                                style="font-size:10px;top: -0.5em; margin-left:-25px;"><?php echo $reaction_count; ?></span>
+                                                                                style="font-size:10px;top: -0.5em; margin-left:-25px;"
+                                                                                id="reaction-count-<?php echo $post['id']; ?>">
+                                                                                <?php echo $reaction_count; ?>
+                                                                            </span>
                                                                         </div>
                                                                     </div>
 
@@ -500,12 +475,11 @@ if (isset($_GET['id'])) {
                                                                                     style="font-size:15px;"></i>
                                                                             </button>
                                                                             <span class="badge bg-secondary position-relative"
-                                                                                style="font-size:10px;top: -0.5em; margin-left:-25px;;"><?php echo $comment_count; ?></span>
+                                                                                style="font-size:10px;top: -0.5em; margin-left:-25px;"><?php echo $comment_count; ?></span>
                                                                         </div>
                                                                     </div>
 
                                                                 </div>
-
                                                             </div>
                                                         </div>
                                                     </div>
@@ -513,6 +487,7 @@ if (isset($_GET['id'])) {
                                                 <?php
                                             }
                                         }
+
                                     }
                                     ?>
                                 </div>
