@@ -1,4 +1,5 @@
 <?php
+include '../inc/session_user.php';
 include 'header.php';
 
 if (isset($_GET['id']) && is_numeric($_GET['id'])) {

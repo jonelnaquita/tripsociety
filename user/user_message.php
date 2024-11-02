@@ -7,26 +7,32 @@ $outgoing_id = $_SESSION['user']; // Fetch the outgoing user's ID
 // Get the search query from GET request
 $search_query = isset($_GET['search']) ? $_GET['search'] : '';
 
-$sql = "SELECT u.id AS user_id, u.name, u.profile_img, tc.status,
-       m.message, m.date_created
-        FROM tbl_user AS u
-        LEFT JOIN tbl_travel_companion AS tc ON (u.id = tc.user_id OR u.id = tc.companion_id)
-        LEFT JOIN tbl_message AS m ON (
-            (m.sender_id = u.id AND m.receiver_id = :outgoing_id) 
+$sql = "
+    SELECT u.id AS user_id, u.name, u.profile_img,
+           COALESCE(tc.status, 'Not Travel Companion') AS status,
+           m.message, m.date_created
+    FROM tbl_user AS u
+    LEFT JOIN tbl_travel_companion AS tc
+        ON (
+            (tc.user_id = u.id AND tc.companion_id = :outgoing_id) 
+            OR (tc.companion_id = u.id AND tc.user_id = :outgoing_id)
+        )
+    LEFT JOIN tbl_message AS m
+        ON (
+            (m.sender_id = u.id AND m.receiver_id = :outgoing_id)
             OR (m.receiver_id = u.id AND m.sender_id = :outgoing_id)
         )
-        WHERE u.name LIKE :search_query
-        AND m.date_created = (
-            SELECT MAX(m2.date_created)
-            FROM tbl_message AS m2
-            WHERE (m2.sender_id = u.id AND m2.receiver_id = :outgoing_id)
-            OR (m2.receiver_id = u.id AND m2.sender_id = :outgoing_id)
-        )
-        GROUP BY u.id
-        ORDER BY m.date_created DESC
-;
-
+    WHERE u.name LIKE :search_query
+    AND m.date_created = (
+        SELECT MAX(m2.date_created)
+        FROM tbl_message AS m2
+        WHERE (m2.sender_id = u.id AND m2.receiver_id = :outgoing_id)
+        OR (m2.receiver_id = u.id AND m2.sender_id = :outgoing_id)
+    )
+    GROUP BY u.id
+    ORDER BY m.date_created DESC;
 ";
+
 
 try {
     $stmt = $pdo->prepare($sql);
@@ -59,7 +65,7 @@ try {
             }
 
             // Generate the badge HTML
-            $badge_html = "<span class='badge badge-secondary ml-2'>{$badge_text}</span>";
+            $badge_html = "<span class='badge badge-info' style='font-size:10px;'>{$badge_text}</span>";
 
             $output .= "<li class='list-group-item border-0 p-0 mt-2'>
                             <div class='d-flex w-100 justify-content-between'>

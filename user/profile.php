@@ -3,6 +3,7 @@ include '../inc/session_user.php';
 include 'header.php';
 include 'modal/comment.php';
 include 'modal/home.php';
+include 'modal/report.php';
 
 if (isset($_GET['id'])) {
     include '../inc/config.php';
@@ -461,7 +462,7 @@ if (isset($_GET['id'])) {
                                                                                 echo '<a class="dropdown-item text-left delete-post-btn" style="font-size:13px;" data-id="' . htmlspecialchars($post['id']) . '" href="#"><i class="fas fa-trash"></i> Delete</a>';
                                                                             } else {
                                                                                 $post_id = $post['id'];
-                                                                                echo '<a class="dropdown-item text-center" style="font-size:13px;" href="#" data-id="' . htmlspecialchars($post_id, ENT_QUOTES, 'UTF-8') . '" data-toggle="modal" data-target="#reportPostModal">';
+                                                                                echo '<a class="dropdown-item text-center" style="font-size:13px;" data-id="' . htmlspecialchars($post_id, ENT_QUOTES, 'UTF-8') . '" data-toggle="modal" data-target="#reportPostModal">';
                                                                                 echo '<i class="fas fa-flag"></i> Report Post</a>';
                                                                             }
                                                                         } ?>

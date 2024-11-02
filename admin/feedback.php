@@ -11,7 +11,57 @@ include '../inc/config.php'; ?>
             <div class="content">
                 <div class="container-fluid">
 
+                    <div class="mt-4">
+                        <div class="row align-items-center">
+                            <div class="col-md-4 mb-3">
+                                <h6>Recommended areas to fix in order to improve the app (Based on user feedback)</h6>
+                            </div>
+                            <div class="col-md-6 text-center mb-3">
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="box p-2 border rounded bg-gradient bg-primary text-white">
+                                            <div class="number fs-5 font-weight-bold">1</div>
+                                            <div class="text small">User Interface</div>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="box p-2 border rounded bg-gradient bg-info text-white">
+                                            <div class="number fs-5 font-weight-bold">2</div>
+                                            <div class="text small">Performance</div>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="box p-2 border rounded bg-gradient bg-warning text-dark">
+                                            <div class="number fs-5 font-weight-bold">3</div>
+                                            <div class="text small">Accessibility</div>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="box p-2 border rounded bg-gradient bg-danger text-white">
+                                            <div class="number fs-5 font-weight-bold">4</div>
+                                            <div class="text small">Features</div>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="box p-2 border rounded bg-gradient bg-success text-white">
+                                            <div class="number fs-5 font-weight-bold">5</div>
+                                            <div class="text small">User Support</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2 text-end mb-3">
+                                <h6>Average Rating: <strong id="average-rating">4.5</strong></h6>
+                            </div>
+                        </div>
+                    </div>
+
                     <style>
+                        .box {
+                            height: 100px;
+                            /* Set a fixed height */
+                        }
+
                         .response-form {
                             display: none;
                             /* Initially hidden */
@@ -44,9 +94,11 @@ include '../inc/config.php'; ?>
                     }
 
                     $query = "
-                SELECT tf.*, tu.name, tu.location, tf.date_created as date
+                SELECT tf.*, tu.name, tu.location, tf.date_created AS date, tfr.message
                 FROM tbl_feedback tf
                 LEFT JOIN tbl_user tu ON tu.id = tf.user_id
+                LEFT JOIN tbl_feedback_respond tfr ON tfr.feedback_id = tf.id
+                WHERE tfr.message IS NULL;
             ";
                     $params = [];
 
@@ -226,8 +278,6 @@ include '../inc/config.php'; ?>
 </script>
 
 
-
-
 <script>
     var titleElement = document.getElementById("title");
     titleElement.innerHTML = "Feedbacks";
@@ -236,4 +286,36 @@ include '../inc/config.php'; ?>
         var element = document.getElementById('feedbacks');
         element.classList.add('active');
     };
+</script>
+
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            url: 'api/feedback/fetch-app-improvement.php', // Path to your PHP file
+            type: 'GET',
+            dataType: 'json',
+            success: function (response) {
+                if (response.status === 'success') {
+                    // Update the UI with the fetched data
+                    const improvements = response.data.improvements;
+                    const averageRating = response.data.averageRating;
+
+                    improvements.forEach((improvement, index) => {
+                        // Update the number with the respondent count
+                        $('.box').eq(index).find('.number').text(improvement.respondent_count);
+                        // Update the text with the improvement description
+                        $('.box').eq(index).find('.text').text(improvement.improvement);
+                    });
+
+                    // Display the average rating
+                    $('#average-rating').text(averageRating);
+                } else {
+                    console.error('Error fetching data:', response.message);
+                }
+            },
+            error: function (err) {
+                console.error('AJAX error:', err);
+            }
+        });
+    });
 </script>

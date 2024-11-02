@@ -802,12 +802,14 @@ if (isset($_GET['get_companion_count'])) {
 
 
 if (isset($_GET['view_all_activity'])) {
-
     $results = getAllNotifications($pdo);
     $users = $results['users'];
     $notifications = $results['notifications'];
+    $reports = $results['reports'];
 
     echo '<div style="height:400px; overflow:auto;">';
+
+    // Display Users
     foreach ($users as $user) {
         echo '
         <a href="../admin/user.php?id=' . $user['id'] . '" class="dropdown-item">
@@ -824,6 +826,7 @@ if (isset($_GET['view_all_activity'])) {
         ';
     }
 
+    // Display Notifications
     foreach ($notifications as $notification) {
         echo '
         <a href="../admin/feedback.php?id=' . $notification['id'] . '" class="dropdown-item">
@@ -839,9 +842,26 @@ if (isset($_GET['view_all_activity'])) {
         </a>
         ';
     }
+
+    // Display Reports
+    foreach ($reports as $report) {
+        echo '
+        <a href="../admin/reports.php?id=' . $report['id'] . '" class="dropdown-item">
+            <div class="row ml-2">
+                <div class="col-2">
+                    <img src="../dist/img/avatar5.png" class="img-circle" style="width:50px;">
+                </div>
+                <div class="col-10">
+                    <p class="font-weight-bold">' . htmlspecialchars($report['name']) . '</p>
+                    <p class="text-muted" style="font-size:13px; margin-top:-17px;">User submitted a report</p>
+                </div>
+            </div>
+        </a>
+        ';
+    }
+
     echo '</div>';
 }
-
 
 
 if (isset($_GET['view_unread_activity'])) {
@@ -849,6 +869,7 @@ if (isset($_GET['view_unread_activity'])) {
     $results = getUnreadNotifications($pdo);
     $users = $results['users'];
     $notifications = $results['notifications'];
+    $reports = $results['reports'];
 
     echo '<div style="height:400px; overflow:auto;">';
     foreach ($users as $user) {
@@ -883,6 +904,23 @@ if (isset($_GET['view_unread_activity'])) {
         </a>
         ';
     }
+
+    foreach ($reports as $report) {
+        echo '
+          <a href="../admin/reports.php?id=' . $report['id'] . '" class="dropdown-item">
+            <div class="row ml-2">
+                <div class="col-2">
+                    <img src="../dist/img/avatar5.png" class="img-circle" style="width:50px;">
+                </div>
+                <div class="col-10">
+                    <p class="font-weight-bold">' . htmlspecialchars($notification['name']) . '</p>
+                    <p class="text-muted" style="font-size:13px; margin-top:-17px;">User submitted a report</p>
+                </div>
+            </div>
+        </a>
+        ';
+    }
+
     echo '</div>';
 }
 
@@ -981,7 +1019,7 @@ if (isset($_POST['update_account'])) {
 
 
 if (isset($_POST['send_reset_password'])) {
-    $email = $_POST['email'];
+    $email = $_POST['email-reset'];
     $userId = $_SESSION['user'];
     $result = sendResetPasswordEmail($email, $userId);
 
@@ -1112,7 +1150,11 @@ if (isset($_GET['unread-count'])) {
     $stmtFeedback->execute();
     $feedbackCount = $stmtFeedback->fetchColumn();
 
-    $totalCount = $userCount + $feedbackCount;
+    $stmtReport = $pdo->prepare('SELECT COUNT(*) as count FROM tbl_post_report WHERE unread != 1');
+    $stmtReport->execute();
+    $reportCount = $stmtReport->fetchColumn();
+
+    $totalCount = $userCount + $feedbackCount + $reportCount;
 
     echo json_encode(['count' => $totalCount]);
 }
@@ -1622,7 +1664,7 @@ function sendResetPasswordEmail($email, $userId)
     );
 
     try {
-        $verificationLink = "https://tripsociety.net/admin/reset_password.php?id=$userId";
+        $verificationLink = "http://localhost/tripsociety_latest/admin/reset_password.php?id=$userId";
         $emailSubject = 'Reset Password | Trip Society';
         $emailContent = '<html><body><p>To reset your password please click the link <a href="' . $verificationLink . '">Reset Password</a></p></body></html>';
 
@@ -1670,15 +1712,23 @@ function getUnreadNotifications($pdo)
 {
     $query1 = "SELECT * FROM tbl_user WHERE unread != 1 and status != '' ";
     $query2 = "SELECT *, f.id as id FROM tbl_feedback f LEFT JOIN tbl_user u ON u.id = f.user_id WHERE f.unread != 1 ";
+    $query3 = "SELECT *, tpr.id as id FROM tbl_post_report tpr LEFT JOIN tbl_user u ON u.id = tpr.user_id WHERE tpr.unread != 1 ";
     $stmt1 = $pdo->prepare($query1);
     $stmt1->execute();
     $users = $stmt1->fetchAll(PDO::FETCH_ASSOC);
+
     $stmt2 = $pdo->prepare($query2);
     $stmt2->execute();
     $notifications = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+
+    $stmt3 = $pdo->prepare($query3);
+    $stmt3->execute();
+    $reports = $stmt3->fetchAll(PDO::FETCH_ASSOC);
+
     $results = [
         'users' => $users,
-        'notifications' => $notifications
+        'notifications' => $notifications,
+        'reports' => $reports
     ];
 
     return $results;
@@ -1687,15 +1737,15 @@ function getUnreadNotifications($pdo)
 
 function getAllNotifications($pdo)
 {
-    // Query to get all users
-    $query1 = "SELECT * FROM tbl_user WHERE id_front IS NOT NULL AND id_back IS NOT NULL AND id_front != '' AND id_back != ''";
+    // Query to get all users with valid ID documents, ordered by date_created
+    $query1 = "SELECT *, date_created FROM tbl_user WHERE id_front IS NOT NULL AND id_back IS NOT NULL AND id_front != '' AND id_back != ''";
     $stmt1 = $pdo->prepare($query1);
     $stmt1->execute();
     $users = $stmt1->fetchAll(PDO::FETCH_ASSOC);
 
     // Query to get notifications with LEFT JOIN on tbl_user
     $query2 = "
-        SELECT tbl_feedback.*, tbl_user.username, tbl_user.email, tbl_user.name 
+        SELECT tbl_feedback.*, tbl_user.username, tbl_user.email, tbl_user.name, tbl_feedback.date_created 
         FROM tbl_feedback 
         LEFT JOIN tbl_user ON tbl_feedback.user_id = tbl_user.id
     ";
@@ -1703,15 +1753,33 @@ function getAllNotifications($pdo)
     $stmt2->execute();
     $notifications = $stmt2->fetchAll(PDO::FETCH_ASSOC);
 
+    // New query to fetch reports by joining tbl_user and tbl_post_report
+    $query3 = "
+        SELECT 
+            tbl_post_report.*, 
+            tbl_user.username, 
+            tbl_user.email, 
+            tbl_user.name, 
+            tbl_post_report.date_created 
+        FROM 
+            tbl_post_report
+        LEFT JOIN 
+            tbl_user ON tbl_post_report.user_id = tbl_user.id
+    ";
+
+    $stmt3 = $pdo->prepare($query3);
+    $stmt3->execute();
+    $reports = $stmt3->fetchAll(PDO::FETCH_ASSOC);
+
+    // Combine results into a single array
     $results = [
         'users' => $users,
-        'notifications' => $notifications
+        'notifications' => $notifications,
+        'reports' => $reports
     ];
 
     return $results;
 }
-
-
 
 // Function to get location count
 function getLocationCount($pdo)

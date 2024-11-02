@@ -61,6 +61,16 @@ include "includes/header.php"; ?>
                                         </div>
                                     </div>
 
+                                    <div class="row ml-5 mr-5">
+                                        <div class="col mt-2">
+                                            <label for="">Password</label>
+                                            <div class="input-group input-group-outline my-3">
+                                                <input type="password" class="form-control" name="password"
+                                                    placeholder="Enter Password" id="password">
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <hr>
 
                                     <div class="row m-auto text-center">
@@ -147,6 +157,8 @@ include "includes/header.php"; ?>
                 success: function (response) {
                     if (response.success) {
                         toastr.success('Profile updated successfully!');
+                        // Clear the password input field
+                        $('#password').val('');
                     } else {
                         toastr.error('Error: ' + response.message);
                     }

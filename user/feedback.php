@@ -3,199 +3,203 @@ include '../inc/session_user.php';
 include 'header.php';
 ?>
 
-
 <style>
-    .star-rating {
+    /* Container for badges */
+    .badges-container {
+        margin-top: 15px;
         display: flex;
-        direction: row;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+
+    /* Badge Style */
+    .improvement-badge {
+        border: 1px solid #582fff;
+        /* Border color */
+        border-radius: 15px;
+        padding: 2px 10px;
+        font-size: 12px;
+        font-weight: bold;
+        color: #582fff;
+        /* Text color matching border */
+        background-color: transparent;
+        /* No background color */
+    }
+
+    /* Container for admin response */
+    .admin-response {
+        margin-top: 15px;
+        padding: 10px 15px;
+        border-radius: 8px;
+        background-color: #f5f5f5;
+        box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+        font-size: 14px;
+        color: #333;
+    }
+
+    .admin-response p {
+        margin: 0;
+        line-height: 1.4;
+    }
+
+    /* Button Styling */
+    .write-feedback-btn {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        padding: 10px 20px;
+        background-color: #582fff;
+        color: white;
+        font-weight: bold;
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
         cursor: pointer;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        z-index: 10;
     }
 
-    .star-rating .fa-star {
-        color: #ccc;
-        /* Default color */
+    /* Hover and Focus Effect */
+    .write-feedback-btn:hover,
+    .write-feedback-btn:focus {
+        background-color: #4a25e0;
+        box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.25);
     }
 
-    .star-rating .fa-star.hover,
-    .star-rating .fa-star.highlighted {
-        color: #f39c12;
-        /* Color for highlighted stars */
+    /* Button Resizing on Smaller Screens */
+    @media (max-width: 767px) {
+        .write-feedback-btn {
+            padding: 8px 16px;
+            top: 15px;
+            right: 15px;
+            font-size: 0.9rem;
+        }
     }
 </style>
+
 <div class="content-wrapper">
-
-    <div class="content-header">
-
-
-
-        <section class="content">
-            <div class="container-fluid">
-                <div class="row mt-5">
-                    <div class="col m-auto">
-                        <div class="card m-auto" style="background-color:#6CB4EE;">
-                            <div class="card-header font-weight-bold" style="font-size:20px">
-                                <i class="fas fa-comments"></i> Feedback
-                            </div>
-                            <div class="card-body">
-                                <h5 class="font-weight-bold">Rate your experience</h5>
-                                <div class="star-rating">
-                                    <i class="far fa-star fa-2x" data-value="1"></i>
-                                    <i class="far fa-star fa-2x" data-value="2"></i>
-                                    <i class="far fa-star fa-2x" data-value="3"></i>
-                                    <i class="far fa-star fa-2x" data-value="4"></i>
-                                    <i class="far fa-star fa-2x" data-value="5"></i>
-                                </div>
-                                <input type="hidden" id="rating-input" name="rate" value="0">
-
-                                <h5 class="font-weight-bold mt-3">Which part of the app needs improvement?</h5>
-                                <select class="form-control" name="app_improvement[]" multiple="multiple"
-                                    id="app_improvement">
-                                    <option value="None">None</option>
-                                    <option value="User Interface">User Interface</option>
-                                    <option value="Security">Security</option>
-                                    <option value="Privacy">Privacy</option>
-                                    <option value="Loading Speed">Loading Speed</option>
-                                    <option value="Community Content">Community Content</option>
-                                    <option value="Functionality">Functionality</option>
-                                    <option value="Accessibility">Accessibility</option>
-                                </select>
-
-                                <textarea class="form-control mt-2" placeholder="Add comment" rows="4" name="feedback"
-                                    id="feedback-input"></textarea>
-                                <div class="text-center mt-3">
-                                    <?php if (isset($_SESSION['user'])): ?>
-                                        <button class="btn btn-dark btn-block add-feedback-btn"
-                                            style="border-radius:25px; background-color:#002D62;" type="button"
-                                            name="add_feedback">SUBMIT
-                                            NOW</button>
-                                    <?php else: ?>
-                                        <a type="button" href="login.php" class="btn btn-dark btn-block"
-                                            style="border-radius:25px; background-color:#002D62;">SUBMIT NOW</a>
-                                    <?php endif; ?>
-                                </div>
-                            </div>
-                        </div>
+    <section class="content">
+        <div class="container-fluid position-relative">
+            <div class="row justify-content-center">
+                <div class="col-lg-6 col-md-8 col-12">
+                    <div class="d-flex justify-content-between align-items-center mt-4">
+                        <h5 class="font-weight-bold">Feedbacks</h5>
+                        <a href="feedback-add.php" class="btn btn-primary btn-sm d-flex align-items-center"
+                            style="padding: 5px 10px; border-radius: 24px;">
+                            <i class="far fa-edit mr-1"></i>
+                            Write a feedback
+                        </a>
+                    </div>
+                    <br>
+                    <div id="reviews-container" style="margin-bottom: 100px;">
+                        <!-- Reviews will be dynamically inserted here -->
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
+</div>
 
-    </div>
-    <?php
-    include 'footer.php';
-    ?>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $('#app_improvement').select2({
-                width: 'resolve',
-                placeholder: "Select improvements",
-                allowClear: true,
-                theme: "classic"
-            });
-        });
-    </script>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const stars = document.querySelectorAll('.star-rating .fa-star');
-            const ratingInput = document.getElementById('rating-input');
 
-            stars.forEach((star, index) => {
-                star.addEventListener('mouseover', () => {
-                    stars.forEach((s, i) => {
-                        if (i <= index) {
-                            s.classList.add('hover');
-                        } else {
-                            s.classList.remove('hover');
-                        }
-                    });
-                });
+<script>
+    $(document).ready(function () {
+        fetchReviews();
 
-                star.addEventListener('mouseout', () => {
-                    stars.forEach(s => s.classList.remove('hover'));
-                });
+        function fetchReviews() {
+            $.ajax({
+                url: 'api/feedback/fetch-feedback.php',
+                method: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    $('#reviews-container').html(''); // Clear existing reviews
 
-                star.addEventListener('click', () => {
-                    ratingInput.value = index + 1;
-                    stars.forEach((s, i) => {
-                        if (i <= index) {
-                            s.classList.add('highlighted');
-                        } else {
-                            s.classList.remove('highlighted');
-                        }
-                    });
-                });
-            });
-        });
-
-        $(document).ready(function () {
-            // Handle star rating clicks
-            $('.star-rating i').on('click', function () {
-                const rating = $(this).data('value');
-                $('#rating-input').val(rating);
-                console.log("Rating selected: ", rating); // Log rating value
-                $('.star-rating i').removeClass('fas').addClass('far'); // Reset stars
-                $(this).prevAll().addBack().removeClass('far').addClass('fas'); // Fill stars
-            });
-
-            // AJAX request to submit feedback
-            $('.add-feedback-btn').on('click', function () {
-                const rating = $('#rating-input').val();
-                const appImprovement = $('#app_improvement').val();
-                const feedback = $('#feedback-input').val(); // Accessing the textarea correctly
-
-                console.log("Submitting feedback..."); // Log submission
-                console.log("Rating: ", rating, "App Improvement: ", appImprovement, "Feedback: ", feedback); // Log all inputs
-
-                // Validate required fields
-                if (rating === '0' || appImprovement.length === 0) {
-                    toastr.error('Please provide a rating and select at least one area for improvement.');
-                    return;
-                }
-
-                $.ajax({
-                    url: 'api/feedback/add-feedback.php',
-                    type: 'POST',
-                    data: {
-                        rating: rating,
-                        app_improvement: appImprovement,
-                        feedback: feedback,
-                    },
-                    success: function (response) {
-                        // Ensure response is parsed correctly
-                        try {
-                            const jsonResponse = typeof response === 'string' ? JSON.parse(response) : response;
-                            console.log("Response from server: ", jsonResponse); // Log server response
-                            if (jsonResponse.status === 'success') {
-                                toastr.success('Feedback submitted successfully!');
-                                resetForm();
-                            } else {
-                                alert('Error: ' + jsonResponse.message);
-                            }
-                        } catch (error) {
-                            console.error("Response parsing error: ", error); // Log parsing error
-                            alert('An error occurred while processing the response.');
-                        }
-                    },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        console.error("AJAX Error: ", textStatus, errorThrown); // Log AJAX errors
-                        alert('An error occurred while submitting your feedback. Please try again.');
+                    // Show a message if no feedback is available
+                    if (data.length === 0) {
+                        $('#reviews-container').html(`
+                            <div class="no-feedback-message material-card">
+                                <p>No Feedback Available</p>
+                            </div>
+                        `);
+                        return;
                     }
-                });
+
+                    $.each(data, function (index, location) {
+                        let dateOptions = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true };
+                        let dateCreated = new Date(location.date_created).toLocaleDateString('en-US', dateOptions);
+
+                        let fullStars = Math.floor(location.rate);
+                        let halfStar = (location.rate - fullStars) >= 0.5 ? 1 : 0;
+                        let emptyStars = 5 - (fullStars + halfStar);
+
+                        // Generate badges for each app improvement entry
+                        let improvementBadges = '';
+                        if (location.app_improvement) {
+                            let improvements = location.app_improvement.split(/,\s*/); // Split by comma or comma + space
+                            improvements.forEach(improvement => {
+                                improvementBadges += `<div class="improvement-badge">${improvement}</div>`;
+                            });
+                        }
+
+                        // Generate admin response section if available
+                        let adminResponseHTML = '';
+                        if (location.admin_response) {
+                            adminResponseHTML = `
+                                <div class="admin-response">
+                                    <p><strong>Admin Response:</strong></p>
+                                    <p>${location.admin_response}</p>
+                                </div>
+                            `;
+                        }
+
+                        let reviewHTML = `
+                        <div class="card mt-3" data-review-id="${location.id}" style="position: relative;">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-auto" style="margin-top:-2px;">
+                                        <div class="ml-2">
+                                            <a href="profile.php?id=${location.user_id}">
+                                                <img src="../admin/profile_image/${location.profile_img || '../dist/img/avatar2.png'}" 
+                                                    class="rounded-circle" 
+                                                    style="width: 40px; height: 40px; object-fit: cover;">
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="col" style="margin-top:-4px; margin-left:-10px;">
+                                        <h6 class="font-weight-bold">
+                                            ${location.name} ${location.status == 1 ? '<i class="fas fa-check-circle" style="color: #582fff; margin-left: 3px;" title="Verified"></i>' : ''}
+                                        </h6>
+                                        <div style="margin-top:-7px;" class="star-rating">
+                                            ${'<i class="fas fa-star text-warning"></i>'.repeat(fullStars)}
+                                            ${halfStar ? '<i class="fas fa-star-half-alt"></i>' : ''}
+                                            ${'<i class="far fa-star text-warning"></i>'.repeat(emptyStars)}
+                                        </div>
+                                    </div>
+                                </div> 
+                                <div class="badges-container">
+                                ${improvementBadges} <!-- Display individual badges for app improvements -->
+                            </div>
+                                <p class="ml-2 mr-2 mt-2">${location.feedback}</p>
+                                ${adminResponseHTML} <!-- Display admin response if available -->
+                            </div>
+                        </div>
+                    `;
+                        $('#reviews-container').append(reviewHTML);
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error("AJAX error:", error);
+                    console.error("Status:", status);
+                    console.error("Response:", xhr.responseText);
+                }
             });
-
-            function resetForm() {
-                $('#rating-input').val('0');
-                $('#app_improvement').val(''); // Clear the Select2 value
-                $('#app_improvement').trigger('change'); // Update Select2 display
-                $('#feedback-input').val(''); // Clear the textarea
-                $('.star-rating i').removeClass('fas').addClass('far'); // Reset stars
-            }
+        };
+    });
+</script>
 
 
-        });
 
-    </script>
+
+<?php
+include 'footer.php';
+?>

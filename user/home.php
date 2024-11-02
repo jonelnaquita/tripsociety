@@ -3,6 +3,7 @@ session_start();
 include 'header.php';
 include 'modal/home.php';
 include 'modal/report.php';
+include 'modal/edit-post.php';
 ?>
 
 <head>

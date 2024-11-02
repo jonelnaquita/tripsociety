@@ -1,0 +1,51 @@
+.input-container {
+    position: relative;
+    margin: 20px 0;
+}
+
+.input-label {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    transition: 0.2s;
+    color: #aaa;
+    background-color: white;
+}
+
+.material-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    outline: none;
+}
+
+.material-input:focus {
+    border-color: #6200ea;
+}
+
+.material-input:focus+.input-label,
+.material-input:not(:placeholder-shown)+.input-label {
+    top: -10px;
+    left: 10px;
+    font-size: 12px;
+    color: #6200ea;
+}
+
+/* Toggle password icon styling */
+.form-control-feedback {
+    position: absolute;
+    right: 30px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    color: #888;
+    cursor: pointer;
+    display: none;
+}
+
+/* Show the toggle icon only when the password field has input */
+input[type="password"]:not(:placeholder-shown)~.form-control-feedback {
+    display: block;
+}

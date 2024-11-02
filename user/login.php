@@ -18,10 +18,9 @@ if (isset($_SESSION['user'])) {
 
     <link rel="stylesheet" href="../plugins/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" href="../plugins/toastr/toastr.min.css">
-
     <link rel="stylesheet" href="../plugins/icheck-bootstrap/icheck-bootstrap.min.css">
-
     <link rel="stylesheet" href="../dist/css/adminlte.min.css?v=3.2.0">
+    <link rel="stylesheet" href="assets/css/login.css">
 </head>
 
 <body class="hold-transition login-page bg-white">
@@ -33,27 +32,26 @@ if (isset($_SESSION['user'])) {
         <br>
         <!-- Login Form -->
         <form id="loginForm">
-            <label class="font-weight-normal">Email Address</label>
-            <div class="input-group mb-3">
-                <input type="email" id="email" name="email" class="form-control" placeholder="Email" required>
+            <div class="input-container">
+                <input type="email" id="email" name="email" class="material-input" placeholder=" " required>
+                <label for="input" class="input-label">Email</label>
             </div>
 
-            <label class="font-weight-normal">Password</label>
-            <div class="form-group has-feedback" style="position: relative;">
-                <input type="password" id="password" name="password" class="form-control" placeholder="Password"
-                    required style="padding-right: 50px;">
-                <i id="toggle-password" class="fa fa-eye form-control-feedback"
-                    style="position: absolute; right: 20px; top: 50%; transform: translateY(-50%); font-size: 20px; cursor: pointer;"></i>
+            <div class="input-container">
+                <input type="password" id="password" name="password" class="material-input" placeholder=" " required>
+                <label for="input" class="input-label">Password</label>
+                <i id="toggle-password" class="fa fa-eye form-control-feedback"></i>
             </div>
+
 
             <div style="margin-top:-10px;">
-                <a href="auth.php" class="text-dark"><u>Forgot password?</u></a>
+                <a class="forgot-password text-dark"><u>Forgot password?</u></a>
             </div>
 
             <div class="row mt-5">
                 <div class="col">
                     <button type="submit" class="btn btn-block"
-                        style="background-color: #582fff; color: #ffff; border-radius:25px; font-size:20px;">Sign
+                        style="background-color: #582fff; color: #ffff; border-radius:25px; font-size:17px;">Sign
                         In</button>
                 </div>
             </div>
@@ -64,19 +62,44 @@ if (isset($_SESSION['user'])) {
                 </div>
             </div>
         </form>
+    </div>
 
+    <div class="forgot-password-box" style="display: none;">
+        <br>
+        <!-- Login Form -->
+        <form id="forgotPasswordForm">
+            <div class="row container">
+                <h5>Enter your email to reset your password.</h5>
+            </div>
+            <div class="input-container">
+                <input type="email" id="email-reset" name="email-reset" class="material-input" placeholder=" " required>
+                <label for="input" class="input-label">Email</label>
+            </div>
 
+            <div class="row mt-5">
+                <div class="col">
+                    <button type="submit" id="submit-reset" class="btn btn-block"
+                        style="background-color: #582fff; color: #ffff; border-radius:25px; font-size:17px;">
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
+                            style="display: none;"></span>
+                        <span class="button-text">Submit</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="row mt-3">
+                <div class="col text-center">
+                    <p>Back to <a class="back-login text-dark font-weight-bold">Sign In?</a></p>
+                </div>
+            </div>
+        </form>
     </div>
 
 
 
     <script src="../plugins/jquery/jquery.min.js"></script>
-
     <script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-
     <script src="../plugins/toastr/toastr.min.js"></script>
-
-
     <script src="../dist/js/adminlte.min.js?v=3.2.0"></script>
 </body>
 
@@ -102,8 +125,41 @@ if (isset($_SESSION['user'])) {
                 togglePassword.classList.add('fa-eye-slash');
             }
         });
+
+        // Show/hide toggle icon based on password input content
+        passwordInput.addEventListener('input', function () {
+            togglePassword.style.display = passwordInput.value ? 'block' : 'none';
+        });
+
+        // Initially hide the toggle icon
+        togglePassword.style.display = 'none';
     });
 
+</script>
+
+<script>
+    // Wait for the DOM to load
+    document.addEventListener("DOMContentLoaded", function () {
+        // Get the elements
+        const loginBox = document.querySelector(".login-box");
+        const forgotPasswordBox = document.querySelector(".forgot-password-box");
+        const forgotPasswordLink = document.querySelector(".forgot-password");
+        const backToLoginLink = document.querySelector(".back-login");
+
+        // Show forgot password box and hide login box when .forgot-password is clicked
+        forgotPasswordLink.addEventListener("click", function (e) {
+            e.preventDefault();
+            loginBox.style.display = "none";
+            forgotPasswordBox.style.display = "block";
+        });
+
+        // Show login box and hide forgot password box when .back-login is clicked
+        backToLoginLink.addEventListener("click", function (e) {
+            e.preventDefault();
+            forgotPasswordBox.style.display = "none";
+            loginBox.style.display = "block";
+        });
+    });
 </script>
 
 <script>
@@ -135,6 +191,48 @@ if (isset($_SESSION['user'])) {
                 },
                 error: function (xhr, status, error) {
                     toastr.error('Something went wrong. Please try again.');  // General error message
+                }
+            });
+        });
+    });
+</script>
+
+<!--Submit for Reset Password-->
+<script>
+    $(document).ready(function () {
+        $('#forgotPasswordForm').on('submit', function (e) {
+            e.preventDefault(); // Prevent default form submission
+
+            var $submitButton = $('#submit-reset');
+            var $spinner = $submitButton.find('.spinner-border');
+            var $buttonText = $submitButton.find('.button-text');
+
+            // Show the spinner and disable the button
+            $spinner.show();
+            $buttonText.hide(); // Hide button text
+            $submitButton.prop('disabled', true);
+
+            $.ajax({
+                type: 'POST',
+                url: 'api/login/forgot-password.php', // PHP file to process the request
+                data: $(this).serialize(), // Serialize form data
+                dataType: 'json',
+                success: function (response) {
+                    // Hide the spinner
+                    $spinner.hide();
+                    $buttonText.show(); // Show button text
+                    $submitButton.prop('disabled', false); // Re-enable the button
+
+                    // Show toastr message
+                    toastr.success('A verification link has been sent to your email.');
+                    $('#email-reset').val('');
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.error(jqXHR.responseText);
+                    $spinner.hide(); // Hide the spinner on error
+                    $buttonText.show(); // Show button text
+                    $submitButton.prop('disabled', false); // Re-enable the button
+                    toastr.error('An error occurred. Please try again.');
                 }
             });
         });

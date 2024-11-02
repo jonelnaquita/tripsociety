@@ -492,60 +492,7 @@ include 'modal/comment.php';
         const allImages = existingImages.concat(newImages);
         $('#image-path').val(allImages.join(',')); // Update the hidden input field
     };
-
 </script>
-
-<!--Update Post-->
-<script>
-    // Update Post
-    $(document).ready(function () {
-        $('#editPostForm').on('submit', function (event) {
-            event.preventDefault(); // Prevent the default form submission
-
-            // Get values from form fields
-            var postId = $('#editPostId').val();
-            var postText = $('#editPostText').val();
-            var location = $('#editLocation').val();
-            var images = $('#selected-images')[0].files; // Get the file input
-
-            // Create a FormData object
-            var formData = new FormData();
-            formData.append('post_id', postId);
-            formData.append('post', postText);
-            formData.append('editLocation', location);
-
-            // Append images to FormData if there are any
-            if (images.length > 0) {
-                for (var i = 0; i < images.length; i++) {
-                    formData.append('images[]', images[i]);
-                }
-            } else {
-                // If no new images, append the existing images
-                const existingImages = $('#existing-image-path').val().split(',');
-                existingImages.forEach(image => {
-                    formData.append('images[]', image); // Append existing images
-                });
-            }
-
-            // Send AJAX request
-            $.ajax({
-                url: "api/home/update-post.php", // Update the URL to your PHP file
-                type: "POST",
-                data: formData,
-                contentType: false, // Important for FormData
-                processData: false, // Important for FormData
-                success: function (response) {
-                    alert("Post updated successfully!");
-                    location.reload();
-                },
-                error: function () {
-                    alert("Error updating post. Please try again.");
-                }
-            });
-        });
-    });
-</script>
-
 
 
 <!--Display, Post and Get Comment-->
