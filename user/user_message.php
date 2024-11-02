@@ -156,8 +156,8 @@ function time_elapsed_string($datetime, $full = false)
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body" style="padding: 24px; font-size: 16px; color: #555;">
-                <p style="margin-bottom: 24px;">Are you sure you want to delete messages to this user?</p>
+            <div class="modal-body text-center" style="padding: 24px; font-size: 16px; color: #555;">
+                <p style="margin-bottom: 24px;">Are you sure you want to delete your messages to this user?</p>
                 <input type="hidden" id="userIdToDelete"> <!-- Hidden input -->
             </div>
             <div class="modal-footer" style="padding: 16px; justify-content: flex-end; border-top: none;">
