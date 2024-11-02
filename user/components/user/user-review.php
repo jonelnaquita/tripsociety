@@ -79,7 +79,11 @@
                                         ${imageArray.map(img => img ? `
                                             <div class="col-6 col-md-4 col-lg-3 mb-3">
                                                 <div class="d-flex justify-content-center" style="height: 0; padding-bottom: 100%; position: relative;">
-                                                    <img src="../admin/review_image/${img}" alt="Image" class="img-fluid rounded" style="position: absolute; top: 0; left: 0; height: 100%; width: 100%; object-fit: cover;" data-toggle="modal" data-target="#imageModal" data-src="../admin/review_image/${img}">
+                                                    <!-- Wrap the image in an anchor tag for Fancybox -->
+                                                    <a href="../admin/review_image/${img}" data-fancybox="gallery">
+                                                        <img src="../admin/review_image/${img}" alt="Image" class="img-fluid rounded"
+                                                            style="position: absolute; top: 0; left: 0; height: 100%; width: 100%; object-fit: cover;">
+                                                    </a>
                                                 </div>
                                             </div>
                                         ` : '').join('')}

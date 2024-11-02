@@ -41,8 +41,18 @@ try {
 
 
     // Query for counting announcements
-    $announcementQuery = "SELECT COUNT(*) AS announcement_count FROM tbl_announcement";
-    $stmt = $pdo->query($announcementQuery);
+    $announcementQuery = "
+        SELECT COUNT(*) AS announcement_count 
+        FROM tbl_announcement ta
+        LEFT JOIN tbl_announcement_viewed tav ON tav.announcement_id = ta.id AND tav.user_id = :user_id
+        WHERE tav.id IS NULL
+    ";
+
+    $stmt = $pdo->prepare($announcementQuery);
+    $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+    $stmt->execute();
+
+    // Fetch the announcement count
     $announcementCount = $stmt->fetch(PDO::FETCH_ASSOC)['announcement_count'];
 
     // Query for counting travel companion

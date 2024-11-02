@@ -11,8 +11,6 @@ include 'modal/edit-post.php';
 </head>
 
 <div class="content-wrapper">
-
-
     <section class="content mt-2">
 
 

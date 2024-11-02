@@ -71,6 +71,7 @@
                     response.forEach(function (announcement) {
                         announcements += `
                             <div class="container mt-2">
+                            <a href="announcement.php?id=${announcement.id}">
                                 <div class="card notification-card d-flex flex-row" style="background-image: url('../admin/announcement/${announcement.image}');">
                                     <div class="card-body">
                                         <h5 class="card-title font-weight-bold">${announcement.title}</h5>
@@ -81,6 +82,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                </a>
                             </div>
                         `;
                     });
