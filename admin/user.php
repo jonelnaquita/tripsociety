@@ -4,6 +4,14 @@ include "includes/header.php";
 include '../inc/config.php';
 include 'modal/show-user-id.php';
 include 'modal/confirm-user-status.php';
+
+if (isset($_GET['id'])) {
+    $reportId = $_GET['id'];
+    $update_query = "UPDATE tbl_user SET unread = 1 WHERE id = :id";
+    $update_stmt = $pdo->prepare($update_query);
+    $update_stmt->bindParam(':id', $reportId, PDO::PARAM_INT);
+    $update_stmt->execute();
+}
 ?>
 
 <style>
