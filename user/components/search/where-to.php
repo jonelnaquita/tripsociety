@@ -23,8 +23,6 @@
 
                     <div class="recent-searches">
                         <div id="recent-searches-list"></div>
-
-                        <p><i class="fas fa-paper-plane"></i> Nearby</p>
                         <hr>
                         <h6 class="text-left">Recent Searches</h6>
                         <?php
