@@ -39,11 +39,11 @@
                     <div class="col">
 
                         <input type="file" id="selected-images" name="images[]" multiple style="display: none;">
-                        <input type="text" id="existing-image-path" name="existing-image-path">
-                        <input type="text" id="image-path" name="image-path">
-                        <input type="text" id="editLocation" class="form-control" name="editLocation"
+                        <input type="hidden" id="existing-image-path" name="existing-image-path">
+                        <input type="hidden" id="image-path" name="image-path">
+                        <input type="hidden" id="editLocation" class="form-control" name="editLocation"
                             placeholder="Select Location">
-                        <input type="text" id="editPostId" name="post_id">
+                        <input type="hidden" id="editPostId" name="post_id">
 
                         <button class="btn btn-default btn-custom" type="button" id="add-photo-btn">
                             <i class="far fa-images" style="font-size:12px;"></i>&nbsp; Add photo

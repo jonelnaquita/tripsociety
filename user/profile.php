@@ -4,6 +4,7 @@ include 'header.php';
 include 'modal/comment.php';
 include 'modal/home.php';
 include 'modal/report.php';
+include 'modal/edit-post.php';
 
 if (isset($_GET['id'])) {
     include '../inc/config.php';

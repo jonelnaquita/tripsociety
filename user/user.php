@@ -2,6 +2,7 @@
 include '../inc/session_user.php';
 include 'header.php';
 include 'modal/travel-companion.php';
+include 'modal/edit-post.php';
 
 if (isset($_SESSION['user'])) {
     include '../inc/config.php';
