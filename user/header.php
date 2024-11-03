@@ -161,6 +161,7 @@
 
 </head>
 
-<?php
-include 'sidebar.php';
+<?php if (isset($_SESSION['user'])):
+    include 'sidebar.php';
+endif;
 ?>

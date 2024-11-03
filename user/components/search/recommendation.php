@@ -67,7 +67,7 @@
 
 <script>
     function fetchRecommendations() {
-        var user_id = <?php echo $_SESSION['user']; ?>; // Replace with actual user ID
+        var user_id = <?php echo isset($_SESSION['user']) ? json_encode($_SESSION['user']) : 'null'; ?>; // Replace with actual user ID
 
         $.ajax({
             url: 'api/search/fetch-recommendation.php', // Path to the PHP script
@@ -105,5 +105,7 @@
     }
 
     // Fetch recommendations on page load
-    fetchRecommendations();
+    $(document).ready(function () {
+        fetchRecommendations();
+    });
 </script>

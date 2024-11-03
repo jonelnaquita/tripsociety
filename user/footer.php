@@ -20,23 +20,25 @@
     }
 </style>
 
-<footer class="main-footer fixed custom-fixed-bottom p-0">
-    <div class="row h-100 align-items-center">
-        <div class="col d-flex justify-content-between mt-1 ml-3 mr-3 p-0">
-            <a type="button" id="homeTab" style="font-size:14px;" href="home.php"
-                class="btn-footer btn btn-outline-dark flex-fill border-0"><i class="fas fa-home"></i><br>Home</a>
-            <a type="button" id="searchTab" style="font-size:14px;" href="search.php"
-                class="btn-footer btn btn-outline-dark flex-fill border-0"><i class="fas fa-search"></i><br>Search</a>
-            <a type="button" id="reviewsTab" style="font-size:14px;" href="reviews.php"
-                class="btn-footer btn btn-outline-dark flex-fill border-0"><i class="far fa-edit"></i><br>Reviews</a>
-            <a type="button" id="messagesTab" style="font-size:14px;" href="messages.php"
-                class="btn-footer btn btn-outline-dark flex-fill border-0"><i
-                    class="fas fa-envelope"></i><br>Messages</a>
-            <button style="font-size:14px;" class="btn-footer btn btn-outline-dark flex-fill border-0"
-                data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i><br>More</button>
+<?php if (isset($_SESSION['user'])): ?>
+    <footer class="main-footer fixed custom-fixed-bottom p-0">
+        <div class="row h-100 align-items-center">
+            <div class="col d-flex justify-content-between mt-1 ml-3 mr-3 p-0">
+                <a type="button" id="homeTab" style="font-size:14px;" href="home.php"
+                    class="btn-footer btn btn-outline-dark flex-fill border-0"><i class="fas fa-home"></i><br>Home</a>
+                <a type="button" id="searchTab" style="font-size:14px;" href="search.php"
+                    class="btn-footer btn btn-outline-dark flex-fill border-0"><i class="fas fa-search"></i><br>Search</a>
+                <a type="button" id="reviewsTab" style="font-size:14px;" href="reviews.php"
+                    class="btn-footer btn btn-outline-dark flex-fill border-0"><i class="far fa-edit"></i><br>Reviews</a>
+                <a type="button" id="messagesTab" style="font-size:14px;" href="messages.php"
+                    class="btn-footer btn btn-outline-dark flex-fill border-0"><i
+                        class="fas fa-envelope"></i><br>Messages</a>
+                <button style="font-size:14px;" class="btn-footer btn btn-outline-dark flex-fill border-0"
+                    data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i><br>More</button>
+            </div>
         </div>
-    </div>
-</footer>
+    </footer>
+<?php endif; ?>
 
 
 <script>

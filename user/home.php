@@ -1,5 +1,5 @@
 <?php
-session_start();
+include '../inc/session_user.php';
 include 'header.php';
 include 'modal/home.php';
 include 'modal/report.php';
@@ -18,6 +18,7 @@ include 'modal/edit-post.php';
         include 'components/home/create-new-post.php';
         include 'components/home/companion-post.php';
         ?>
+
 
         <?php
         if (!isset($_SESSION['user'])) {

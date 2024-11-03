@@ -276,33 +276,20 @@ include '../inc/config.php';
             </a>
 
             <div class="sidebar">
-
-
-
                 <nav class="mt-4">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                         data-accordion="false">
-
-
-
                         <li class="nav-item">
                             <a href="index.php" id="dashboard" class="nav-link font-weight-bold text-dark">
                                 <i class="fas fa-tachometer-alt"></i> Dashboard
                             </a>
                         </li>
-
-
-
-
-
                         <li class="nav-item">
                             <a href="location.php" class="nav-link font-weight-bold text-dark" id="locations">
                                 <i class="fas fa-user"></i> Locations
 
                             </a>
                         </li>
-
-
                         <li class="nav-item">
                             <a href="user.php" class="nav-link font-weight-bold text-dark" id="users">
 
@@ -310,17 +297,11 @@ include '../inc/config.php';
 
                             </a>
                         </li>
-
-
                         <li class="nav-item">
                             <a href="feedback.php" class="nav-link font-weight-bold text-dark" id="feedbacks">
                                 <i class="fas fa-lock"></i> Feedbacks
                             </a>
                         </li>
-
-
-
-
                         <li class="nav-item">
                             <a href="announcement.php" class="nav-link font-weight-bold text-dark" id="announcement">
                                 <i class="fas fa-history"></i> Announcement
@@ -330,14 +311,6 @@ include '../inc/config.php';
 
 
                         </li>
-
-
-
-
-
-
-
-
 
                     </ul>
                 </nav>

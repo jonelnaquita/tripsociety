@@ -11,25 +11,27 @@
   </ul>
 
   <ul class="navbar-nav ml-auto">
-    <li class="nav-item dropdown" style="margin-right: -13px;">
-      <a class="nav-link" href="javascript:void(0);" onclick="openBottomSheet();">
-        <i class="fas fa-search text-white" style="font-size:18px;"></i>
-      </a>
-    </li>
 
-    <li class="nav-item dropdown" id="install-button-container" style="margin-right: -13px; display:none;">
-      <a class="nav-link">
-        <i class="fas fa-download text-white" id="install-button" style="font-size:18px;"></i>
-      </a>
-    </li>
+    <?php if (isset($_SESSION['user'])): ?>
+      <li class="nav-item dropdown" style="margin-right: -13px;">
+        <a class="nav-link" href="javascript:void(0);" onclick="openBottomSheet();">
+          <i class="fas fa-search text-white" style="font-size:18px;"></i>
+        </a>
+      </li>
 
+      <li class="nav-item dropdown" id="install-button-container" style="margin-right: -13px; display:none;">
+        <a class="nav-link">
+          <i class="fas fa-download text-white" id="install-button" style="font-size:18px;"></i>
+        </a>
+      </li>
 
-    <li class="nav-item dropdown" style="margin-right:-10px;">
-      <a class="nav-link" href="notification.php">
-        <i class="fas fa-bell text-white" style="font-size:18px;"></i>
-        <span class="badge badge-warning notification-number navbar-badge"></span>
-      </a>
-    </li>
+      <li class="nav-item dropdown" style="margin-right:-10px;">
+        <a class="nav-link" href="notification.php">
+          <i class="fas fa-bell text-white" style="font-size:18px;"></i>
+          <span class="badge badge-warning notification-number navbar-badge"></span>
+        </a>
+      </li>
+    <?php endif; ?>
 
     <li class="nav-item" style="margin-top:-2px;">
       <?php

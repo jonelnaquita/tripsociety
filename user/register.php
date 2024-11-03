@@ -79,7 +79,7 @@
           Sign Up
         </button>
 
-        <a href="guest.php" class="btn btn-block btn-lg"
+        <a href="home-guest.php" class="btn btn-block btn-lg"
           style="border-radius: 25px; border: 1px solid #582fff; color: #582fff;">
           Continue as Guest
         </a>

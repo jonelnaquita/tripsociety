@@ -45,6 +45,16 @@ if ($user_id) {
         echo json_encode(['error' => 'User not found']);
     }
 } else {
-    echo json_encode(['error' => 'Invalid user ID']);
+    // If user ID is not set, show 5 random locations
+    $sqlRandomLocations = "SELECT id, location_name, image 
+                           FROM tbl_location 
+                           ORDER BY RAND() 
+                           LIMIT 6";
+    $stmtRandomLocations = $pdo->prepare($sqlRandomLocations);
+    $stmtRandomLocations->execute();
+    $randomLocations = $stmtRandomLocations->fetchAll(PDO::FETCH_ASSOC);
+
+    // Return the random locations in JSON format
+    echo json_encode($randomLocations);
 }
 ?>

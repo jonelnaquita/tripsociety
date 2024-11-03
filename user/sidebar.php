@@ -123,7 +123,6 @@
 
     <body class="wrapper">
         <?php include '../inc/navbar.php'; ?>
-
         <aside class="main-sidebar bg-light d-flex flex-column">
             <div class="sidebar" style="margin-top: 60px">
                 <br>
@@ -240,7 +239,6 @@
                 </div>
             </div>
         </aside>
-
         <br><br>
         <script>
             document.getElementById('go-back').addEventListener('click', function () {
