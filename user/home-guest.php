@@ -178,8 +178,8 @@ include 'footer.php';
     }
 
     .fancybox-image img {
-        width: 150px;
-        height: 150px;
+        width: 140px;
+        height: 140px;
         object-fit: cover;
         cursor: pointer;
         border-radius: 5px;
