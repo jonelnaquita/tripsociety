@@ -6,7 +6,8 @@ header('Content-Type: application/json'); // Set header to return JSON
 // Fetch reviews
 $stmt = $pdo->prepare("SELECT tr.*, tl.location_name, tu.name AS user_name, tu.profile_img FROM tbl_review tr 
                         LEFT JOIN tbl_location tl ON tl.id = tr.location_id 
-                        LEFT JOIN tbl_user tu ON tu.id = tr.user_id 
+                        LEFT JOIN tbl_user tu ON tu.id = tr.user_id
+                        WHERE tr.review != ''
                         ORDER BY tr.id DESC");
 $stmt->execute();
 $reviews = $stmt->fetchAll(PDO::FETCH_ASSOC);
