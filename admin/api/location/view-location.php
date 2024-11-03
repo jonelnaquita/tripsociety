@@ -1,5 +1,4 @@
 <?php
-// fetch-location.php
 include '../../../inc/config.php';
 
 if (isset($_GET['id'])) {
@@ -18,25 +17,21 @@ if (isset($_GET['id'])) {
             loc.id = :id
     ");
     $stmt->bindParam(':id', $locationId, PDO::PARAM_INT);
-
     $stmt->execute();
 
     // Fetch the location data
     $location = $stmt->fetchAll(PDO::FETCH_ASSOC); // Use fetchAll to get multiple rows
 
-    // Check if location exists
     if (!empty($location)) {
-        // Organize the data
         $result = [
             'location_name' => $location[0]['location_name'],
-            'image' => $location[0]['image'],
+            'image' => $location[0]['image'], // This contains comma-separated images
             'description' => $location[0]['description'],
             'category' => $location[0]['category'],
             'city' => $location[0]['city'],
             'instructions' => []
         ];
 
-        // Loop through the results to gather instruction texts
         foreach ($location as $row) {
             if (!empty($row['route_text']) && !empty($row['instruction_text'])) {
                 $result['instructions'][] = [

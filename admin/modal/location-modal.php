@@ -1,10 +1,33 @@
-<!-- Location Details Modal -->
+<style>
+    #locationImageCarousel .carousel-item img {
+        height: 400px;
+        /* Set a fixed height as needed */
+        width: 100%;
+        object-fit: cover;
+        /* Ensures the image covers the fixed height while maintaining aspect ratio */
+    }
+</style>
+
 <div class="modal fade" id="locationDetailsModal" tabindex="-1" aria-labelledby="locationDetailsModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-body">
-                <img id="locationImage" src="" alt="" class="img-fluid mb-3" />
+                <!-- Carousel for multiple images -->
+                <div id="locationImageCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner" id="carouselImages"></div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#locationImageCarousel"
+                        data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#locationImageCarousel"
+                        data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+
                 <h5 id="locationName"></h5>
                 <p style="margin-top: -10px;">
                     <i class="fa-solid fa-location-dot" style="margin-right: 10px;"></i>
@@ -39,49 +62,53 @@
 </div>
 
 <script>
-    // Event delegation to handle click events on dynamically created elements
     $(document).on('click', '.view-location', function () {
         const locationId = $(this).data('id');
 
         // Fetch the location details
         $.ajax({
-            url: 'api/location/view-location.php', // Replace with your actual endpoint
+            url: 'api/location/view-location.php',
             method: 'GET',
             data: { id: locationId },
             dataType: 'json',
             success: function (data) {
-                // Populate the modal with location details
                 $('#locationName').text(data.location_name);
-                $('#locationImage').attr('src', 'images/' + data.image); // Update image path
                 $('#locationDescription').text(data.description);
                 $('#locationCategory').text(data.category);
                 $('#locationCity').text(data.city);
 
+                // Parse and display multiple images as carousel items
+                const images = data.image.split(','); // Split comma-separated images
+                let carouselItems = '';
+
+                images.forEach((image, index) => {
+                    carouselItems += `
+                        <div class="carousel-item ${index === 0 ? 'active' : ''}">
+                            <img src="images/${image.trim()}" class="d-block w-100" alt="Location Image">
+                        </div>`;
+                });
+                $('#carouselImages').html(carouselItems);
+
                 // Clear existing instructions
                 $('#content .timeline').empty();
 
-                // Check if instructions are available
                 if (data.instructions && data.instructions.length > 0) {
-                    // Populate instructions
                     data.instructions.forEach(function (instruction) {
                         $('#content .timeline').append(`
-            <li class="event">
-                <h3 class="route-text">${instruction.route_text}</h3>
-                <p class="instruction-text">${instruction.instruction_text}</p>
-            </li>
-        `);
+                            <li class="event">
+                                <h3 class="route-text">${instruction.route_text}</h3>
+                                <p class="instruction-text">${instruction.instruction_text}</p>
+                            </li>
+                        `);
                     });
                 } else {
-                    // If there are no instructions, display a message
                     $('#content .timeline').append(`
-        <li class="event">
-            <p>No instructions available.</p>
-        </li>
-    `);
+                        <li class="event">
+                            <p>No instructions available.</p>
+                        </li>
+                    `);
                 }
 
-
-                // Show the modal
                 $('#locationDetailsModal').modal('show');
             },
             error: function (xhr, status, error) {
@@ -89,5 +116,4 @@
             }
         });
     });
-
 </script>
