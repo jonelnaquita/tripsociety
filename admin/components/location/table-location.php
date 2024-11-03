@@ -170,85 +170,96 @@ include 'modal/delete-location-modal.php'; ?>
 
 <script>
     $(document).ready(function () {
-        // Initialize DataTable after appending rows
+        // Initialize previous data variable
+        let previousData = [];
+
         // Initial fetch of locations
         fetchLocations();
 
         // Function to fetch locations
         function fetchLocations() {
             $.ajax({
-                url: 'api/location/fetch-locations.php', // URL of your PHP script
-                method: 'GET', // Request method
-                dataType: 'json', // Expected data format from server
+                url: 'api/location/fetch-locations.php',
+                method: 'GET',
+                dataType: 'json',
                 success: function (data) {
-                    // Clear the table body
-                    $("table tbody").empty();
+                    // Check if the data has changed
+                    if (JSON.stringify(data) !== JSON.stringify(previousData)) {
+                        // Store new data as previous data for comparison in the next interval
+                        previousData = data;
 
-                    // Loop through the data and append to the table
-                    $.each(data, function (index, location) {
-                        var row = `
-                            <tr>
-                                <td class="text-center">
-                                    <img src="images/${location.image.split(',')[0]}" class="avatar avatar-sm me-3 border-radius-lg" alt="${location.location_name}">
-                                </td>
-
-                                <td class="mb-0 text-sm font-weight-bold">${location.location_name}</td>
-                                <td class="mb-0 text-sm">${location.city}</td>
-                                <td class="description-limited mb-0 text-sm">${location.description}</td>
-                                <td class="text-xs font-weight-bold mb-0">
-                                    <span class="badge badge-sm bg-gradient-success">${location.category}</span>
-                                </td>
-                                <td class="text-center">
-                                    <a href="panorama.php?id=${location.id}" class="btn btn-primary">
-                                        <i class="fas fa-street-view"></i> 
-                                    </a>
-                                </td>
-                                <td class="text-center">
-                                    <a href="map_location.php?id=${location.id}" class="btn btn-info">
-                                        <i class="fas fa-map"></i>
-                                    </a>
-                                </td>
-                                <td class="text-center">
-                                    <div class="dropdown">
-                                        <button class="btn bg-gradient-success dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class="fas fa-cog"></i>
-                                        </button>
-                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            <a class="dropdown-item view-location" data-bs-toggle="modal" data-bs-target="#locationDetailsModal" data-toggle="tooltip" data-id="${location.id}" title="View">
-                                                <i class="fas fa-eye"></i> View
-                                            </a>
-                                            <a class="dropdown-item edit-location-btn" data-bs-toggle="modal" data-bs-target="#editLocationModal" data-toggle="tooltip" data-id="${location.id}" title="Edit">
-                                                <i class="fas fa-edit"></i> Edit
-                                            </a>
-                                            <a class="dropdown-item delete-location-btn" data-toggle="tooltip" data-id="${location.id}" title="Delete">
-                                                <i class="fas fa-trash-alt"></i> Delete
-                                            </a>
-                                        </ul>
-                                    </div>
-                                </td>
-                            </tr>`;
-                        $("table tbody").append(row);
-                    });
-
-                    $('#locationTable').DataTable({
-                        "destroy": true,
-                        "paging": true,
-                        "searching": true,
-                        "pagingType": "simple",
-                        "language": {
-                            "paginate": {
-                                "next": '<i class="fas fa-chevron-right"></i>',
-                                "previous": '<i class="fas fa-chevron-left"></i>'
-                            },
-                            "emptyTable": "No data available"
+                        // Clear and destroy the table if it exists
+                        if ($.fn.DataTable.isDataTable('#locationTable')) {
+                            $('#locationTable').DataTable().clear().destroy();
                         }
-                    });
+
+                        // Clear the table body
+                        $("table tbody").empty();
+
+                        // Loop through the data and append to the table
+                        $.each(data, function (index, location) {
+                            var row = `
+                                <tr>
+                                    <td class="text-center">
+                                        <img src="images/${location.image.split(',')[0]}" class="avatar avatar-sm me-3 border-radius-lg" alt="${location.location_name}">
+                                    </td>
+                                    <td class="mb-0 text-sm font-weight-bold">${location.location_name}</td>
+                                    <td class="mb-0 text-sm">${location.city}</td>
+                                    <td class="description-limited mb-0 text-sm">${location.description}</td>
+                                    <td class="text-xs font-weight-bold mb-0">
+                                        <span class="badge badge-sm bg-gradient-success">${location.category}</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="panorama.php?id=${location.id}" class="btn btn-primary">
+                                            <i class="fas fa-street-view"></i> 
+                                        </a>
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="map_location.php?id=${location.id}" class="btn btn-info">
+                                            <i class="fas fa-map"></i>
+                                        </a>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="dropdown">
+                                            <button class="btn bg-gradient-success dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="fas fa-cog"></i>
+                                            </button>
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                <a class="dropdown-item view-location" data-bs-toggle="modal" data-bs-target="#locationDetailsModal" data-toggle="tooltip" data-id="${location.id}" title="View">
+                                                    <i class="fas fa-eye"></i> View
+                                                </a>
+                                                <a class="dropdown-item edit-location-btn" data-bs-toggle="modal" data-bs-target="#editLocationModal" data-toggle="tooltip" data-id="${location.id}" title="Edit">
+                                                    <i class="fas fa-edit"></i> Edit
+                                                </a>
+                                                <a class="dropdown-item delete-location-btn" data-toggle="tooltip" data-id="${location.id}" title="Delete">
+                                                    <i class="fas fa-trash-alt"></i> Delete
+                                                </a>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>`;
+                            $("table tbody").append(row);
+                        });
+
+                        // Reinitialize DataTable with options
+                        $('#locationTable').DataTable({
+                            "paging": true,
+                            "searching": true,
+                            "pagingType": "simple",
+                            "language": {
+                                "paginate": {
+                                    "next": '<i class="fas fa-chevron-right"></i>',
+                                    "previous": '<i class="fas fa-chevron-left"></i>'
+                                },
+                                "emptyTable": "No data available"
+                            }
+                        });
+                    }
                 },
                 error: function (xhr, status, error) {
                     console.error("Error fetching locations: ", status, error);
                 }
             });
-
         }
 
         // Set interval to fetch locations every 5 seconds (5000 ms)
