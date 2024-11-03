@@ -213,7 +213,7 @@ include 'footer.php';
             // Check if review.images exists and split by commas to get an array
             let imagesHTML = '';
             if (review.images) {
-                let images = review.images.split(', '); // Assuming images are separated by commas
+                let images = review.images.split(','); // Assuming images are separated by commas
                 imagesHTML = `<div class="review-images">`;
                 $.each(images, function (i, image) {
                     imagesHTML += `
