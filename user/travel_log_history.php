@@ -13,6 +13,9 @@ include 'header.php';
             </div>
             <div class="row">
                 <div class="col">
+                    <div class="travel-log">
+
+                    </div>
                     <div class="timeline mt-3">
                         <!-- Timeline items will be inserted here by the AJAX script -->
                     </div>
@@ -43,7 +46,9 @@ include 'footer.php';
 
                     // Check if there are any logs
                     if (data.length === 0) {
-                        timelineHTML = '<p>No Travel Logs History</p>';
+                        noTimelineHTML = '<p class="mt-4 ml-4">No Travel Logs History</p>';
+
+                        $('.travel-log').html(noTimelineHTML);
                     } else {
                         data.forEach(function (log) {
                             timelineHTML += `
@@ -58,9 +63,9 @@ include 'footer.php';
                                 </div>
                             `;
                         });
-                    }
 
-                    $('.timeline').html(timelineHTML);
+                        $('.timeline').html(timelineHTML);
+                    }
                 },
                 error: function (xhr, status, error) {
                     console.error('AJAX Error:', status, error);
