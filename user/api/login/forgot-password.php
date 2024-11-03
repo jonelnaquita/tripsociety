@@ -29,16 +29,16 @@ try {
         $mail->isSMTP();
         $mail->Host = 'smtp.gmail.com';
         $mail->SMTPAuth = true;
-        $mail->Username = 'tripsociety0@gmail.com'; // Your SMTP username
-        $mail->Password = 'iclj sfzq qqtw vnqv'; // Your SMTP password
+        $mail->Username = $SMTPEMAIL; // Your SMTP username
+        $mail->Password = $SMTPPASSWORD; // Your SMTP password
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port = 587;
 
-        $mail->setFrom('tripsociety0@gmail.com', 'Trip Society');
+        $mail->setFrom($SMTPEMAIL, 'Trip Society');
         $mail->addAddress($email);
 
         // Prepare the email content
-        $resetUrl = "https://tripsociety.net/user/reset-password.php?token=$resetToken";
+        $resetUrl = $WEBSITEURL . '/user/reset-password.php?token=' . $resetToken;
 
         // Load the email template and replace placeholders
         $emailBody = file_get_contents('forgot-password-email.php');

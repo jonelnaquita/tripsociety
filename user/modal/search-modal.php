@@ -124,7 +124,7 @@
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary btn-sm" id="clear-filters">Clear Filter</button>
+                <button type="button" class="btn btn-secondary btn-sm clear-filters" id="clear-filters">Clear Filter</button>
                 <button type="button" class="btn btn-primary btn-sm" id="apply-filters" data-dismiss="modal">Apply Filters</button>
             </div>
         </div>

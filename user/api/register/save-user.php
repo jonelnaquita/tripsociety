@@ -59,17 +59,17 @@ if (isset($_POST['name'], $_POST['email'], $_POST['username'], $_POST['password'
             $mail->isSMTP();
             $mail->Host = 'smtp.gmail.com';
             $mail->SMTPAuth = true;
-            $mail->Username = 'tripsociety0@gmail.com';
-            $mail->Password = 'iclj sfzq qqtw vnqv';
+            $mail->Username = $SMTPEMAIL;
+            $mail->Password = $SMTPPASSWORD;
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port = 587;
 
             // Recipients
-            $mail->setFrom('tripsociety0@gmail.com', 'Trip Society');
+            $mail->setFrom($SMTPEMAIL, 'Trip Society');
             $mail->addAddress($email, $name);
 
             // Email content
-            $verificationUrl = "https://tripsociety.net/user/verify.php?token=$verificationToken";
+            $verificationUrl = $WEBSITEURL . '/user/verify.php?token=' . $verificationToken;
 
             // Load the email template and replace placeholders with actual data
             $emailBody = file_get_contents('verify-email.php'); // Load the HTML file
