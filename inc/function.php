@@ -1142,7 +1142,7 @@ if (isset($_GET['add_comment'])) {
 
 
 if (isset($_GET['unread-count'])) {
-    $stmtUsers = $pdo->prepare('SELECT COUNT(*) as count FROM tbl_user WHERE unread != 1');
+    $stmtUsers = $pdo->prepare('SELECT COUNT(*) as count FROM tbl_user WHERE unread = 0 AND (id_front IS NOT NULL AND id_back IS NOT NULL AND id_front != "" AND id_back != "")');
     $stmtUsers->execute();
     $userCount = $stmtUsers->fetchColumn();
 
@@ -1710,7 +1710,7 @@ function resetPassword($pdo, $userId, $newPassword)
 
 function getUnreadNotifications($pdo)
 {
-    $query1 = "SELECT * FROM tbl_user WHERE unread = 0 and id_front IS NOT NULL AND id_back IS NOT NULL AND id_front != '' AND id_back != ''";
+    $query1 = "SELECT * FROM tbl_user WHERE unread = 0 AND (id_front IS NOT NULL AND id_back IS NOT NULL AND id_front != '' AND id_back != '')";
     $query2 = "SELECT *, f.id as id FROM tbl_feedback f LEFT JOIN tbl_user u ON u.id = f.user_id WHERE f.unread != 1 ";
     $query3 = "SELECT *, tpr.id as id FROM tbl_post_report tpr LEFT JOIN tbl_user u ON u.id = tpr.user_id WHERE tpr.unread != 1 ";
     $stmt1 = $pdo->prepare($query1);
