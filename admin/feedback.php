@@ -93,18 +93,20 @@ include '../inc/config.php'; ?>
                         $update_stmt->execute();
                     }
 
+                    // Initial query without a WHERE clause
                     $query = "
-                SELECT tf.*, tu.name, tu.location, tf.date_created AS date, tfr.message
-                FROM tbl_feedback tf
-                LEFT JOIN tbl_user tu ON tu.id = tf.user_id
-                LEFT JOIN tbl_feedback_respond tfr ON tfr.feedback_id = tf.id
-                WHERE tfr.message IS NULL;
-            ";
+    SELECT tf.*, tu.name, tu.location, tf.date_created AS date, tfr.message
+    FROM tbl_feedback tf
+    LEFT JOIN tbl_user tu ON tu.id = tf.user_id
+    LEFT JOIN tbl_feedback_respond tfr ON tfr.feedback_id = tf.id
+    WHERE tfr.message IS NULL
+";
+
                     $params = [];
 
                     if (isset($_GET['id'])) {
                         $feedbackId = intval($_GET['id']);
-                        $query .= " WHERE tf.id = :feedback_id";
+                        $query .= " AND tf.id = :feedback_id"; // Use AND instead of WHERE
                         $params[':feedback_id'] = $feedbackId;
                     }
 
@@ -112,15 +114,18 @@ include '../inc/config.php'; ?>
                     $pdo_statement->execute($params);
                     $result = $pdo_statement->fetchAll(PDO::FETCH_ASSOC);
 
+                    // Close the cursor to free up the connection for the next query
+                    $pdo_statement->closeCursor();
+
                     if (!empty($result)) {
                         foreach ($result as $row) {
                             $feedback_id = $row['id'];
                             $user_id = $_SESSION['id'];
 
                             $response_statement = $pdo->prepare("
-                        SELECT * FROM tbl_feedback_respond
-                        WHERE feedback_id = :feedback_id AND user_id = :user_id
-                    ");
+            SELECT * FROM tbl_feedback_respond
+            WHERE feedback_id = :feedback_id AND user_id = :user_id
+        ");
                             $response_statement->bindParam(':feedback_id', $feedback_id, PDO::PARAM_INT);
                             $response_statement->bindParam(':user_id', $user_id, PDO::PARAM_INT);
                             $response_statement->execute();

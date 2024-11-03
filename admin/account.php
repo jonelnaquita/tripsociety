@@ -75,8 +75,12 @@ include "includes/header.php"; ?>
 
                                     <div class="row m-auto text-center">
                                         <div class="col-lg-12">
-                                            <button type="submit" name="update_account" class="btn btn-secondary">Save
-                                                Changes</button>
+                                            <button type="submit" name="update_account" class="btn btn-secondary"
+                                                id="sendEmailButton">
+                                                <span class="spinner-border spinner-border-sm" role="status"
+                                                    aria-hidden="true" style="display: none;"></span>
+                                                Save Changes
+                                            </button>
                                         </div>
                                     </div>
                                 </form>
@@ -90,13 +94,13 @@ include "includes/header.php"; ?>
                                     <h5>Reset Password</h5>
                                 </div>
 
-                                <form action="../inc/function.php" method="POST" id="resetPasswordForm">
+                                <form id="resetPasswordForm">
                                     <div class="row ml-5 mr-5">
                                         <div class="col mt-2">
                                             <label for="">Email Address</label>
                                             <div class="input-group input-group-outline my-3">
                                                 <input type="email" class="form-control" name="email-reset"
-                                                    id="email-reset" required readonly>
+                                                    id="email-reset" required>
                                             </div>
                                             <p style="font-size:16px; line-height: 1.3;">We recommend using a password
                                                 manager or creating a unique password that contains 10 characters and a
@@ -110,6 +114,7 @@ include "includes/header.php"; ?>
                                         </div>
                                     </div>
                                 </form>
+
                             </div>
                         </div>
                     </div>
@@ -166,6 +171,46 @@ include "includes/header.php"; ?>
                 error: function (xhr, status, error) {
                     console.error(xhr.responseText); // Log error response
                     alert('An error occurred while updating the profile.');
+                }
+            });
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('#resetPasswordForm').on('submit', function (e) {
+            e.preventDefault(); // Prevent the form from submitting normally
+
+            // Get the email value
+            var email = $('#email-reset').val();
+            var $button = $('#sendEmailButton');
+            var $spinner = $button.find('.spinner-border');
+
+            // Show the spinner and disable the button
+            $spinner.show();
+            $button.prop('disabled', true);
+
+            // Send AJAX request
+            $.ajax({
+                type: 'POST',
+                url: 'api/settings/send-email.php', // The PHP file that handles the email sending
+                data: {
+                    email: email
+                },
+                dataType: 'json',
+                success: function (response) {
+                    // Handle success response
+                    toastr.success(response.message);
+                },
+                error: function (xhr, status, error) {
+                    // Handle error response
+                    toastr.error('An error occurred: ' + error);
+                },
+                complete: function () {
+                    // Hide the spinner and enable the button
+                    $spinner.hide();
+                    $button.prop('disabled', false);
                 }
             });
         });

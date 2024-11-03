@@ -1021,7 +1021,7 @@ if (isset($_POST['update_account'])) {
 if (isset($_POST['send_reset_password'])) {
     $email = $_POST['email-reset'];
     $userId = $_SESSION['admin'];
-    $result = sendResetPasswordEmail($email, $userId);
+    $result = sendVerificationEmail($email, $userId);
 
     if ($result) {
         header('Location: ../admin/account.php');
@@ -1664,7 +1664,7 @@ function sendResetPasswordEmail($email, $userId)
     );
 
     try {
-        $verificationLink = 'https://tripsociety.net/admin/reset_password.php?id=' . $userId;
+        $verificationLink = 'http://localhost/tripsociety_latest/admin/reset_password.php?id=' . $userId;
         $emailSubject = 'Reset Password | Trip Society';
         $emailContent = '<html><body><p>To reset your password please click the link <a href="' . $verificationLink . '">Reset Password</a></p></body></html>';
 
@@ -1688,6 +1688,54 @@ function sendResetPasswordEmail($email, $userId)
     }
 
 }
+
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+function sendVerificationEmail($email, $userId)
+{
+    require_once(__DIR__ . '/../vendor/autoload.php');
+    require_once(__DIR__ . '/config.php');
+    // Create a new instance of PHPMailer
+    $mail = new PHPMailer(true);
+
+    try {
+        // SMTP server configuration
+        $mail->isSMTP();
+        $mail->Host = 'smtp.gmail.com';
+        $mail->SMTPAuth = true;
+        $mail->Username = 'tripsociety0@gmail.com';
+        $mail->Password = 'iclj sfzq qqtw vnqv';
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port = 587;
+
+        // Set email sender and recipient
+        $mail->setFrom('tripsociety0@gmail.com', 'Trip Society');
+        $mail->addAddress($email, 'Trip Society');
+
+        // Generate verification URL
+        $verificationUrl = 'https://tripsociety.net/admin/reset_password.php?id=' . urlencode($userId);
+
+        // Content for HTML and Plain Text
+        $mail->isHTML(true);
+        $mail->Subject = 'Account Verification';
+        $mail->Body = "
+            <p>Hi Admin</p>
+            <p>Please verify your account by clicking the link below:</p>
+            <p><a href=\"$verificationUrl\">Verify Your Account</a></p>
+            <p>If you’re having trouble clicking the link, copy and paste it into your browser:</p>
+            <p>$verificationUrl</p>";
+        $mail->AltBody = "Hi Admin, Please verify your account by clicking the link: $verificationUrl";
+
+        // Send the email
+        $mail->send();
+        echo json_encode(['response' => 'Success', 'message' => 'A verification email has been sent.']);
+    } catch (Exception $e) {
+        echo json_encode(['response' => 'Error', 'message' => 'Message could not be sent. Mailer Error: ' . $mail->ErrorInfo]);
+    }
+}
+
 
 // Function to reset password
 function resetPassword($pdo, $userId, $newPassword)
