@@ -1656,6 +1656,7 @@ function sendResetPasswordEmail($email, $userId)
 
     // Email Notification
     require_once(__DIR__ . '/../vendor/autoload.php');
+    require_once 'config.php';
     $config = Brevo\Client\Configuration::getDefaultConfiguration()->setApiKey('api-key', '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');
     $config->setApiKey('partner-key', 'fYZrVRIdQGSFvHxA');
     $apiInstance = new Brevo\Client\Api\TransactionalEmailsApi(
