@@ -10,12 +10,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $city = $_POST['city'];
 
     // Process uploaded files
-    $imageName = null;
+    $imageNames = []; // Initialize an array for image names
     $tourLinkName = null;
 
-    // Check if image was uploaded
+    // Check if new images were uploaded
     if (isset($_FILES['images']) && $_FILES['images']['error'][0] == UPLOAD_ERR_OK) {
-        $imageNames = [];
         foreach ($_FILES['images']['tmp_name'] as $key => $tmp_name) {
             if ($_FILES['images']['error'][$key] == UPLOAD_ERR_OK) {
                 $imageName = preg_replace("/[^a-zA-Z0-9\.\-_]/", "_", basename($_FILES['images']['name'][$key])); // Sanitize
@@ -32,10 +31,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 }
             }
         }
-        $imageNamesStr = implode(',', $imageNames); // Convert to string to save in DB
-    } else {
-        $imageNamesStr = null; // Handle no image uploaded case
     }
+
+    // If no new images were uploaded, fetch existing images from the database
+    if (empty($imageNames)) {
+        $stmt = $pdo->prepare("SELECT image FROM tbl_location WHERE id = :id");
+        $stmt->execute(['id' => $locationId]);
+        $existingImages = $stmt->fetchColumn();
+
+        if ($existingImages) {
+            $imageNames = explode(',', $existingImages); // Convert string to array
+        }
+    }
+
+    // Convert the image names array to a string for database storage
+    $imageNamesStr = implode(',', $imageNames); // Convert to string to save in DB
 
     // Handle tour link upload
     if (isset($_FILES['tour_link']) && $_FILES['tour_link']['error'] == UPLOAD_ERR_OK) {
@@ -84,6 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmtDelete = $pdo->prepare("DELETE FROM tbl_instruction WHERE location_id = :location_id");
     $stmtDelete->execute(['location_id' => $locationId]);
 
+    // Insert new instructions if provided
     if (isset($_POST['instructions'])) {
         foreach ($_POST['instructions'] as $instruction) {
             list($route, $details) = explode('|', $instruction);

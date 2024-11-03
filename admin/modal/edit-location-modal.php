@@ -72,8 +72,7 @@
                             <div class="col-lg-12 mb-4 mt-4">
                                 <label for="imageInput-update">Upload Location Images</label><br>
                                 <input type="file" id="imageInput-update" name="images[]" accept="image/*" multiple>
-                                <!-- Hidden input to store current image paths -->
-                                <input type="hidden" id="current-images" name="current-images" value="">
+                                <input type="hidden" id="current-images" name="current-images">
 
                                 <!-- Image preview for location images -->
                                 <div id="imagePreview" style="display:none; margin-top: 10px;">
@@ -88,7 +87,6 @@
 
                                 </div>
                             </div>
-
 
 
 
@@ -402,11 +400,15 @@
                     // Populate city
                     $('#city').val(data.city).trigger('change');
 
+
+                    const newImages = $('.image-thumbnails');
+                    newImages.empty(); // Clear previous images
+
                     // Clear previous images and prepare for new ones
                     const slidesContainer = $('#imagePreviewsContainer');
                     slidesContainer.empty(); // Clear previous images
 
-                    // Initialize current images variable
+                    // Store current images in a data attribute
                     let currentImages = [];
 
                     // Display image previews if available
@@ -429,6 +431,7 @@
                         // Set the current images in the hidden input
                         $('#current-images').val(currentImages.join(',')); // Save as a comma-separated string
                     }
+
 
                     if (data.virtual_tour) {
                         $('#tourPreview').attr('src', `panorama/${data.virtual_tour}`).show();
@@ -491,7 +494,7 @@
 
         // Gather routes and details
         var instructions = [];
-        // Change here: iterate over each row within the instructions container
+        // Iterate over each row within the instructions container
         $('#instructions-container-update .row').each(function () {
             var route = $(this).find('.route-update').val().trim();
             var details = $(this).find('.details-update').val().trim();
@@ -522,12 +525,21 @@
         const imageInput = document.getElementById('imageInput-update');
         const tourInput = document.getElementById('file-upload-update');
 
-        // Check if the image has changed
-        const files = imageInput.files;
-        for (let i = 0; i < files.length; i++) {
-            formData.append('images[]', files[i]); // Append each file
-        }
+        // Track if images have changed
+        const currentImages = $('#current-images').val().split(','); // Get current images from hidden input
+        const newFiles = imageInput.files;
 
+        // Check if the image has changed
+        if (newFiles.length > 0) {
+            for (let i = 0; i < newFiles.length; i++) {
+                formData.append('images[]', newFiles[i]);
+            }
+        } else {
+            // If no new files, append the existing images to formData
+            currentImages.forEach(image => {
+                formData.append('existing_images[]', image.trim());
+            });
+        }
 
         // Check if the tour link has changed
         if (tourInput.files.length > 0) {
@@ -554,7 +566,7 @@
                 if (result.success) {
                     // Handle success (e.g., close the modal and refresh the data)
                     $('#editLocationModal').modal('hide');
-                    toastr.success('Location updated successfully!', 'Success')
+                    toastr.success('Location updated successfully!', 'Success');
                 } else {
                     alert('Error: ' + result.error);
                 }
