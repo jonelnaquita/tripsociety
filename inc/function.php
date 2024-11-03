@@ -913,7 +913,7 @@ if (isset($_GET['view_unread_activity'])) {
                     <img src="../dist/img/avatar5.png" class="img-circle" style="width:50px;">
                 </div>
                 <div class="col-10">
-                    <p class="font-weight-bold">' . htmlspecialchars($notification['name']) . '</p>
+                    <p class="font-weight-bold">' . htmlspecialchars($report['name']) . '</p>
                     <p class="text-muted" style="font-size:13px; margin-top:-17px;">User submitted a report</p>
                 </div>
             </div>
