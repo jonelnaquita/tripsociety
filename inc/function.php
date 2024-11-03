@@ -1004,7 +1004,7 @@ if (isset($_POST['add_respond'])) {
 
 
 if (isset($_POST['update_account'])) {
-    $userId = $_SESSION['user'];
+    $userId = $_SESSION['admin'];
     $username = $_POST['username'];
     $email = $_POST['email'];
 
@@ -1020,7 +1020,7 @@ if (isset($_POST['update_account'])) {
 
 if (isset($_POST['send_reset_password'])) {
     $email = $_POST['email-reset'];
-    $userId = $_SESSION['user'];
+    $userId = $_SESSION['admin'];
     $result = sendResetPasswordEmail($email, $userId);
 
     if ($result) {
