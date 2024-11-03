@@ -20,38 +20,38 @@ include '../inc/config.php'; ?>
                                 <div class="row">
                                     <div class="col">
                                         <div class="box p-2 border rounded bg-gradient bg-primary text-white">
-                                            <div class="number fs-5 font-weight-bold">1</div>
-                                            <div class="text small">User Interface</div>
+                                            <div class="number fs-5 font-weight-bold">0</div>
+                                            <div class="text small">Feature 1</div>
                                         </div>
                                     </div>
                                     <div class="col">
                                         <div class="box p-2 border rounded bg-gradient bg-info text-white">
-                                            <div class="number fs-5 font-weight-bold">2</div>
-                                            <div class="text small">Performance</div>
+                                            <div class="number fs-5 font-weight-bold">0</div>
+                                            <div class="text small">Feature 2</div>
                                         </div>
                                     </div>
                                     <div class="col">
                                         <div class="box p-2 border rounded bg-gradient bg-warning text-dark">
-                                            <div class="number fs-5 font-weight-bold">3</div>
-                                            <div class="text small">Accessibility</div>
+                                            <div class="number fs-5 font-weight-bold">0</div>
+                                            <div class="text small">Feature 3</div>
                                         </div>
                                     </div>
                                     <div class="col">
                                         <div class="box p-2 border rounded bg-gradient bg-danger text-white">
-                                            <div class="number fs-5 font-weight-bold">4</div>
-                                            <div class="text small">Features</div>
+                                            <div class="number fs-5 font-weight-bold">0</div>
+                                            <div class="text small">Feature 4</div>
                                         </div>
                                     </div>
                                     <div class="col">
                                         <div class="box p-2 border rounded bg-gradient bg-success text-white">
-                                            <div class="number fs-5 font-weight-bold">5</div>
-                                            <div class="text small">User Support</div>
+                                            <div class="number fs-5 font-weight-bold">0</div>
+                                            <div class="text small">Feature 5</div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-2 text-end mb-3">
-                                <h6>Average Rating: <strong id="average-rating">4.5</strong></h6>
+                                <h6>Average Rating: <strong id="average-rating">0</strong></h6>
                             </div>
                         </div>
                     </div>
