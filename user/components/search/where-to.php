@@ -19,8 +19,6 @@
             </div>
             <div class="dropdown mt-1">
                 <div class="dropdown-menu p-3" id="search-dropdown">
-
-
                     <div class="recent-searches">
                         <div id="recent-searches-list"></div>
                         <hr>
@@ -50,12 +48,18 @@
                     $locationName</a><br>";
                         }
                         ?>
-
-
                     </div>
                 </div>
             </div>
         </form>
-
     </div>
 </div>
+
+<script>
+    // Prevent Enter key from submitting the form
+    document.getElementById('search-input').addEventListener('keypress', function (event) {
+        if (event.key === 'Enter') {
+            event.preventDefault(); // Prevent form submission
+        }
+    });
+</script>
