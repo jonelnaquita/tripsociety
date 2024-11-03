@@ -71,11 +71,27 @@
 
                             <div class="col-lg-12 mb-4 mt-4">
                                 <label for="imageInput-update">Upload Location Images</label><br>
-                                <input type="file" id="imageInput-update" name="images" accept="image/*">
+                                <input type="file" id="imageInput-update" name="images[]" accept="image/*" multiple>
+                                <!-- Hidden input to store current image paths -->
+                                <input type="hidden" id="current-images" name="current-images" value="">
+
                                 <!-- Image preview for location images -->
-                                <img id="imagePreview" src="" alt="Location Image Preview"
-                                    style="display:none; width: 100%; max-height: 200px; margin-top: 10px;">
+                                <div id="imagePreview" style="display:none; margin-top: 10px;">
+                                    <label>New Images</label>
+                                    <div class="image-thumbnails" style="display: flex; flex-wrap: wrap; gap: 10px;">
+
+                                    </div>
+                                </div>
+                                <label>Current Images</label>
+                                <div id="imagePreviewsContainer"
+                                    style="display: flex; flex-wrap: wrap; margin-top: 10px;">
+
+                                </div>
                             </div>
+
+
+
+
                             <div class="col-lg-12 mb-4">
                                 <label for="file-upload-update">Upload 360° Virtual Tour</label><br>
                                 <input id="file-upload-update" name="tour_link" type="file" accept="image/*">
@@ -199,30 +215,39 @@
         ];
 
         const selectedCity = [
-            'Batangas City',
-            'Lipa City',
-            'Tanauan City',
+            'Agoncillo',
+            'Alitagtag',
             'Balayan',
-            'Batangas',
+            'Balete',
+            'Bauan',
             'Calaca',
             'Calatagan',
             'Cuenca',
+            'Ibaan',
+            'Laurel',
             'Lemery',
             'Lian',
+            'Lipa',
+            'Lobo',
             'Mabini',
             'Malvar',
-            'Matabungkay',
+            'Mataas na Kahoy',
             'Nasugbu',
+            'Padre Garcia',
+            'Rosario',
             'San Jose',
             'San Juan',
             'San Luis',
-            'San Nicolás',
+            'San Nicolas',
             'San Pascual',
-            'Santa Teresa',
+            'Santa Teresita',
+            'Santo Tomas',
             'Taal',
             'Talisay',
+            'Tanauan',
             'Taysan',
-            'Vaughn'
+            'Tingloy',
+            'Tuy'
         ];
 
         const citySelect = document.getElementById('city');
@@ -262,19 +287,55 @@
             width: '100%'
         });
 
+        // Initialize Fancybox (this step is optional since it will auto-initialize based on data attributes)
+        Fancybox.bind('[data-fancybox="gallery"]', {
+            // Optional configuration options
+            loop: true,
+            arrows: true,
+            toolbar: true,
+        });
+
+
         // File input change event to preview images
-        $('#imageInput-update').on('change', function () {
-            const file = this.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    $('#imagePreview').attr('src', e.target.result).show();
-                };
-                reader.readAsDataURL(file);
+        const imageInput = document.getElementById('imageInput-update');
+        const imagePreviewContainer = document.getElementById('imagePreview');
+        const thumbnailsContainer = document.querySelector('.image-thumbnails');
+
+        imageInput.addEventListener('change', function () {
+            const files = this.files;
+            if (files.length > 0) {
+                imagePreviewContainer.style.display = 'block';
+                thumbnailsContainer.innerHTML = ''; // Clear previous thumbnails
+
+                Array.from(files).forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        // Create a thumbnail image element
+                        const thumbnail = document.createElement('a');
+                        thumbnail.href = e.target.result; // Full image source
+                        thumbnail.setAttribute('data-fancybox', 'gallery'); // Fancybox data attribute
+                        thumbnail.innerHTML = `<img src="${e.target.result}" style="width: 100px; height: auto; cursor: pointer;">`; // Thumbnail style
+                        thumbnailsContainer.appendChild(thumbnail);
+                    };
+                    reader.readAsDataURL(file);
+                });
             } else {
-                $('#imagePreview').hide();
+                imagePreviewContainer.style.display = 'none'; // Hide if no files selected
             }
         });
+
+
+
+        // Function to change slides
+        function changeSlide(n) {
+            const imgs = slidesContainer.getElementsByTagName('img');
+            if (imgs.length > 0) {
+                imgs[currentSlide].style.display = 'none'; // Hide current slide
+                currentSlide = (currentSlide + n + imgs.length) % imgs.length; // Update slide index
+                imgs[currentSlide].style.display = 'block'; // Show new slide
+            }
+        }
+
 
         $('#file-upload-update').on('change', function () {
             const file = this.files[0];
@@ -341,11 +402,32 @@
                     // Populate city
                     $('#city').val(data.city).trigger('change');
 
+                    // Clear previous images and prepare for new ones
+                    const slidesContainer = $('#imagePreviewsContainer');
+                    slidesContainer.empty(); // Clear previous images
+
+                    // Initialize current images variable
+                    let currentImages = [];
+
                     // Display image previews if available
-                    if (data.image) {
-                        $('#imagePreview').attr('src', `images/${data.image}`).show();
-                    } else {
-                        $('#imagePreview').hide();
+                    if (data.image && data.image.length > 0) {
+                        // If images are stored as a comma-separated string, split it into an array
+                        const imagesArray = data.image.split(','); // Adjust this based on how images are returned
+
+                        imagesArray.forEach(image => {
+                            const imgLink = $('<a>', {
+                                href: `images/${image.trim()}`, // Full image source
+                                'data-fancybox': 'gallery', // Fancybox data attribute
+                                html: `<img src="images/${image.trim()}" style="width: 100px; height: auto; cursor: pointer; margin-right: 10px;">` // Thumbnail style
+                            });
+                            slidesContainer.append(imgLink); // Append to the container
+
+                            // Add image to current images array
+                            currentImages.push(image.trim());
+                        });
+
+                        // Set the current images in the hidden input
+                        $('#current-images').val(currentImages.join(',')); // Save as a comma-separated string
                     }
 
                     if (data.virtual_tour) {
@@ -375,6 +457,13 @@
                     </div>
                 `);
                     });
+
+                    // Optionally bind Fancybox here to ensure it recognizes newly added elements
+                    Fancybox.bind('[data-fancybox="gallery"]', {
+                        loop: true,
+                        arrows: true,
+                        toolbar: true,
+                    });
                 },
                 error: function (xhr, status, error) {
                     console.error("AJAX Error:", status, error);
@@ -382,6 +471,9 @@
                 }
             });
         });
+
+
+
     });
 </script>
 
@@ -431,9 +523,11 @@
         const tourInput = document.getElementById('file-upload-update');
 
         // Check if the image has changed
-        if (imageInput.files.length > 0) {
-            formData.append('image', imageInput.files[0]);
+        const files = imageInput.files;
+        for (let i = 0; i < files.length; i++) {
+            formData.append('images[]', files[i]); // Append each file
         }
+
 
         // Check if the tour link has changed
         if (tourInput.files.length > 0) {

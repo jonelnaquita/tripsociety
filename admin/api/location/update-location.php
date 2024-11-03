@@ -14,26 +14,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $tourLinkName = null;
 
     // Check if image was uploaded
-    if (isset($_FILES['image']) && $_FILES['image']['error'] == UPLOAD_ERR_OK) {
-        $imageName = preg_replace("/[^a-zA-Z0-9\.\-_]/", "_", basename($_FILES['image']['name'])); // Sanitize the filename
-        $imagePath = '../../images/' . $imageName;
+    if (isset($_FILES['images']) && $_FILES['images']['error'][0] == UPLOAD_ERR_OK) {
+        $imageNames = [];
+        foreach ($_FILES['images']['tmp_name'] as $key => $tmp_name) {
+            if ($_FILES['images']['error'][$key] == UPLOAD_ERR_OK) {
+                $imageName = preg_replace("/[^a-zA-Z0-9\.\-_]/", "_", basename($_FILES['images']['name'][$key])); // Sanitize
+                $imagePath = '../../images/' . $imageName;
 
-        // Create directory if it doesn't exist
-        if (!is_dir('../../images/')) {
-            mkdir('../../images/', 0755, true);
-        }
+                // Create directory if it doesn't exist
+                if (!is_dir('../../images/')) {
+                    mkdir('../../images/', 0755, true);
+                }
 
-        // Move the uploaded file to the specified path
-        if (!move_uploaded_file($_FILES['image']['tmp_name'], $imagePath)) {
-            echo json_encode(['success' => false, 'error' => 'Failed to move uploaded file for image.']);
-            exit();
+                // Move the uploaded file
+                if (move_uploaded_file($tmp_name, $imagePath)) {
+                    $imageNames[] = $imageName; // Keep track of uploaded image names
+                }
+            }
         }
+        $imageNamesStr = implode(',', $imageNames); // Convert to string to save in DB
     } else {
-        // No new image uploaded, keep existing image name
-        $stmt = $pdo->prepare("SELECT image FROM tbl_location WHERE id = :id");
-        $stmt->execute(['id' => $locationId]);
-        $existingImage = $stmt->fetchColumn();
-        $imageName = $existingImage; // Preserve existing image
+        $imageNamesStr = null; // Handle no image uploaded case
     }
 
     // Handle tour link upload
@@ -60,18 +61,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     // Update location in tbl_location
-    $stmt = $pdo->prepare("UPDATE tbl_location SET location_name = :location_name, location = :location, 
-                            description = :description, category = :category, city = :city, 
-                            image = :image, tour_link = :tour_link WHERE id = :id");
+    $stmt = $pdo->prepare("UPDATE tbl_location SET 
+        location_name = :location_name, location = :location, 
+        description = :description, category = :category, city = :city, 
+        image = :images WHERE id = :id"); // Ensure your database has an images column
     try {
         $stmt->execute([
             'location_name' => $locationName,
             'location' => $location,
             'description' => $description,
-            'category' => $category, // Directly store as string
+            'category' => $category,
             'city' => $city,
-            'image' => $imageName,
-            'tour_link' => $tourLinkName,
+            'images' => $imageNamesStr, // Save the image names string
             'id' => $locationId
         ]);
     } catch (PDOException $e) {

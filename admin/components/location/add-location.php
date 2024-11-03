@@ -175,30 +175,39 @@
 <script>
     // Array of cities
     const cities = [
-        'Batangas City',
-        'Lipa City',
-        'Tanauan City',
+        'Agoncillo',
+        'Alitagtag',
         'Balayan',
-        'Batangas',
+        'Balete',
+        'Bauan',
         'Calaca',
         'Calatagan',
         'Cuenca',
+        'Ibaan',
+        'Laurel',
         'Lemery',
         'Lian',
+        'Lipa',
+        'Lobo',
         'Mabini',
         'Malvar',
-        'Matabungkay',
+        'Mataas na Kahoy',
         'Nasugbu',
+        'Padre Garcia',
+        'Rosario',
         'San Jose',
         'San Juan',
         'San Luis',
-        'San Nicolás',
+        'San Nicolas',
         'San Pascual',
-        'Santa Teresa',
+        'Santa Teresita',
+        'Santo Tomas',
         'Taal',
         'Talisay',
+        'Tanauan',
         'Taysan',
-        'Vaughn'
+        'Tingloy',
+        'Tuy'
     ];
 
     // Get the select element for cities
