@@ -66,11 +66,11 @@ if (isset($_SESSION['user'])) {
     function showSplashScreen() {
       const splashScreen = document.getElementById('splash-screen');
 
-      // Show splash screen for 9 seconds
+      // Show splash screen for 3 seconds
       setTimeout(() => {
-        // Redirect to get_started.php after 9 seconds
+        // Redirect to get_started.php after 3 seconds
         window.location.href = 'user/get_started.php';
-      }, 5000); // 9 seconds
+      }, 3000); // 3 seconds
     }
 
     // Run the splash screen function on page load
