@@ -174,12 +174,12 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
 
                     <!-- Direction Button -->
                     <button class="btn btn-secondary btn-sm rounded-pill" id="get-directions">
-                        <i class="fas fa-directions"></i> Direction
+                        <i class="direction-icon fas fa-directions"></i> Direction
                     </button>
 
                     <!-- Navigation Button -->
                     <button class="btn btn-outline-secondary btn-sm ml-1 rounded-pill" id="get-navigation">
-                        <i class="fas fa-play"></i> Start
+                        <i class="start-icon fas fa-play"></i> Start
                     </button>
 
                 </div>
@@ -254,12 +254,20 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     $(document).ready(function () {
         $('#get-directions').click(function () {
             const button = $(this);
-            const icon = button.find('i');
+            const icon = button.find('.direction-icon');
             const locationId = '<?php echo $_GET['id']; ?>';
 
             // Show spinner, disable button
             icon.removeClass('fa-directions').addClass('fa-spinner fa-spin');
             button.prop('disabled', true);
+
+            if (icon.length > 0) {
+                console.log("Icon found:", icon);
+                // For example, toggle a class or change the icon's source
+                icon.toggleClass('active'); // Just an example of toggling an active class
+            } else {
+                console.log("No icon found within this button.");
+            }
 
             $.ajax({
                 url: 'api/search/fetch-location.php',
@@ -318,7 +326,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     $(document).ready(function () {
         $('#get-navigation').click(function () {
             const button = $(this);
-            const icon = button.find('i');
+            const icon = button.find('.start-icon');
             const locationId = '<?php echo $_GET['id']; ?>';
 
             // Show spinner, disable button
