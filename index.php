@@ -53,7 +53,7 @@ if (isset($_SESSION['user'])) {
 
   <!-- Splash Screen -->
   <div id="splash-screen" class="splash-screen" style="width:200px;">
-    <img src="user/splash/splash.gif" alt="Splash Screen">
+    <img src="user/splash/splash-new.gif" alt="Splash Screen">
   </div>
 
 
