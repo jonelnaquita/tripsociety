@@ -211,3 +211,18 @@
 .image-album::-webkit-scrollbar-thumb:hover {
     background-color: #555;
 }
+
+/*Image Scrollable*/
+.overflow-auto {
+    overflow-x: auto;
+    /* Enable horizontal scrolling */
+    white-space: nowrap;
+    /* Prevent line breaks to maintain horizontal layout */
+}
+
+.photo-album {
+    display: flex;
+    /* Use flexbox for layout */
+    flex-wrap: nowrap;
+    /* Prevent wrapping of flex items */
+}

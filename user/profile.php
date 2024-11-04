@@ -482,25 +482,28 @@ if (isset($_GET['id'])) {
                                                             </div>
                                                         </div>
 
-                                                        <?php if (!empty($post_images)): // Only render the row if there are image files ?>
-                                                            <div class="row">
-                                                                <?php foreach ($imageFiles as $file): ?>
-                                                                    <div class="col-6 col-md-4 col-lg-3 mb-3">
-                                                                        <div class="d-flex justify-content-center"
-                                                                            style="height: 0; padding-bottom: 100%; position: relative;">
-                                                                            <!-- Wrap image in anchor tag with data-fancybox for the slider -->
-                                                                            <a href="../admin/post_image/<?php echo htmlspecialchars($file); ?>"
-                                                                                data-fancybox="gallery">
-                                                                                <img src="../admin/post_image/<?php echo htmlspecialchars($file); ?>"
-                                                                                    alt="Image" class="img-fluid rounded"
-                                                                                    style="position: absolute; top: 0; left: 0; height: 100%; width: 100%; object-fit: cover;">
-                                                                            </a>
+                                                        <?php if (!empty($imageFiles)): // Only render the row if there are image files ?>
+                                                            <div class="overflow-auto">
+                                                                <div class="d-flex photo-album">
+                                                                    <?php
+                                                                    // Loop through all images
+                                                                    foreach ($imageFiles as $file): ?>
+                                                                        <div class="col-6 col-md-4 col-lg-3 mb-3">
+                                                                            <div class="d-flex justify-content-center"
+                                                                                style="height: 0; padding-bottom: 100%; position: relative;">
+                                                                                <!-- Wrap image in anchor tag with data-fancybox for the slider -->
+                                                                                <a href="../admin/post_image/<?php echo htmlspecialchars($file); ?>"
+                                                                                    data-fancybox="gallery">
+                                                                                    <img src="../admin/post_image/<?php echo htmlspecialchars($file); ?>"
+                                                                                        alt="Image" class="img-fluid rounded"
+                                                                                        style="position: absolute; top: 0; left: 0; height: 100%; width: 100%; object-fit: cover;">
+                                                                                </a>
+                                                                            </div>
                                                                         </div>
-                                                                    </div>
-                                                                <?php endforeach; ?>
+                                                                    <?php endforeach; ?>
+                                                                </div>
                                                             </div>
                                                         <?php else: ?>
-                                                            <!-- Nothing will be displayed if there are no images -->
                                                         <?php endif; ?>
 
 
@@ -803,46 +806,6 @@ include 'footer.php';
 
 </script>
 
-<!-- Edit Post -->
-<script>
-    $(document).on('click', '#editPostBtn', function () {
-        var postId = $(this).data('id');
-
-        $.ajax({
-            url: 'api/home/fetch-post.php', // A PHP file to fetch the post data
-            type: 'POST',
-            data: { post_id: postId },
-            dataType: 'json',
-            success: function (response) {
-                // Log the entire response data
-                console.log("Fetched Post Data:", response);
-
-                $('#editPostId').val(response.id);
-                $('#editPostText').val(response.post);
-                $('#editLocation').val(response.location);
-                $('.location-selected').text(response.location);
-
-                // Display the image preview if exists
-                if (response.images && response.images.length > 0) {
-                    // Log each image fetched
-                    console.log("Image Paths:", response.images);
-                    $('#imagePreviewContainer').html('');
-                    response.images.forEach(function (img) {
-                        $('#imagePreviewContainer').append('<img src="' + img + '" class="img-fluid">');
-                        $('.image-preview').val(response.images);
-                    });
-                } else {
-                    console.log("No images found for this post.");
-                    $('#imagePreviewContainer').html(''); // Clear preview if no images
-                }
-            },
-            error: function (xhr, status, error) {
-                // Log any errors that occurred during the AJAX request
-                console.error("AJAX Error:", status, error);
-            }
-        });
-    });
-</script>
 
 <!--Delete Post-->
 <script>

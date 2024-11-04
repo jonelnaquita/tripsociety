@@ -123,7 +123,9 @@ if (!empty($posts)) {
         $image_statement = $pdo->prepare("SELECT image FROM tbl_post WHERE id = ?");
         $image_statement->execute([$post['id']]);
         $post_images = $image_statement->fetchColumn();
-        $imageFiles = explode(',', $post_images);
+
+        // Ensure $post_images is an array of image files
+        $imageFiles = $post_images ? explode(',', $post_images) : [];
 
         ?>
         <div class="row" style="margin-bottom:-10px; margin-left:-1px; margin-right:1px;">
@@ -199,27 +201,33 @@ if (!empty($posts)) {
                             </div>
                         </div>
 
-                        <?php if (!empty($post_images)): // Only render the row if there are image files ?>
-                            <div class="row">
-                                <?php foreach ($imageFiles as $file): ?>
-                                    <div class="col-6 col-md-4 col-lg-3 mb-3">
-                                        <div class="d-flex justify-content-center"
-                                            style="height: 0; padding-bottom: 100%; position: relative;">
-                                            <!-- Wrap image in anchor tag with data-fancybox for the slider -->
-                                            <a href="../admin/post_image/<?php echo htmlspecialchars($file); ?>"
-                                                data-fancybox="gallery">
-                                                <img src="../admin/post_image/<?php echo htmlspecialchars($file); ?>" alt="Image"
-                                                    class="img-fluid rounded"
-                                                    style="position: absolute; top: 0; left: 0; height: 100%; width: 100%; object-fit: cover;">
-                                            </a>
+                        <?php if (!empty($imageFiles)): // Only render the row if there are image files ?>
+                            <div class="overflow-auto">
+                                <div class="d-flex photo-album">
+                                    <?php
+                                    // Loop through all images
+                                    foreach ($imageFiles as $file): ?>
+                                        <div class="col-6 col-md-4 col-lg-3 mb-3">
+                                            <div class="d-flex justify-content-center"
+                                                style="height: 0; padding-bottom: 100%; position: relative;">
+                                                <!-- Wrap image in anchor tag with data-fancybox for the slider -->
+                                                <a href="../admin/post_image/<?php echo htmlspecialchars($file); ?>"
+                                                    data-fancybox="gallery">
+                                                    <img src="../admin/post_image/<?php echo htmlspecialchars($file); ?>" alt="Image"
+                                                        class="img-fluid rounded"
+                                                        style="position: absolute; top: 0; left: 0; height: 100%; width: 100%; object-fit: cover;">
+                                                </a>
+                                            </div>
                                         </div>
-                                    </div>
-                                <?php endforeach; ?>
+                                    <?php endforeach; ?>
+                                </div>
                             </div>
                         <?php else: ?>
-                            <!-- Nothing will be displayed if there are no images -->
                         <?php endif; ?>
 
+                        <style>
+                            
+                        </style>
 
 
 
@@ -371,129 +379,6 @@ include 'modal/comment.php';
         });
     });
 
-</script>
-
-<script>
-    $(document).on('click', '#editPostBtn', function () {
-        var postId = $(this).data('id');
-
-        $.ajax({
-            url: 'api/home/fetch-post.php',
-            type: 'POST',
-            data: { post_id: postId },
-            dataType: 'json',
-            success: function (response) {
-                console.log("Fetched Post Data:", response);
-                $('#editPostId').val(response.id);
-                $('#editPostText').val(response.post);
-                $('#editLocation').val(response.location);
-                $('.location-selected').text(response.location);
-
-                // Clear previous image previews
-                $('#imagePreviewContainer').html('');
-
-                // Check if images exist before displaying them
-                if (response.images && response.images.length > 0) {
-                    console.log("Image Paths:", response.images);
-                    response.images.forEach(function (img) {
-                        addImagePreview(img, true); // Pass true to indicate it's an existing image
-                    });
-                    // Store existing images in a hidden input
-                    $('#existing-image-path').val(response.images.join(','));
-                } else {
-                    console.log("No images found for this post.");
-                    // If there are no images, ensure that the existing image path is cleared
-                    $('#existing-image-path').val('');
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error("AJAX Error:", status, error);
-            }
-        });
-    });
-
-    $(document).ready(function () {
-        const maxImages = 4;
-
-        $('#add-photo-btn').click(function () {
-            $('#selected-images').click();
-        });
-
-        $('#selected-images').change(function () {
-            const files = this.files;
-
-            // Check if the number of files exceeds the maximum limit
-            if (files.length > maxImages) {
-                alert(`You can only upload a maximum of ${maxImages} images.`);
-                $('#selected-images').val(''); // Clear file input
-                return;
-            }
-
-            // Process each selected file
-            Array.from(files).forEach(file => {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    addImagePreview(e.target.result); // Add the new image to the preview
-                };
-                reader.readAsDataURL(file);
-            });
-
-            // Update the hidden input field with file names, including existing images
-            updateFileNames();
-        });
-    });
-
-    // Add Image Preview Function
-    function addImagePreview(src, isExisting = false) {
-        const imgWrapper = $('<div class="image-wrapper" style="position: relative; display: inline-block; margin-right: 10px;">');
-        const img = $('<img>').attr('src', src).css({
-            'width': '200px',
-            'height': '200px',
-            'object-fit': 'cover',
-            'border-radius': '5px'
-        });
-
-        const deleteButton = $('<span>').text('×').css({
-            'position': 'absolute',
-            'top': '5px',
-            'right': '5px',
-            'height': '20px',
-            'width': '20px',
-            'background': 'rgba(0,0,0,0.5)',
-            'color': 'white',
-            'border-radius': '50%',
-            'display': 'flex',
-            'align-items': 'center',
-            'justify-content': 'center',
-            'cursor': 'pointer',
-            'font-size': '14px',
-            'font-weight': 'bold'
-        }).click(function () {
-            imgWrapper.remove(); // Remove the image wrapper on delete button click
-            updateFileNames(src, isExisting); // Update hidden input field with current file names
-        });
-
-        imgWrapper.append(img).append(deleteButton);
-        $('#imagePreviewContainer').append(imgWrapper);
-        updateFileNames(); // Update the file names after adding new image
-    }
-
-    // Update hidden input with current file names
-    const updateFileNames = (deletedImagePath = '', isExisting = false) => {
-        const existingImages = $('#existing-image-path').val().split(',').filter(Boolean); // Get existing images
-        const newImages = Array.from($('#imagePreviewContainer').find('img')).map(img => img.src);
-
-        // Remove the deleted image from the list if it is an existing image
-        if (isExisting && deletedImagePath) {
-            const index = existingImages.indexOf(deletedImagePath);
-            if (index > -1) {
-                existingImages.splice(index, 1); // Remove the deleted image path
-            }
-        }
-
-        const allImages = existingImages.concat(newImages);
-        $('#image-path').val(allImages.join(',')); // Update the hidden input field
-    };
 </script>
 
 
