@@ -205,14 +205,18 @@ if (!empty($posts)) {
                             <div class="overflow-auto">
                                 <div class="d-flex photo-album">
                                     <?php
+                                    // Generate a unique ID for this post's Fancybox group
+                                    $fancyboxGroup = 'gallery-' . $post['id'];  // Assume $post_id is unique to each post
+                        
                                     // Loop through all images
                                     foreach ($imageFiles as $file): ?>
                                         <div class="col-6 col-md-4 col-lg-3 mb-3">
                                             <div class="d-flex justify-content-center"
                                                 style="height: 0; padding-bottom: 100%; position: relative;">
-                                                <!-- Wrap image in anchor tag with data-fancybox for the slider -->
+
                                                 <a href="../admin/post_image/<?php echo htmlspecialchars($file); ?>"
-                                                    data-fancybox="gallery">
+                                                    data-fancybox="<?php echo $fancyboxGroup; ?>"
+                                                    data-caption="Image for Post <?php echo $post['id']; ?>">
                                                     <img src="../admin/post_image/<?php echo htmlspecialchars($file); ?>" alt="Image"
                                                         class="img-fluid rounded"
                                                         style="position: absolute; top: 0; left: 0; height: 100%; width: 100%; object-fit: cover;">
@@ -222,11 +226,11 @@ if (!empty($posts)) {
                                     <?php endforeach; ?>
                                 </div>
                             </div>
-                        <?php else: ?>
                         <?php endif; ?>
 
+
                         <style>
-                            
+
                         </style>
 
 
@@ -400,10 +404,15 @@ include 'modal/comment.php';
                 success: function (response) {
                     if (response.status === 'success') {
                         const postData = response.data;
-                        const imagesHtml = postData.images.map(image => `
-                        <img src="${image.trim() ? '../admin/post_image/' + image.trim() : 'https://via.placeholder.com/150'}" 
-                             class="img-fluid square-image" alt="Post Image">
-                    `).join('');
+                        const imagesHtml = postData.images.map((image, index) => `
+                            <a href="${image.trim() ? '../admin/post_image/' + image.trim() : 'https://via.placeholder.com/150'}" 
+                            data-fancybox="gallery-${postData.id}">
+                                <img src="${image.trim() ? '../admin/post_image/' + image.trim() : 'https://via.placeholder.com/150'}" 
+                                    class="img-fluid square-image" alt="Post Image">
+                            </a>
+                        `).join('');
+
+
 
                         const postHtml = `
                         <div class="post-body">
