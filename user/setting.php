@@ -315,6 +315,9 @@ include 'footer.php';
         const $submitButton = $('.update-account-btn');
         $submitButton.prop('disabled', true);
 
+        // Store the initial travel preferences
+        let initialTravelPreferences = $('#travel_preferences').val() || [];
+
         // Function to validate Name
         function validateName() {
             const name = $('#name').val();
@@ -368,6 +371,22 @@ include 'footer.php';
         $('#email').on('input', validateForm);
         $('#location').on('change', validateForm); // Validate when the city is selected
 
+        // Listen for changes on the travel preferences select
+        $('#travel_preferences').on('change', function () {
+            const currentPreferences = $(this).val() || [];
+            const hasPreferencesChanged = !arraysEqual(currentPreferences, initialTravelPreferences);
+            $submitButton.prop('disabled', !hasPreferencesChanged);
+        });
+
+        // Function to compare two arrays
+        function arraysEqual(arr1, arr2) {
+            if (arr1.length !== arr2.length) return false;
+            for (let i = 0; i < arr1.length; i++) {
+                if (arr1[i] !== arr2[i]) return false;
+            }
+            return true;
+        }
+
         // Form submission validation
         $('#updateAccountForm').on('submit', function (e) {
             e.preventDefault();
@@ -406,8 +425,8 @@ include 'footer.php';
             }
         });
     });
-
 </script>
+
 
 <script>
     $(document).ready(function () {
