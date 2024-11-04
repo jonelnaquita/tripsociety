@@ -37,10 +37,11 @@
 
                 <div class="row" style="margin-left:37px; margin-top:-10px;">
                     <div class="col">
-
                         <input type="file" id="selected-images" name="images[]" multiple style="display: none;">
                         <input type="hidden" id="existing-image-path" name="existing-image-path">
                         <input type="hidden" id="image-path" name="image-path">
+                        <input type="hidden" id="deleted-images" name="deleted-images">
+                        <!-- Hidden input for deleted images -->
                         <input type="hidden" id="editLocation" class="form-control" name="editLocation"
                             placeholder="Select Location">
                         <input type="hidden" id="editPostId" name="post_id">
@@ -53,7 +54,6 @@
                             style="font-size:12px;">
                             <i class="fas fa-map-pin" style="font-size:12px;"></i>&nbsp; Edit location
                         </button>
-
                     </div>
                 </div>
 
@@ -168,6 +168,49 @@
 </script>
 
 <script>
+    $(document).ready(function () {
+        $('#save-post-btn').on('click', function () {
+            var editPostId = $('#editPostId').val();
+            var editPostText = $('#editPostText').val();
+            var editLocation = $('#editLocation').val();
+            var selectedImages = $('#selected-images')[0].files;
+            var deletedImages = $('#deleted-images').val(); // Get the deleted images
+
+            var formData = new FormData();
+            formData.append('post_id', editPostId);
+            formData.append('post', editPostText);
+            formData.append('editLocation', editLocation);
+            formData.append('deletedImages', deletedImages); // Send deleted images
+
+            for (var i = 0; i < selectedImages.length; i++) {
+                formData.append('images[]', selectedImages[i]);
+            }
+
+            $.ajax({
+                url: 'api/home/update-post.php',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    var data = JSON.parse(response);
+                    if (data.status === 'success') {
+                        toastr.success('Post updated successfully!');
+                        setTimeout(function () {
+                            location.reload(); // Reload the page after 2 seconds
+                        }, 1000); // 2000 milliseconds = 2 seconds
+                    } else {
+                        toastr.error('Failed to update post. Please try again.');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error:', error);
+                    toastr.error('An error occurred while updating the post.');
+                }
+            });
+        });
+    });
+
     $(document).on('click', '#editPostBtn', function () {
         var postId = $(this).data('id');
 
@@ -185,6 +228,7 @@
 
                 // Clear previous image previews
                 $('#imagePreviewContainer').html('');
+                $('#deleted-images').val(''); // Reset deleted images input
 
                 // Check if images exist before displaying them
                 if (response.images && response.images.length > 0) {
@@ -192,8 +236,9 @@
                     response.images.forEach(function (img) {
                         addImagePreview(img, true); // Pass true to indicate it's an existing image
                     });
-                    // Store existing images in a hidden input
-                    $('#existing-image-path').val(response.images.join(','));
+                    // Store existing images as filenames in a hidden input
+                    const existingFilenames = response.images.map(img => img.split('/').pop()).join(',');
+                    $('#existing-image-path').val(existingFilenames);
                 } else {
                     console.log("No images found for this post.");
                     // If there are no images, ensure that the existing image path is cleared
@@ -265,11 +310,29 @@
         }).click(function () {
             imgWrapper.remove(); // Remove the image wrapper on delete button click
             updateFileNames(src, isExisting); // Update hidden input field with current file names
+            // Track deleted images
+            if (isExisting) {
+                trackDeletedImage(src); // Call function to track deleted image
+            }
         });
 
         imgWrapper.append(img).append(deleteButton);
         $('#imagePreviewContainer').append(imgWrapper);
         updateFileNames(); // Update the file names after adding a new image
+    }
+
+    // Function to track deleted images
+    function trackDeletedImage(src) {
+        const deletedImages = $('#deleted-images').val();
+        const currentDeletedImages = deletedImages ? deletedImages.split(',') : [];
+
+        // Extract filename only from the image source
+        const filenameToDelete = src.split('/').pop(); // Get the filename from path
+
+        if (!currentDeletedImages.includes(filenameToDelete)) {
+            currentDeletedImages.push(filenameToDelete);
+            $('#deleted-images').val(currentDeletedImages.join(',')); // Update hidden input for deleted images
+        }
     }
 
     // Update hidden input with current file names
@@ -279,55 +342,18 @@
 
         // If an existing image is deleted, remove it from the existingImages array
         if (isExisting && deletedImagePath) {
-            const index = existingImages.indexOf(deletedImagePath);
+            // Extract only the filename from the deletedImagePath
+            const filenameToDelete = deletedImagePath.split('/').pop(); // Get the filename from path
+            const index = existingImages.indexOf(filenameToDelete);
             if (index > -1) {
-                existingImages.splice(index, 1); // Remove the deleted image path
+                existingImages.splice(index, 1); // Remove the filename
             }
         }
 
         const allImages = existingImages.concat(newImages);
-        $('#image-path').val(allImages.join(',')); // Update the hidden input field
+
+        // Use only the filenames in the hidden input
+        const allFilenames = allImages.map(image => image.split('/').pop()).join(','); // Extract filenames only
+        $('#image-path').val(allFilenames); // Update the hidden input field with filenames
     };
-</script>
-
-<script>
-    $(document).ready(function () {
-        $('#save-post-btn').on('click', function () {
-            var editPostId = $('#editPostId').val();
-            var editPostText = $('#editPostText').val();
-            var editLocation = $('#editLocation').val();
-            var selectedImages = $('#selected-images')[0].files;
-            var deletedImages = $('#deleted-images').val(); // Get the deleted images
-
-            var formData = new FormData();
-            formData.append('post_id', editPostId);
-            formData.append('post', editPostText);
-            formData.append('editLocation', editLocation);
-            formData.append('deletedImages', deletedImages); // Send deleted images
-
-            for (var i = 0; i < selectedImages.length; i++) {
-                formData.append('images[]', selectedImages[i]);
-            }
-
-            $.ajax({
-                url: 'api/home/update-post.php',
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function (response) {
-                    var data = JSON.parse(response);
-                    if (data.status === 'success') {
-                        alert('Post updated successfully!');
-                    } else {
-                        alert('Failed to update post. Please try again.');
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error('Error:', error);
-                    alert('An error occurred while updating the post.');
-                }
-            });
-        });
-    });
 </script>
