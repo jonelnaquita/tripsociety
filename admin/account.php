@@ -100,7 +100,7 @@ include "includes/header.php"; ?>
                                             <label for="">Email Address</label>
                                             <div class="input-group input-group-outline my-3">
                                                 <input type="email" class="form-control" name="email-reset"
-                                                    id="email-reset" required>
+                                                    id="email-reset" readonly required>
                                             </div>
                                             <p style="font-size:16px; line-height: 1.3;">We recommend using a password
                                                 manager or creating a unique password that contains 10 characters and a
