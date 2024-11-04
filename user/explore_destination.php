@@ -1,8 +1,8 @@
 <?php
-include '../inc/session_user.php';
+session_start();
 include 'header.php';
 
- 
+
 if (isset($_GET['id']) && isset($_SESSION['user']) && isset($_GET['search'])) {
     include '../inc/config.php';
     $location_id = $_GET['id'];

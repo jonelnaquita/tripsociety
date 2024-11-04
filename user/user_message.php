@@ -29,9 +29,11 @@ $sql = "
         WHERE (m2.sender_id = u.id AND m2.receiver_id = :outgoing_id)
         OR (m2.receiver_id = u.id AND m2.sender_id = :outgoing_id)
     )
+    AND NOT FIND_IN_SET(:outgoing_id, m.deleted_by)
     GROUP BY u.id
     ORDER BY m.date_created DESC;
 ";
+
 
 
 try {

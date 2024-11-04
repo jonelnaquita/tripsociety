@@ -1,5 +1,5 @@
 <?php
-include '../inc/session_user.php';
+session_start();
 include 'header.php';
 include 'modal/search-modal.php';
 ?>

@@ -31,11 +31,19 @@ if (isset($_SESSION['user'])) {
     $incoming_id = $_POST['incoming_id'];
 
     $output = "";
-    $sql = "SELECT *, messages.date_created as date_created FROM tbl_message as messages
-            LEFT JOIN tbl_user as users ON users.id = messages.sender_id
-            WHERE (receiver_id = :outgoing_id AND sender_id = :incoming_id)
-            OR (receiver_id = :incoming_id AND sender_id = :outgoing_id) 
-            ORDER BY messages.id";
+    $sql = "
+    SELECT *, messages.date_created AS date_created 
+    FROM tbl_message AS messages
+    LEFT JOIN tbl_user AS users ON users.id = messages.sender_id
+    WHERE (
+            (receiver_id = :outgoing_id AND sender_id = :incoming_id)
+            OR (receiver_id = :incoming_id AND sender_id = :outgoing_id)
+        )
+    AND NOT FIND_IN_SET(:outgoing_id, messages.deleted_by) 
+    ORDER BY messages.id;
+";
+
+
 
     try {
         $stmt = $pdo->prepare($sql);
