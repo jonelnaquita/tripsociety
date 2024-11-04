@@ -215,8 +215,7 @@ if (!empty($posts)) {
                                                 style="height: 0; padding-bottom: 100%; position: relative;">
 
                                                 <a href="../admin/post_image/<?php echo htmlspecialchars($file); ?>"
-                                                    data-fancybox="<?php echo $fancyboxGroup; ?>"
-                                                    data-caption="Image for Post <?php echo $post['id']; ?>">
+                                                    data-fancybox="<?php echo $fancyboxGroup; ?>">
                                                     <img src="../admin/post_image/<?php echo htmlspecialchars($file); ?>" alt="Image"
                                                         class="img-fluid rounded"
                                                         style="position: absolute; top: 0; left: 0; height: 100%; width: 100%; object-fit: cover;">
