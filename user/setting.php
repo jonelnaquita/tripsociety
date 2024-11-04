@@ -233,6 +233,7 @@ include 'footer.php';
         'Alitagtag',
         'Balayan',
         'Balete',
+        'Batangas City',
         'Bauan',
         'Calaca',
         'Calatagan',

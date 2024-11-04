@@ -217,6 +217,7 @@
             'Alitagtag',
             'Balayan',
             'Balete',
+            'Batangas City',
             'Bauan',
             'Calaca',
             'Calatagan',
