@@ -257,9 +257,21 @@ include 'footer.php';
 
         // Limit file input to maxImages
         $('#imageInput').change(function () {
-            const files = Array.from(this.files).slice(0, maxImages); // Only consider up to 4 images
+            const files = Array.from(this.files); // Get all selected files
             const previewPostContainer = $('#imagePostPreviewContainer');
             previewPostContainer.empty(); // Clear the preview container
+
+            // Check the number of existing images
+            const existingImages = previewPostContainer.find('img').length;
+            const totalSelected = existingImages + files.length;
+
+            // If total selected exceeds maxImages, limit the selection
+            if (totalSelected > maxImages) {
+                alert(`You can only upload a maximum of ${maxImages} images.`);
+                // Prevent further selection if the maximum has been reached
+                $('#imageInput').val(''); // Clear the input
+                return;
+            }
 
             // Process each selected image file up to the max limit
             files.forEach(file => {
@@ -300,7 +312,6 @@ include 'footer.php';
                         updateFileNames(); // Update hidden input field with current file names
                     });
 
-
                     // Append image and delete button to wrapper, then to preview container
                     imgWrapper.append(img).append(deleteButton);
                     previewPostContainer.append(imgWrapper);
@@ -317,7 +328,6 @@ include 'footer.php';
             updateFileNames();
         });
     });
-
 
 
 
