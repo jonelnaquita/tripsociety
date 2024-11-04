@@ -12,9 +12,10 @@ include 'header.php';
 
             <div class="row">
                 <div class="col">
-                    <div class="card" style="margin-top:40px;">
+                    <div class="card" style="margin-top:40px; margin-bottom:60px;">
                         <div class="card-body">
-                            <p class="font-weight-bold">By participating in TripSociety: Uniting Wanderers in Exploring
+                            <p class="font-weight-bold text-justify">By participating in TripSociety: Uniting Wanderers
+                                in Exploring
                                 the Wonders of Batangas ("TripSociety"), you agree to comply with the following terms
                                 and conditions. TripSociety is a collaborative initiative aimed at bringing together
                                 adventurers and explorers to discover the diverse wonders of Batangas.

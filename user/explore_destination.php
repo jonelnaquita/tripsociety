@@ -159,7 +159,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
             <div class="row">
                 <div class="col">
                     <h5 class="font-weight-bold">About</h5>
-                    <p><?php echo $row['description']; ?></p>
+                    <p class="text-justify"><?php echo $row['description']; ?></p>
                     <a href="#" id="viewRouteBtn" class="btn btn-outline-dark" style="border-radius:20px;">
                         <i class="far fa-map"></i> View route
                     </a>

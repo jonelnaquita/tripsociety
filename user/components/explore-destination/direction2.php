@@ -202,6 +202,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
         const bottomSheet = document.querySelector(".bottom-sheet");
         const overlay = document.querySelector(".sheet-overlay");
         const dragIcon = document.querySelector(".drag-icon");
+        const content = bottomSheet.querySelector(".content");
         let isDragging = false;
         let startY, startHeight;
 
@@ -209,6 +210,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
         const toggleBottomSheet = (show) => {
             bottomSheet.classList.toggle("show", show);
             document.body.style.overflowY = show ? "hidden" : "auto";
+            content.style.height = show ? "50vh" : "0"; // Set initial height on open
         };
 
         // Show Bottom Sheet on Button Click
@@ -222,33 +224,53 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
 
         // Dragging Functionality
         const dragStart = (e) => {
+            e.preventDefault();
             isDragging = true;
             startY = e.pageY || e.touches[0].pageY;
-            startHeight = parseInt(window.getComputedStyle(bottomSheet.querySelector(".content")).height);
+            startHeight = content.offsetHeight;
         };
 
         const dragging = (e) => {
             if (!isDragging) return;
+
             const currentY = e.pageY || e.touches[0].pageY;
             const delta = startY - currentY;
-            const newHeight = Math.max(15, Math.min(startHeight + delta, window.innerHeight * 0.9));
-            bottomSheet.querySelector(".content").style.height = `${newHeight}px`;
+            const newHeight = Math.min(Math.max(15, startHeight + delta), window.innerHeight * 0.9);
+
+            // Apply new height smoothly
+            content.style.height = `${newHeight}px`;
         };
 
         const dragStop = () => {
-            isDragging = false;
+            if (isDragging) {
+                isDragging = false;
+                // Optionally, snap to closest position
+                const currentHeight = content.offsetHeight;
+                if (currentHeight < window.innerHeight * 0.3) {
+                    toggleBottomSheet(false); // Close if dragged down significantly
+                }
+            }
         };
 
-        // Event Listeners for Dragging
+        // Event Listeners for Dragging with Touch and Mouse Events
         dragIcon.addEventListener("mousedown", dragStart);
         document.addEventListener("mousemove", dragging);
         document.addEventListener("mouseup", dragStop);
-        dragIcon.addEventListener("touchstart", dragStart);
-        document.addEventListener("touchmove", dragging);
+
+        dragIcon.addEventListener("touchstart", (e) => {
+            dragStart(e);
+            e.preventDefault();
+        }, { passive: false });
+
+        document.addEventListener("touchmove", (e) => {
+            dragging(e);
+            e.preventDefault();
+        }, { passive: false });
+
         document.addEventListener("touchend", dragStop);
     });
-
 </script>
+
 
 <script>
     $(document).ready(function () {
@@ -282,6 +304,8 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
 
                                 // Redirect to Google Maps
                                 window.location.href = googleMapsUrl;
+
+                                resetButtonState(button, icon);
 
                             }, function (error) {
                                 alert("Error getting current location: " + error.message);
@@ -348,8 +372,10 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
                                 let navigationUrl;
                                 if (isAndroid) {
                                     navigationUrl = `google.navigation:q=${destinationLat},${destinationLng}&mode=d`;
+                                    resetButton();
                                 } else if (isIOS) {
                                     navigationUrl = `maps://?q=${destinationLat},${destinationLng}&dirflg=d`;
+                                    resetButton();
                                 } else {
                                     alert("Navigation is only supported on Android and iOS devices.");
                                     resetButton();

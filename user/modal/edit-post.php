@@ -213,6 +213,7 @@
 
     $(document).on('click', '#editPostBtn', function () {
         var postId = $(this).data('id');
+        var basePath = '../admin/post_image/'; // Define the base path on the client side
 
         $.ajax({
             url: 'api/home/fetch-post.php',
@@ -227,23 +228,26 @@
                 $('.location-selected').text(response.location);
 
                 // Clear previous image previews
-                $('#imagePreviewContainer').html('');
+                $('#imagePreviewContainer').html('').hide();
                 $('#deleted-images').val(''); // Reset deleted images input
 
                 // Check if images exist before displaying them
-                if (response.images && response.images.length > 0) {
-                    console.log("Image Paths:", response.images);
-                    response.images.forEach(function (img) {
-                        addImagePreview(img, true); // Pass true to indicate it's an existing image
+                if (Array.isArray(response.images) && response.images.length > 0) {
+                    console.log("Image Filenames:", response.images);
+                    response.images.forEach(function (filename) {
+                        // Construct the full path for each image
+                        addImagePreview(basePath + filename, true); // Pass true to indicate it's an existing image
                     });
+
+                    $('#imagePreviewContainer').show(); // Show the container since images are available
+
                     // Store existing images as filenames in a hidden input
-                    const existingFilenames = response.images.map(img => img.split('/').pop()).join(',');
-                    $('#existing-image-path').val(existingFilenames);
+                    $('#existing-image-path').val(response.images.join(','));
                 } else {
                     console.log("No images found for this post.");
-                    // If there are no images, ensure that the existing image path is cleared
                     $('#existing-image-path').val('');
                 }
+
             },
             error: function (xhr, status, error) {
                 console.error("AJAX Error:", status, error);
@@ -251,11 +255,14 @@
         });
     });
 
+
+
     $(document).ready(function () {
         const maxImages = 4;
 
         $('#add-photo-btn').click(function () {
             $('#selected-images').click();
+            $('#imagePreviewContainer').show();
         });
 
         $('#selected-images').change(function () {
@@ -284,6 +291,12 @@
 
     // Add Image Preview Function
     function addImagePreview(src, isExisting = false) {
+        // Check if the image source is empty or invalid
+        if (!src || src.trim() === '') {
+            console.log("No image source provided. Preview not added.");
+            return; // Exit the function if src is empty
+        }
+
         const imgWrapper = $('<div class="image-wrapper" style="position: relative; display: inline-block; margin-right: 10px;">');
         const img = $('<img>').attr('src', src).css({
             'width': '200px',
@@ -320,6 +333,7 @@
         $('#imagePreviewContainer').append(imgWrapper);
         updateFileNames(); // Update the file names after adding a new image
     }
+
 
     // Function to track deleted images
     function trackDeletedImage(src) {

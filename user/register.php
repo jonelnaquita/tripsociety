@@ -124,7 +124,7 @@
           <div class="modal-body pl-4 pr-4">
             <div class="row">
               <div class="col">
-                <p>
+                <p class="text-justify">
                   By participating in TripSociety: Uniting Wanderers in Exploring the Wonders of Batangas
                   ("TripSociety"), you
                   agree to comply with the following terms and conditions. TripSociety is a collaborative initiative
