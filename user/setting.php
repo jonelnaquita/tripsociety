@@ -84,19 +84,6 @@ include 'header.php';
                 <div class="col">
                     <div class="card mt-2">
                         <div class="card-body">
-                            <h6 class="text-muted font-weight-bold">Notifications</h6>
-                            <!--<div class="row">
-                                <div class="col-lg-8 col-8">
-                                    <h5 class="font-weight-bold mt-2">Push Notification</h5>
-                                </div>
-                                <div class="col-lg-4 col-4">
-                                    <div class="form-group mt-2">
-                                        <input type="checkbox" checked data-bootstrap-switch>
-                                    </div>
-                                </div>
-                            </div>-->
-                            <hr>
-
                             <div class="container mt-5">
                                 <h2 class="text-center mb-4">Update Account</h2>
                                 <ul class="nav nav-tabs" id="myTab" role="tablist">

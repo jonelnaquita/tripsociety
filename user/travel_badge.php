@@ -196,7 +196,7 @@ include 'header.php';
                                             <div class="input-group">
                                                 <input type="text" class="form-control text-white"
                                                     style="background-color: #3300cc; border: none; font-size: 13px;"
-                                                    value="Post 2 photos" readonly>
+                                                    value="Write 2 posts" readonly>
                                                 <div class="input-group-append">
                                                     <span class="input-group-text text-white post-two-photos"
                                                         style="background-color: #3300cc;">0/2</span>

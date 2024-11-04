@@ -1,4 +1,13 @@
 <!-- Carousel HTML -->
+<div class="row mt-3 filtered-container" style="display: none;">
+    <div class="col">
+        <h5 class="font-weight-bold">Filtered Destinations</h5>
+
+        <div class="filtered-class">
+        </div>
+    </div>
+</div>
+
 <div class="row mt-3">
     <div class="col">
         <h5 class="font-weight-bold">Top Destinations</h5>
@@ -8,9 +17,6 @@
 <div class="carousel-container">
     <div class="your-class">
         <!-- Dynamic content for initial fetch will be inserted here -->
-    </div>
-    <div class="filtered-class" style="display: none;">
-        <!-- Dynamic content for filtered results will be inserted here -->
     </div>
 </div>
 
@@ -56,21 +62,21 @@
                 var firstImage = imageArray.length > 0 ? imageArray[0] : 'default.jpg';
 
                 locationHTML += `
-                    <a href="explore_destination.php?search&id=${location.id}" class="text-dark destination-card">
-                        <div class="mr-3">
-                            <span class="badge badge-light p-2 m-2">
-                                <i class="fas fa-star text-warning"></i>
-                                ${parseFloat(location.average_rating).toFixed(1)}
-                            </span>
-                            <i class="d-block w-100 p-3 text-center" id="img-gallery"
-                                style="font-size:60px; margin-top:-40px; background-image: url('../admin/images/${firstImage}'); background-size: cover;">
-                            </i>
-                            <h6 class="text-center font-weight-bold"
-                                style="margin-top:10px; height:50px; font-size:13px; margin-bottom:-15px;">
-                                ${location.location_name}
-                            </h6>
-                        </div>
-                    </a>`;
+                <a href="explore_destination.php?search&id=${location.id}" class="text-dark destination-card">
+                    <div class="mr-3">
+                        <span class="badge badge-light p-2 m-2">
+                            <i class="fas fa-star text-warning"></i>
+                            ${parseFloat(location.average_rating).toFixed(1)}
+                        </span>
+                        <i class="d-block w-100 p-3 text-center" id="img-gallery"
+                            style="font-size:60px; margin-top:-40px; background-image: url('../admin/images/${firstImage}'); background-size: cover;">
+                        </i>
+                        <h6 class="text-center font-weight-bold"
+                            style="margin-top:10px; height:50px; font-size:13px; margin-bottom:-15px;">
+                            ${location.location_name}
+                        </h6>
+                    </div>
+                </a>`;
             });
 
             // Insert new content into the container
@@ -119,65 +125,83 @@
                 isFiltered = true;
                 isFetching = true;
 
-                // Hide the initial container and show the filtered container
-                $('.your-class').fadeOut(200, function () {
-                    $('.filtered-class').fadeIn(200); // Show filtered container
+                // Show the filtered container and fade in new results
+                $('.filtered-container').fadeIn(200);
 
-                    $.ajax({
-                        url: 'api/search/filter-top-destination.php',
-                        type: 'GET',
-                        dataType: 'json',
-                        data: {
-                            category: category,
-                            cities: cities.join(',')
-                        },
-                        success: function (locations) {
-                            // Check if locations are returned
-                            if (locations.length === 0) {
-                                $('.filtered-class').html('<p>No results found.</p>');
-                            } else {
-                                renderLocations(locations, '.filtered-class'); // Render filtered locations
-                            }
-                            isFetching = false; // Reset fetching flag
-                        },
-                        error: function (error) {
-                            console.log('Error fetching filtered locations:', error);
-                            isFetching = false; // Reset fetching flag
+                $.ajax({
+                    url: 'api/search/filter-top-destination.php',
+                    type: 'GET',
+                    dataType: 'json',
+                    data: {
+                        category: category,
+                        cities: cities.join(',')
+                    },
+                    success: function (locations) {
+                        // Clear previous filtered data
+                        $('.filtered-class').empty();
+
+                        // Check if locations are returned
+                        if (locations.length === 0) {
+                            $('.filtered-class').html('<p>No results found.</p>');
+                        } else {
+                            renderLocations(locations, '.filtered-class'); // Render filtered locations
                         }
-                    });
+                        isFetching = false; // Reset fetching flag
+                    },
+                    error: function (error) {
+                        console.log('Error fetching filtered locations:', error);
+                        isFetching = false; // Reset fetching flag
+                    }
                 });
             }
         }
 
         // Handle filter application
-        $('#apply-filters').off('click').on('click', function () {
-            if (!isFetching) {
+        $(document).ready(function () {
+            // Function to check if both fields are filled
+            function checkFilters() {
                 var selectedCategory = $('input[name="category"]:checked').val();
-                var selectedCities = [];
+                var selectedCities = $('input[name="location[]"]:checked').length;
 
-                $('input[name="location[]"]:checked').each(function () {
-                    selectedCities.push($(this).val());
-                });
-
-                // Clear previous filtered data if necessary
-                $('.filtered-class').empty(); // Ensure previous results are cleared
-
-                // Check if selectedCategory is empty or selectedCities is empty
-                if (!selectedCategory || selectedCities.length === 0) {
-                    // Reset to initial fetch if no filters are selected
-                    isFiltered = false; // Reset filtered state
-                    $('.filtered-class').fadeOut(200, function () {
-                        $('.your-class').fadeIn(200); // Show initial container
-                        $('.your-class').empty(); // Clear any content in the initial container
-                        initialFetch(); // Fetch initial data
-                    });
+                // Enable or disable button based on selection
+                if (selectedCategory && selectedCities > 0) {
+                    $('#apply-filters').prop('disabled', false);
                 } else {
-                    fetchLocations(selectedCategory, selectedCities);
+                    $('#apply-filters').prop('disabled', true);
                 }
             }
+
+            // Event listeners to check fields whenever selections change
+            $('input[name="category"]').change(checkFilters);
+            $('input[name="location[]"]').change(checkFilters);
+
+            // Handle filter application with error message
+            $('#apply-filters').off('click').on('click', function () {
+                if (!isFetching) {
+                    var selectedCategory = $('input[name="category"]:checked').val();
+                    var selectedCities = [];
+
+                    $('input[name="location[]"]:checked').each(function () {
+                        selectedCities.push($(this).val());
+                    });
+
+                    // Check if selectedCategory is empty or selectedCities is empty
+                    if (!selectedCategory || selectedCities.length === 0) {
+                        // Show toastr message if both fields are required
+                        toastr.error('Both category and city selections are required.');
+                    } else {
+                        // Fetch locations if both fields are selected
+                        fetchLocations(selectedCategory, selectedCities);
+                    }
+                }
+            });
+
+            // Initial call to set button state
+            checkFilters();
         });
 
         // Initial fetch on page load
         initialFetch(); // Load initial data once on page load
     });
+
 </script>

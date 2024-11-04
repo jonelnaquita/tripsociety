@@ -100,6 +100,12 @@ include 'modal/search-modal.php';
             align-items: center;
             /* Center vertically */
         }
+
+        .sign-in-btn:hover {
+            background-color: white;
+            color: #582fff;
+            border-color: #582fff;
+        }
     </style>
 </head>
 
@@ -111,14 +117,25 @@ include 'modal/search-modal.php';
             <span class="font-weight-bolder text-light ml-2">TripSociety</span>
         </a>
 
-        <div class="ml-auto">
-            <li class="nav-item dropdown" id="install-button-container" style="margin-right: -13px; display:none;">
+        <div class="ml-auto d-flex align-items-center">
+            <!-- Install button container -->
+            <li class="nav-item dropdown" id="install-button-container" style="display:none;">
                 <a class="nav-link" href="#">
                     <i class="fas fa-download text-white" id="install-button" style="font-size:18px;"></i>
                 </a>
             </li>
+
+            <!-- Sign In button -->
+            <a href="login.php" class="btn btn-outline-light rounded-pill sign-in-btn" style="border-width: 1px;">
+                <span class="material-icons" style="font-size: 20px; vertical-align: middle; margin-right: 5px;">
+                    login
+                </span>
+                Sign In
+            </a>
+
         </div>
     </nav>
+
 
     <div class="container mt-4">
         <!-- Tabs -->
