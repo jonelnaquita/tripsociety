@@ -242,10 +242,39 @@ include 'footer.php';
 
 <script>
     const cities = [
-        'Batangas City', 'Lipa City', 'Tanauan City', 'Balayan', 'Batangas',
-        'Calaca', 'Calatagan', 'Cuenca', 'Lemery', 'Lian', 'Mabini', 'Malvar',
-        'Matabungkay', 'Nasugbu', 'San Jose', 'San Juan', 'San Luis', 'San Nicolás',
-        'San Pascual', 'Santa Teresa', 'Taal', 'Talisay', 'Taysan', 'Vaughn', 'Outside Batangas'
+        'Agoncillo',
+        'Alitagtag',
+        'Balayan',
+        'Balete',
+        'Bauan',
+        'Calaca',
+        'Calatagan',
+        'Cuenca',
+        'Ibaan',
+        'Laurel',
+        'Lemery',
+        'Lian',
+        'Lipa',
+        'Lobo',
+        'Mabini',
+        'Malvar',
+        'Mataas na Kahoy',
+        'Nasugbu',
+        'Padre Garcia',
+        'Rosario',
+        'San Jose',
+        'San Juan',
+        'San Luis',
+        'San Nicolas',
+        'San Pascual',
+        'Santa Teresita',
+        'Santo Tomas',
+        'Taal',
+        'Talisay',
+        'Tanauan',
+        'Taysan',
+        'Tingloy',
+        'Tuy'
     ];
 
     // Populate the city dropdown
@@ -393,113 +422,113 @@ include 'footer.php';
 </script>
 
 <script>
-$(document).ready(function () {
-    // Disable the button by default
-    const $updateButton = $('.btn-update-password');
+    $(document).ready(function () {
+        // Disable the button by default
+        const $updateButton = $('.btn-update-password');
 
-    // Function to validate password confirmation
-    function validatePasswordConfirmation() {
-        const newPassword = $('#new-password').val();
-        const confirmNewPassword = $('#confirm-new-password').val();
-        if (newPassword !== confirmNewPassword) {
-            $updateButton.prop('disabled', true);
-        } else {
-            $updateButton.prop('disabled', false);
+        // Function to validate password confirmation
+        function validatePasswordConfirmation() {
+            const newPassword = $('#new-password').val();
+            const confirmNewPassword = $('#confirm-new-password').val();
+            if (newPassword !== confirmNewPassword) {
+                $updateButton.prop('disabled', true);
+            } else {
+                $updateButton.prop('disabled', false);
+            }
         }
-    }
 
-    // Function to validate password criteria
-    function validatePasswordCriteria() {
-        const passwordInput = $('#new-password');
-        const password = passwordInput.val();
-        const passwordCheckElements = {
-            length: $('.check-length'),
-            uppercase: $('.check-uppercase'),
-            lowercase: $('.check-lowercase'),
-            number: $('.check-number'),
-            special: $('.check-special')
-        };
+        // Function to validate password criteria
+        function validatePasswordCriteria() {
+            const passwordInput = $('#new-password');
+            const password = passwordInput.val();
+            const passwordCheckElements = {
+                length: $('.check-length'),
+                uppercase: $('.check-uppercase'),
+                lowercase: $('.check-lowercase'),
+                number: $('.check-number'),
+                special: $('.check-special')
+            };
 
-        const isLengthValid = password.length >= 8;
-        const isUppercaseValid = /[A-Z]/.test(password);
-        const isLowercaseValid = /[a-z]/.test(password);
-        const isNumberValid = /[0-9]/.test(password);
-        const isSpecialValid = /[@$!%*?&]/.test(password);
+            const isLengthValid = password.length >= 8;
+            const isUppercaseValid = /[A-Z]/.test(password);
+            const isLowercaseValid = /[a-z]/.test(password);
+            const isNumberValid = /[0-9]/.test(password);
+            const isSpecialValid = /[@$!%*?&]/.test(password);
 
-        // Update icons and show/hide password criteria
-        passwordCheckElements.length.find('i').toggleClass('fa-times', !isLengthValid).toggleClass('fa-check', isLengthValid).css('color', isLengthValid ? 'green' : 'red');
-        passwordCheckElements.length.toggle(!isLengthValid);
+            // Update icons and show/hide password criteria
+            passwordCheckElements.length.find('i').toggleClass('fa-times', !isLengthValid).toggleClass('fa-check', isLengthValid).css('color', isLengthValid ? 'green' : 'red');
+            passwordCheckElements.length.toggle(!isLengthValid);
 
-        passwordCheckElements.uppercase.find('i').toggleClass('fa-times', !isUppercaseValid).toggleClass('fa-check', isUppercaseValid).css('color', isUppercaseValid ? 'green' : 'red');
-        passwordCheckElements.uppercase.toggle(!isUppercaseValid);
+            passwordCheckElements.uppercase.find('i').toggleClass('fa-times', !isUppercaseValid).toggleClass('fa-check', isUppercaseValid).css('color', isUppercaseValid ? 'green' : 'red');
+            passwordCheckElements.uppercase.toggle(!isUppercaseValid);
 
-        passwordCheckElements.lowercase.find('i').toggleClass('fa-times', !isLowercaseValid).toggleClass('fa-check', isLowercaseValid).css('color', isLowercaseValid ? 'green' : 'red');
-        passwordCheckElements.lowercase.toggle(!isLowercaseValid);
+            passwordCheckElements.lowercase.find('i').toggleClass('fa-times', !isLowercaseValid).toggleClass('fa-check', isLowercaseValid).css('color', isLowercaseValid ? 'green' : 'red');
+            passwordCheckElements.lowercase.toggle(!isLowercaseValid);
 
-        passwordCheckElements.number.find('i').toggleClass('fa-times', !isNumberValid).toggleClass('fa-check', isNumberValid).css('color', isNumberValid ? 'green' : 'red');
-        passwordCheckElements.number.toggle(!isNumberValid);
+            passwordCheckElements.number.find('i').toggleClass('fa-times', !isNumberValid).toggleClass('fa-check', isNumberValid).css('color', isNumberValid ? 'green' : 'red');
+            passwordCheckElements.number.toggle(!isNumberValid);
 
-        passwordCheckElements.special.find('i').toggleClass('fa-times', !isSpecialValid).toggleClass('fa-check', isSpecialValid).css('color', isSpecialValid ? 'green' : 'red');
-        passwordCheckElements.special.toggle(!isSpecialValid);
+            passwordCheckElements.special.find('i').toggleClass('fa-times', !isSpecialValid).toggleClass('fa-check', isSpecialValid).css('color', isSpecialValid ? 'green' : 'red');
+            passwordCheckElements.special.toggle(!isSpecialValid);
 
-        // Enable update button only if all criteria are met
-        if (isLengthValid && isUppercaseValid && isLowercaseValid && isNumberValid && isSpecialValid && password === $('#confirm-new-password').val()) {
-            $updateButton.prop('disabled', false);
-        } else {
-            $updateButton.prop('disabled', true);
+            // Enable update button only if all criteria are met
+            if (isLengthValid && isUppercaseValid && isLowercaseValid && isNumberValid && isSpecialValid && password === $('#confirm-new-password').val()) {
+                $updateButton.prop('disabled', false);
+            } else {
+                $updateButton.prop('disabled', true);
+            }
         }
-    }
 
-    // Check password confirmation on input
-    $('#new-password, #confirm-new-password').on('input', function () {
-        validatePasswordConfirmation();
-        validatePasswordCriteria();
-    });
+        // Check password confirmation on input
+        $('#new-password, #confirm-new-password').on('input', function () {
+            validatePasswordConfirmation();
+            validatePasswordCriteria();
+        });
 
-    // Show password criteria when password input is focused
-    $('#new-password').on('focus', function () {
-        $('.password-check').show();
-    });
+        // Show password criteria when password input is focused
+        $('#new-password').on('focus', function () {
+            $('.password-check').show();
+        });
 
-    // Hide password criteria when password input loses focus
-    $('#new-password').on('blur', function () {
-        if (!$(this).val()) {
-            $('.password-check').hide();
-        }
-    });
-
-    $('#updatePasswordForm').on('submit', function (e) {
-        e.preventDefault(); // Prevent form from submitting normally
-
-        const currentPassword = $('#current-password').val();
-        const newPassword = $('#new-password').val();
-
-        $.ajax({
-            url: 'api/setting/update-password.php',
-            type: 'POST',
-            data: {
-                current_password: currentPassword,
-                new_password: newPassword
-            },
-            dataType: 'json', // Expect a JSON response
-            success: function (response) {
-                if (response.success) {
-                    toastr.success(response.message);
-                    // Clear the input fields
-                    $('#current-password').val('');
-                    $('#new-password').val('');
-                    $('#confirm-new-password').val('');
-                    // Disable the button again after clearing fields
-                    $updateButton.prop('disabled', true);
-                } else {
-                    toastr.error(response.message);
-                }
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                console.error('AJAX Error:', textStatus, errorThrown);
-                toastr.error('An error occurred while processing your request.');
+        // Hide password criteria when password input loses focus
+        $('#new-password').on('blur', function () {
+            if (!$(this).val()) {
+                $('.password-check').hide();
             }
         });
+
+        $('#updatePasswordForm').on('submit', function (e) {
+            e.preventDefault(); // Prevent form from submitting normally
+
+            const currentPassword = $('#current-password').val();
+            const newPassword = $('#new-password').val();
+
+            $.ajax({
+                url: 'api/setting/update-password.php',
+                type: 'POST',
+                data: {
+                    current_password: currentPassword,
+                    new_password: newPassword
+                },
+                dataType: 'json', // Expect a JSON response
+                success: function (response) {
+                    if (response.success) {
+                        toastr.success(response.message);
+                        // Clear the input fields
+                        $('#current-password').val('');
+                        $('#new-password').val('');
+                        $('#confirm-new-password').val('');
+                        // Disable the button again after clearing fields
+                        $updateButton.prop('disabled', true);
+                    } else {
+                        toastr.error(response.message);
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.error('AJAX Error:', textStatus, errorThrown);
+                    toastr.error('An error occurred while processing your request.');
+                }
+            });
+        });
     });
-});
 </script>
