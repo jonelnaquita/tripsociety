@@ -274,7 +274,8 @@ include 'footer.php';
         'Tanauan',
         'Taysan',
         'Tingloy',
-        'Tuy'
+        'Tuy',
+        'Outside Batangas'
     ];
 
     // Populate the city dropdown
