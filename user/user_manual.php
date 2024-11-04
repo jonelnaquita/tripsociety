@@ -8,7 +8,9 @@ include 'header.php';
     .your-class img {
         width: 100%;
         height: 70vh;
-        object-fit: cover;
+        /* Adjust the height as necessary */
+        object-fit: contain;
+        /* Change from cover to contain to prevent cropping */
         border-radius: 8px;
     }
 
@@ -17,6 +19,7 @@ include 'header.php';
         bottom: -25px;
     }
 </style>
+
 
 <div class="content-wrapper">
     <section class="content">
