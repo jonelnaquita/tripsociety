@@ -60,6 +60,10 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0.27/dist/fancybox.css">
     <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0.27/dist/fancybox.umd.js"></script>
 
+    <link rel="stylesheet" type="text/css" href="../plugins/slick/slick.css" />
+    <link rel="stylesheet" type="text/css" href="../plugins/slick/slick-theme.css" />
+    <script type="text/javascript" src="../plugins/slick/slick.min.js"></script>
+
     <script>
         toastr.options = {
             "closeButton": true,         // Show close button

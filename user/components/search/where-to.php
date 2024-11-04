@@ -5,9 +5,9 @@
         <form action="explore_destination.php?search" class="mt-3">
             <div class="input-group">
                 <div class="input-group-prepend">
-                    <button type="submit" class="btn btn-sm btn-default bg-white" style="border-right:none;">
+                    <span class="btn btn-sm btn-default bg-white" style="border-right:none;">
                         <i class="fas fa-search"></i>
-                    </button>
+                    </span>
                 </div>
                 <input type="search" name="query" class="form-control form-control-sm" placeholder="Search"
                     id="search-input" oninput="fetchResults()">

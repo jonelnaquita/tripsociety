@@ -9,16 +9,6 @@ include 'modal/search-modal.php';
 <head>
     <link rel="stylesheet" href="assets/css/search.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>-->
-
-    <link rel="stylesheet" type="text/css" href="../plugins/slick/slick.css" />
-    <link rel="stylesheet" type="text/css" href="../plugins/slick/slick-theme.css" />
-    <script type="text/javascript" src="../plugins/slick/slick.min.js"></script>
-
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0.27/dist/fancybox.css" />
-    <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0.27/dist/fancybox.umd.js"></script>
 
 
     <style>
