@@ -46,11 +46,41 @@
 
                         // Sample cities (adjust as needed)
                         $allCities = [
-                            'Batangas City', 'Lipa City', 'Tanauan City', 'Balayan', 'Batangas', 'Calaca', 'Calatagan', 
-                            'Cuenca', 'Lemery', 'Lian', 'Mabini', 'Malvar', 'Matabungkay', 'Nasugbu', 'San Jose', 
-                            'San Juan', 'San Luis', 'San Nicolás', 'San Pascual', 'Santa Teresa', 'Taal', 'Talisay', 
-                            'Taysan', 'Vaughn'
+                            'Agoncillo',
+                            'Alitagtag',
+                            'Balayan',
+                            'Balete',
+                            'Bauan',
+                            'Calaca',
+                            'Calatagan',
+                            'Cuenca',
+                            'Ibaan',
+                            'Laurel',
+                            'Lemery',
+                            'Lian',
+                            'Lipa',
+                            'Lobo',
+                            'Mabini',
+                            'Malvar',
+                            'Mataas na Kahoy',
+                            'Nasugbu',
+                            'Padre Garcia',
+                            'Rosario',
+                            'San Jose',
+                            'San Juan',
+                            'San Luis',
+                            'San Nicolas',
+                            'San Pascual',
+                            'Santa Teresita',
+                            'Santo Tomas',
+                            'Taal',
+                            'Talisay',
+                            'Tanauan',
+                            'Taysan',
+                            'Tingloy',
+                            'Tuy'
                         ];
+
                         ?>
 
                         <!-- Display selected categories and cities -->
