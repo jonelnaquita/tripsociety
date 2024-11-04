@@ -371,7 +371,7 @@ include 'footer.php';
             const isEmailValid = validateEmail();
 
             // Enable or disable the submit button based on validation
-            $submitButton.prop('disabled', !(isNameValid && isUsernameValid && isEmailValid && isLocationValid));
+            $submitButton.prop('disabled', !(isNameValid && isUsernameValid && isEmailValid));
         }
 
         // Attach real-time validation to input fields
