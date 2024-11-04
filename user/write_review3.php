@@ -206,6 +206,15 @@ if (isset($_GET['id'])) {
             const previewContainer = $('#image-preview');
             previewContainer.empty(); // Clear previous previews
 
+            // Check the number of files selected
+            const maxImages = 4;
+            if (files.length > maxImages) {
+                alert(`You can only upload a maximum of ${maxImages} images.`);
+                // Reset the input to prevent excess images from being processed
+                this.value = '';
+                return;
+            }
+
             for (let i = 0; i < files.length; i++) {
                 const file = files[i];
                 const reader = new FileReader();
@@ -229,8 +238,8 @@ if (isset($_GET['id'])) {
             $(this).closest('.image-wrapper').remove();
         });
     });
-
 </script>
+
 
 <script>
     $(document).ready(function () {
