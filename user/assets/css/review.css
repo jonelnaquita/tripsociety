@@ -56,3 +56,28 @@
     font-size: 30px;
     /* Larger close button */
 }
+
+.overflow-auto {
+    overflow-x: auto;
+    /* Enable horizontal scrolling */
+    white-space: nowrap;
+    /* Prevent line breaks to maintain horizontal layout */
+    padding: 10px 0;
+    /* Optional: Add some padding for aesthetics */
+}
+
+.d-flex {
+    display: flex;
+    /* Use flexbox for layout */
+    flex-wrap: nowrap;
+    /* Prevent wrapping of flex items */
+}
+
+.col-6,
+.col-md-4,
+.col-lg-3 {
+    flex: 0 0 auto;
+    /* Prevent flex items from growing or shrinking */
+    width: auto;
+    /* Maintain original width based on Bootstrap columns */
+}
