@@ -41,6 +41,11 @@
 
         // Render locations to the specified container
         function renderLocations(locations, container) {
+            // Remove any existing slick instance
+            if ($(container).hasClass('slick-initialized')) {
+                $(container).slick('unslick'); // Unslick previous initialization
+            }
+
             // Clear the container before rendering new content
             $(container).empty(); // Clear previous content
 
@@ -51,32 +56,27 @@
                 var firstImage = imageArray.length > 0 ? imageArray[0] : 'default.jpg';
 
                 locationHTML += `
-        <a href="explore_destination.php?search&id=${location.id}" class="text-dark destination-card">
-            <div class="mr-3">
-                <span class="badge badge-light p-2 m-2">
-                    <i class="fas fa-star text-warning"></i>
-                    ${parseFloat(location.average_rating).toFixed(1)}
-                </span>
-                <i class="d-block w-100 p-3 text-center" id="img-gallery"
-                    style="font-size:60px; margin-top:-40px; background-image: url('../admin/images/${firstImage}'); background-size: cover;">
-                </i>
-                <h6 class="text-center font-weight-bold"
-                    style="margin-top:10px; height:50px; font-size:13px; margin-bottom:-15px;">
-                    ${location.location_name}
-                </h6>
-            </div>
-        </a>`;
+                    <a href="explore_destination.php?search&id=${location.id}" class="text-dark destination-card">
+                        <div class="mr-3">
+                            <span class="badge badge-light p-2 m-2">
+                                <i class="fas fa-star text-warning"></i>
+                                ${parseFloat(location.average_rating).toFixed(1)}
+                            </span>
+                            <i class="d-block w-100 p-3 text-center" id="img-gallery"
+                                style="font-size:60px; margin-top:-40px; background-image: url('../admin/images/${firstImage}'); background-size: cover;">
+                            </i>
+                            <h6 class="text-center font-weight-bold"
+                                style="margin-top:10px; height:50px; font-size:13px; margin-bottom:-15px;">
+                                ${location.location_name}
+                            </h6>
+                        </div>
+                    </a>`;
             });
 
             // Insert new content into the container
             $(container).html(locationHTML);
 
-            // Initialize or reinitialize slick slider
-            if ($(container).hasClass('slick-initialized')) {
-                $(container).slick('unslick'); // Unslick the previous initialization
-            }
-
-            // Initialize the Slick slider with updated content
+            // Initialize Slick slider
             $(container).slick({
                 dots: true,
                 infinite: true,
@@ -112,7 +112,6 @@
                 ]
             });
         }
-
 
         // Fetch locations when filter is applied
         function fetchLocations(category, cities) {
