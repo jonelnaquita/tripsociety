@@ -69,7 +69,7 @@ if (isset($_SESSION['user'])) {
       // Show splash screen for 3 seconds
       setTimeout(() => {
         // Redirect to get_started.php after 3 seconds
-        window.location.href = 'user/get_started.php';
+        window.location.href = 'user/home-guest.php';
       }, 3000); // 3 seconds
     }
 

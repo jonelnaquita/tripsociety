@@ -126,7 +126,7 @@ include 'modal/search-modal.php';
             </li>
 
             <!-- Sign In button -->
-            <a href="login.php" class="btn btn-outline-light rounded-pill sign-in-btn" style="border-width: 1px;">
+            <a href="get_started.php" class="btn btn-outline-light rounded-pill sign-in-btn" style="border-width: 1px;">
                 <span class="material-icons" style="font-size: 20px; vertical-align: middle; margin-right: 5px;">
                     login
                 </span>
