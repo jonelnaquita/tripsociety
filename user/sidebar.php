@@ -223,20 +223,20 @@
                                 <p class="ml-2">More</p>
                             </a>
                         </li>
+                        <div class="sign-buttons text-center" style="margin-top: 90px;">
+                            <?php if (isset($_SESSION['user'])): ?>
+                                <a href="signout.php" class="nav-link btn btn-light" id="signout" style="width: 210px;">
+                                    <i class="fas fa-sign-out-alt"></i> Sign Out
+                                </a>
+                            <?php else: ?>
+                                <a href="login.php" class="nav-link btn btn-light" id="signout" style="width: 210px;">
+                                    <i class="fas fa-sign-in-alt"></i> Sign In
+                                </a>
+                            <?php endif; ?>
+                        </div>
                     </ul>
                 </nav>
 
-                <div class="sign-buttons text-center" style="margin-top: 90px;">
-                    <?php if (isset($_SESSION['user'])): ?>
-                        <a href="signout.php" class="nav-link btn btn-light" id="signout">
-                            <i class="fas fa-sign-out-alt"></i> Sign Out
-                        </a>
-                    <?php else: ?>
-                        <a href="login.php" class="nav-link btn btn-light" id="signout">
-                            <i class="fas fa-sign-in-alt"></i> Sign In
-                        </a>
-                    <?php endif; ?>
-                </div>
             </div>
         </aside>
         <br><br>

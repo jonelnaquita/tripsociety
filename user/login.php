@@ -190,12 +190,21 @@ if (isset($_SESSION['user'])) {
                     }
                 },
                 error: function (xhr, status, error) {
-                    toastr.error('Something went wrong. Please try again.');  // General error message
+                    // Log the full error details to the console
+                    console.error('Error details:', {
+                        xhr: xhr,
+                        status: status,
+                        error: error
+                    });
+
+                    // Show a general error message
+                    toastr.error('Something went wrong. Please try again.');
                 }
             });
         });
     });
 </script>
+
 
 <!--Submit for Reset Password-->
 <script>
