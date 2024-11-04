@@ -53,68 +53,166 @@ if (isset($_GET['id'])) {
                                 &nbsp <?php echo $row['name']; ?>
                             </p>
                         </div>
-                        <div class="card-body" style="height:700px;">
 
 
-                            <style>
-                                .chat-box {
-                                    height: 400px;
-                                    overflow-y: scroll;
-                                    border: 1px solid #ddd;
+                        <style>
+                            .chat-box {
+                                height: 60vh;
+                                overflow-y: auto;
+                                padding: 10px;
+                                background-color: #fff;
+                            }
 
-                                }
+                            .chat {
+                                display: flex;
+                                align-items: center;
+                                margin-bottom: 10px;
+                                position: relative;
+                            }
 
-                                .chat {
-                                    display: flex;
-                                    align-items: flex-start;
-                                    margin-bottom: 10px;
-                                }
+                            .chat.incoming {
+                                justify-content: flex-start;
+                            }
 
-                                .chat.incoming {
-                                    justify-content: flex-start;
-                                }
+                            .chat.outgoing {
+                                justify-content: flex-end;
+                            }
 
-                                .chat.outgoing {
-                                    justify-content: flex-end;
-                                }
+                            .profile-img {
+                                width: 40px;
+                                height: 40px;
+                                border-radius: 50%;
+                                margin: 0 10px;
+                                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+                                object-fit: cover;
+                            }
 
-                                .chat img {
-                                    width: 40px;
-                                    height: 40px;
-                                    border-radius: 50%;
-                                    margin-right: 10px;
-                                }
+                            .details {
+                                max-width: 70%;
+                                padding: 10px 10px 10px 10px;
+                                border-radius: 15px;
+                                position: relative;
+                            }
 
-                                .details {
-                                    max-width: 70%;
-                                }
+                            .details.bg-primary {
+                                background-color: #3f51b5;
+                                /* Material Blue */
+                            }
 
-                                .details p {
-                                    margin: 0;
-                                }
-                            </style>
-                            <div id="chat-box" class="chat-box"></div>
+                            .details.bg-light {
+                                background-color: #e0e0e0;
+                                /* Light Gray */
+                            }
 
+                            .details p {
+                                margin: 0;
+                                line-height: 1.5;
+                            }
 
+                            .timestamp {
+                                font-size: 12px;
+                                color: #999;
+                                margin-top: 5px;
+                            }
 
+                            .no-messages {
+                                text-align: center;
+                                color: #999;
+                                font-style: italic;
+                                margin-top: 20px;
+                            }
 
-                            <div class="card-footer">
-                                <form id="message-form" method="post" class="mt-3">
-                                    <div class="input-group">
-                                        <input type="hidden" id="outgoing-id" value="<?php echo $_SESSION['user']; ?>">
-                                        <input type="hidden" id="incoming-id" value="<?php echo $_GET['id']; ?>">
-                                        <input type="text" name="message" id="message-input" class="form-control"
-                                            placeholder="Message...">
-                                        <div class="input-group-append">
-                                            <button type="submit" class="btn btn-secondary">
-                                                <i class="fas fa-paper-plane"></i>
-                                            </button>
-                                        </div>
+                            .card-footer {
+                                border-top: 1px solid #ddd;
+                                /* Subtle border to separate from chat area */
+                                padding: 10px;
+                                background-color: #f8f9fa;
+                                /* Light background color for contrast */
+                                border-radius: 0 0 8px 8px;
+                                /* Rounded bottom corners */
+                            }
+
+                            .message-form {
+                                display: flex;
+                                align-items: center;
+                            }
+
+                            .input-group {
+                                flex-grow: 1;
+                                /* Allow input to take available space */
+                            }
+
+                            .message-input {
+                                border: 1px solid #ccc;
+                                /* Light border for the input field */
+                                border-radius: 20px;
+                                /* Rounded corners for a modern look */
+                                padding: 10px 15px;
+                                /* More padding for comfort */
+                                transition: border-color 0.3s;
+                                /* Smooth transition for focus effect */
+                            }
+
+                            .message-input:focus {
+                                border-color: #3f51b5;
+                                /* Material Blue color on focus */
+                                box-shadow: 0 0 5px rgba(63, 81, 181, 0.5);
+                                /* Subtle shadow on focus */
+                                outline: none;
+                                /* Remove default outline */
+                            }
+
+                            .btn-send {
+                                background-color: #3f51b5;
+                                /* Material Blue */
+                                border: none;
+                                /* Remove default border */
+                                border-radius: 50%;
+                                /* Circular button */
+                                color: white;
+                                /* White icon color */
+                                width: 40px;
+                                /* Fixed width */
+                                height: 40px;
+                                /* Fixed height */
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                transition: background-color 0.3s;
+                                /* Smooth transition for hover effect */
+                            }
+
+                            .btn-send:hover {
+                                background-color: #303f9f;
+                                /* Darker blue on hover */
+                            }
+
+                            .btn-send:focus {
+                                outline: none;
+                                /* Remove default outline */
+                                box-shadow: 0 0 5px rgba(63, 81, 181, 0.5);
+                                /* Subtle shadow on focus */
+                            }
+                        </style>
+                        <div id="chat-box" class="chat-box"></div>
+
+                        <div class="card-footer">
+                            <form id="message-form" method="post" class="message-form mt-3">
+                                <div class="input-group">
+                                    <input type="hidden" id="outgoing-id" value="<?php echo $_SESSION['user']; ?>">
+                                    <input type="hidden" id="incoming-id" value="<?php echo $_GET['id']; ?>">
+                                    <input type="text" name="message" id="message-input"
+                                        class="form-control message-input" placeholder="Type your message..."
+                                        aria-label="Message">
+                                    <div class="input-group-append">
+                                        <button type="submit" class="btn btn-send">
+                                            <i class="fas fa-paper-plane"></i>
+                                        </button>
                                     </div>
-                                </form>
-
-                            </div>
+                                </div>
+                            </form>
                         </div>
+
                     </div>
                 </div>
                 <br><br><br><br>
