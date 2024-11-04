@@ -28,9 +28,22 @@ try {
     $stmt->execute(['id' => $_SESSION['user']]); // Ensure this matches session variable
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    error_log(print_r($user, true)); // Log the user array for debugging
-
     if ($user && password_verify($password, $user['password'])) {
+        // Check for existing username or email
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM tbl_user WHERE (username = :username OR email = :email) AND id != :id");
+        $stmt->execute([
+            'username' => $username,
+            'email' => $email,
+            'id' => $_SESSION['user'] // Exclude current user's id
+        ]);
+
+        $count = $stmt->fetchColumn();
+
+        if ($count > 0) {
+            echo json_encode(['success' => false, 'message' => 'Username or email already exists.']);
+            exit;
+        }
+
         // Update user data
         $stmt = $pdo->prepare("UPDATE tbl_user SET name = :name, username = :username, email = :email, location = :location, travel_preferences = :travel_preferences WHERE id = :id");
         $stmt->execute([

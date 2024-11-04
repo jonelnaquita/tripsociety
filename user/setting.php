@@ -120,16 +120,19 @@ include 'header.php';
                                                 <label>Name</label>
                                                 <input type="text" class="form-control" id="name"
                                                     placeholder="Name of user" required>
+                                                <small id="nameError" style="color: red; display: none;"></small>
                                             </div>
                                             <div class="form-group">
                                                 <label>Username</label>
                                                 <input type="text" class="form-control" id="username"
                                                     placeholder="@user" required>
+                                                <small id="usernameError" style="color: red; display: none;"></small>
                                             </div>
                                             <div class="form-group">
                                                 <label>Email Address</label>
                                                 <input type="email" class="form-control" id="email"
                                                     placeholder="Email Address" required>
+                                                <small id="emailError" style="color: red; display: none;"></small>
                                             </div>
                                             <div class="form-group">
                                                 <label for="location">City</label>
@@ -158,8 +161,12 @@ include 'header.php';
                                                         placeholder="Password" required>
                                                 </div>
                                             </div>
-                                            <button type="submit" class="btn btn-custom btn-block">Save Changes</button>
+                                            <button type="submit"
+                                                class="btn btn-custom btn-block update-account-btn">Save
+                                                Changes</button>
                                         </form>
+
+
                                     </div>
 
                                     <div class="tab-pane fade" id="update-password" role="tabpanel"
@@ -175,6 +182,29 @@ include 'header.php';
                                                 <label>New Password</label>
                                                 <input type="password" class="form-control" id="new-password"
                                                     placeholder="New Password" required>
+
+                                                <div class="password-check" style="display: none;">
+                                                    <div class="check-length">
+                                                        <i class="fa fa-times" style="color: red;"></i> At least 8
+                                                        characters Long
+                                                    </div>
+                                                    <div class="check-uppercase">
+                                                        <i class="fa fa-times" style="color: red;"></i> At least 1
+                                                        uppercase letter (A-Z)
+                                                    </div>
+                                                    <div class="check-lowercase">
+                                                        <i class="fa fa-times" style="color: red;"></i> At least 1
+                                                        lowercase letter (a-z)
+                                                    </div>
+                                                    <div class="check-number">
+                                                        <i class="fa fa-times" style="color: red;"></i> At least 1
+                                                        number (0-9)
+                                                    </div>
+                                                    <div class="check-special">
+                                                        <i class="fa fa-times" style="color: red;"></i> At least 1
+                                                        special character (@-$)
+                                                    </div>
+                                                </div>
                                             </div>
                                             <div class="form-group">
                                                 <label>Confirm New Password</label>
@@ -255,7 +285,7 @@ include 'footer.php';
                     // Populate travel_preferences as an array
                     if (data.travel_preferences) {
                         const preferences = data.travel_preferences.split(', ');
-                        $('#travel_preferences').val(preferences).trigger('change');
+                        $('#travel_preferences').val(preferences).trigger('change'); // Ensure Select2 reflects the new values
                     }
                 }
             },
@@ -264,92 +294,212 @@ include 'footer.php';
             }
         });
 
-        // Submit form data including travel_preferences
-        $('#updateAccountForm').on('submit', function (e) {
-            e.preventDefault();
+        // Disable the submit button initially
+        const $submitButton = $('.update-account-btn');
+        $submitButton.prop('disabled', true);
 
-            const formData = {
-                name: $('#name').val(),
-                username: $('#username').val(),
-                email: $('#email').val(),
-                location: $('#location').val(),
-                password: $('#password').val(),
-                travel_preferences: $('#travel_preferences').val().join(', ') // Join selected options as a comma-separated string
-            };
-
-            $.ajax({
-                url: 'api/setting/update-user.php',
-                type: 'POST',
-                data: formData,
-                dataType: 'json',
-                success: function (response) {
-                    if (response && response.success) {
-                        toastr.success(response.message, 'Success');
-                        $('#password').val('');
-                    } else {
-                        toastr.error(response.message || 'An unknown error occurred.');
-                    }
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    toastr.error('An error occurred while processing your request.');
-                }
-            });
-        });
-    });
-</script>
-
-<script>
-    $(document).ready(function () {
-        // Disable the button by default
-        const $updateButton = $('.btn-update-password');
-
-        // Function to validate password confirmation
-        function validatePassword() {
-            const newPassword = $('#new-password').val();
-            const confirmNewPassword = $('#confirm-new-password').val();
-            if (newPassword !== confirmNewPassword) {
-                $updateButton.prop('disabled', true);
+        // Function to validate Name
+        function validateName() {
+            const name = $('#name').val();
+            if (name.length <= 7 || /\d/.test(name)) {
+                $('#nameError').text('Name must be more than 7 characters long and cannot contain numbers.').show();
+                return false;
             } else {
-                $updateButton.prop('disabled', false);
+                $('#nameError').hide();
+                return true;
             }
         }
 
-        // Check password confirmation on input
-        $('#new-password, #confirm-new-password').on('input', validatePassword);
+        // Function to validate Username
+        function validateUsername() {
+            const username = $('#username').val();
+            if (username.length <= 7) {
+                $('#usernameError').text('Username must be more than 7 characters long.').show();
+                return false;
+            } else {
+                $('#usernameError').hide();
+                return true;
+            }
+        }
 
-        $('#updatePasswordForm').on('submit', function (e) {
-            e.preventDefault(); // Prevent form from submitting normally
+        // Function to validate Email
+        function validateEmail() {
+            const email = $('#email').val();
+            const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            if (!emailPattern.test(email)) {
+                $('#emailError').text('Please enter a valid email address.').show();
+                return false;
+            } else {
+                $('#emailError').hide();
+                return true;
+            }
+        }
 
-            const currentPassword = $('#current-password').val();
-            const newPassword = $('#new-password').val();
+        // Function to check all validations
+        function validateForm() {
+            const isNameValid = validateName();
+            const isUsernameValid = validateUsername();
+            const isEmailValid = validateEmail();
 
-            $.ajax({
-                url: 'api/setting/update-password.php',
-                type: 'POST',
-                data: {
-                    current_password: currentPassword,
-                    new_password: newPassword
-                },
-                dataType: 'json', // Expect a JSON response
-                success: function (response) {
-                    if (response.success) {
-                        toastr.success(response.message);
-                        // Clear the input fields
-                        $('#current-password').val('');
-                        $('#new-password').val('');
-                        $('#confirm-new-password').val('');
-                        // Disable the button again after clearing fields
-                        $updateButton.prop('disabled', true);
-                    } else {
-                        toastr.error(response.message);
+            // Enable or disable the submit button based on validation
+            $submitButton.prop('disabled', !(isNameValid && isUsernameValid && isEmailValid && isLocationValid));
+        }
+
+        // Attach real-time validation to input fields
+        $('#name').on('input', validateForm);
+        $('#username').on('input', validateForm);
+        $('#email').on('input', validateForm);
+        $('#location').on('change', validateForm); // Validate when the city is selected
+
+        // Form submission validation
+        $('#updateAccountForm').on('submit', function (e) {
+            e.preventDefault();
+
+            // Validate all fields before submission
+            if ($submitButton.prop('disabled') === false) {
+                const formData = {
+                    name: $('#name').val(),
+                    username: $('#username').val(),
+                    email: $('#email').val(),
+                    location: $('#location').val(),
+                    travel_preferences: $('#travel_preferences').val().join(', '), // Join selected options as a comma-separated string
+                    password: $('#password').val(), // Added missing comma
+                };
+
+                $.ajax({
+                    url: 'api/setting/update-user.php',
+                    type: 'POST',
+                    data: formData,
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response && response.success) {
+                            toastr.success(response.message, 'Success');
+                            $('#password').val('');
+                            $submitButton.prop('disabled', true); // Disable again after submission
+                        } else {
+                            toastr.error(response.message || 'An unknown error occurred.');
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.error('AJAX Error: ', textStatus, errorThrown);
+                        console.error('Response Text: ', jqXHR.responseText);
+                        toastr.error('An error occurred while processing your request. Please check the console for details.');
                     }
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    console.error('AJAX Error:', textStatus, errorThrown);
-                    toastr.error('An error occurred while processing your request.');
-                }
-            });
+                });
+            }
         });
     });
 
+</script>
+
+<script>
+$(document).ready(function () {
+    // Disable the button by default
+    const $updateButton = $('.btn-update-password');
+
+    // Function to validate password confirmation
+    function validatePasswordConfirmation() {
+        const newPassword = $('#new-password').val();
+        const confirmNewPassword = $('#confirm-new-password').val();
+        if (newPassword !== confirmNewPassword) {
+            $updateButton.prop('disabled', true);
+        } else {
+            $updateButton.prop('disabled', false);
+        }
+    }
+
+    // Function to validate password criteria
+    function validatePasswordCriteria() {
+        const passwordInput = $('#new-password');
+        const password = passwordInput.val();
+        const passwordCheckElements = {
+            length: $('.check-length'),
+            uppercase: $('.check-uppercase'),
+            lowercase: $('.check-lowercase'),
+            number: $('.check-number'),
+            special: $('.check-special')
+        };
+
+        const isLengthValid = password.length >= 8;
+        const isUppercaseValid = /[A-Z]/.test(password);
+        const isLowercaseValid = /[a-z]/.test(password);
+        const isNumberValid = /[0-9]/.test(password);
+        const isSpecialValid = /[@$!%*?&]/.test(password);
+
+        // Update icons and show/hide password criteria
+        passwordCheckElements.length.find('i').toggleClass('fa-times', !isLengthValid).toggleClass('fa-check', isLengthValid).css('color', isLengthValid ? 'green' : 'red');
+        passwordCheckElements.length.toggle(!isLengthValid);
+
+        passwordCheckElements.uppercase.find('i').toggleClass('fa-times', !isUppercaseValid).toggleClass('fa-check', isUppercaseValid).css('color', isUppercaseValid ? 'green' : 'red');
+        passwordCheckElements.uppercase.toggle(!isUppercaseValid);
+
+        passwordCheckElements.lowercase.find('i').toggleClass('fa-times', !isLowercaseValid).toggleClass('fa-check', isLowercaseValid).css('color', isLowercaseValid ? 'green' : 'red');
+        passwordCheckElements.lowercase.toggle(!isLowercaseValid);
+
+        passwordCheckElements.number.find('i').toggleClass('fa-times', !isNumberValid).toggleClass('fa-check', isNumberValid).css('color', isNumberValid ? 'green' : 'red');
+        passwordCheckElements.number.toggle(!isNumberValid);
+
+        passwordCheckElements.special.find('i').toggleClass('fa-times', !isSpecialValid).toggleClass('fa-check', isSpecialValid).css('color', isSpecialValid ? 'green' : 'red');
+        passwordCheckElements.special.toggle(!isSpecialValid);
+
+        // Enable update button only if all criteria are met
+        if (isLengthValid && isUppercaseValid && isLowercaseValid && isNumberValid && isSpecialValid && password === $('#confirm-new-password').val()) {
+            $updateButton.prop('disabled', false);
+        } else {
+            $updateButton.prop('disabled', true);
+        }
+    }
+
+    // Check password confirmation on input
+    $('#new-password, #confirm-new-password').on('input', function () {
+        validatePasswordConfirmation();
+        validatePasswordCriteria();
+    });
+
+    // Show password criteria when password input is focused
+    $('#new-password').on('focus', function () {
+        $('.password-check').show();
+    });
+
+    // Hide password criteria when password input loses focus
+    $('#new-password').on('blur', function () {
+        if (!$(this).val()) {
+            $('.password-check').hide();
+        }
+    });
+
+    $('#updatePasswordForm').on('submit', function (e) {
+        e.preventDefault(); // Prevent form from submitting normally
+
+        const currentPassword = $('#current-password').val();
+        const newPassword = $('#new-password').val();
+
+        $.ajax({
+            url: 'api/setting/update-password.php',
+            type: 'POST',
+            data: {
+                current_password: currentPassword,
+                new_password: newPassword
+            },
+            dataType: 'json', // Expect a JSON response
+            success: function (response) {
+                if (response.success) {
+                    toastr.success(response.message);
+                    // Clear the input fields
+                    $('#current-password').val('');
+                    $('#new-password').val('');
+                    $('#confirm-new-password').val('');
+                    // Disable the button again after clearing fields
+                    $updateButton.prop('disabled', true);
+                } else {
+                    toastr.error(response.message);
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.error('AJAX Error:', textStatus, errorThrown);
+                toastr.error('An error occurred while processing your request.');
+            }
+        });
+    });
+});
 </script>
