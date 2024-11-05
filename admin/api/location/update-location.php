@@ -74,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt = $pdo->prepare("UPDATE tbl_location SET 
         location_name = :location_name, location = :location, 
         description = :description, category = :category, city = :city, 
-        image = :images WHERE id = :id"); // Ensure your database has an images column
+        image = :images, tour_link = :tour_link WHERE id = :id"); // Ensure your database has an images column
     try {
         $stmt->execute([
             'location_name' => $locationName,
@@ -83,6 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             'category' => $category,
             'city' => $city,
             'images' => $imageNamesStr, // Save the image names string
+            'tour_link' => $tourLinkName,
             'id' => $locationId
         ]);
     } catch (PDOException $e) {
