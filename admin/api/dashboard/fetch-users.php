@@ -17,7 +17,7 @@ try {
     $stmt->execute();
     $totalDestination = $stmt->fetch(PDO::FETCH_ASSOC)['totalDestination'];
 
-    $stmt = $pdo->prepare("SELECT COUNT(*) AS totalReports FROM tbl_post_report");
+    $stmt = $pdo->prepare("SELECT COUNT(*) AS totalReports FROM tbl_post_report WHERE status = 0");
     $stmt->execute();
     $totalReports = $stmt->fetch(PDO::FETCH_ASSOC)['totalReports'];
 
