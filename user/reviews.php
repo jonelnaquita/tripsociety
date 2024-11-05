@@ -7,7 +7,7 @@ include 'header.php';
 include 'modal/report.php'; ?>
 
 <head>
-    <link rel="stylesheet" href="assets/css/review.css">
+    <!--<link rel="stylesheet" href="assets/css/review.css">-->
     <link rel="stylesheet" href="assets/css/report.css">
 </head>
 
