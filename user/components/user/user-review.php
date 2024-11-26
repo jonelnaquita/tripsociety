@@ -70,7 +70,7 @@
                                 </div>
                                 <div style="margin-bottom: 10px;" class="star-rating">
                                     ${'<i class="fas fa-star text-warning"></i>'.repeat(fullStars)}
-                                    ${halfStar ? '<i class="fas fa-star-half-alt"></i>' : ''}
+                                    ${halfStar ? '<i class="fas fa-star-half-alt text-warning"></i>' : ''}
                                     ${'<i class="far fa-star text-warning"></i>'.repeat(emptyStars)}
                                 </div> 
                                 <p class="ml-2 mr-2">${location.review}</p>
