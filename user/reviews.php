@@ -4,7 +4,8 @@
 <?php
 include '../inc/session_user.php';
 include 'header.php';
-include 'modal/report.php'; ?>
+include 'modal/report.php';
+include 'modal/edit-report.php'; ?>
 
 <head>
     <!--<link rel="stylesheet" href="assets/css/review.css">-->
@@ -64,22 +65,25 @@ include 'modal/report.php'; ?>
                                </button>`
                                     : ''; // No button if it's the user's own review
 
-                            // Dropdown menu item
-                            let dropdownMenu = !isOwnReview ? `
-                        <div class="dropdown float-right">
-                            <button class="btn btn-white btn-sm border-0 dropdown-toggle" type="button"
-                                id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
-                                aria-expanded="false">
-                                <i class="fas fa-ellipsis-h"></i>
-                            </button>
-                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item text-center" style="font-size:13px;" href="#" data-id="${location.id}" data-toggle="modal" data-target="#reportPostModal">
-                                    Report Post
-                                </a>
-                                <!-- Add more dropdown items here if needed -->
-                            </div>
-                        </div>
-                    ` : '';
+                            let dropdownMenu = `
+                                <div class="dropdown float-right">
+                                    <button class="btn btn-white btn-sm border-0 dropdown-toggle" type="button"
+                                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                                        aria-expanded="false">
+                                        <i class="fas fa-ellipsis-h"></i>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                                        ${isOwnReview
+                                    ? `<a class="dropdown-item text-center" style="font-size:13px;" href="#" data-id="${location.id}" data-toggle="modal" data-target="#editReviewModal">
+                                                Edit Report
+                                            </a>`
+                                    : `<a class="dropdown-item text-center" style="font-size:13px;" href="#" data-id="${location.id}" data-toggle="modal" data-target="#reportPostModal">
+                                                Report Post
+                                            </a>`}
+                                    </div>
+                                </div>
+                                `;
+
 
                             let reviewHTML = `
                         <div class="card mt-3 elevation-2" data-review-id="${location.id}">
