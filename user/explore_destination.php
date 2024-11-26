@@ -81,7 +81,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
             <div class="row">
                 <div class="col">
                     <h4 class="font-weight-bold mt-4">Explore <?php echo $row['location_name']; ?> <i
-                            class="far fa-check-circle" style="font-size:10px;"></i></h4>
+                            class="far fa-check-circle" style="font-size: 15px;"></i></h4>
 
 
                     <div class="image-slider">

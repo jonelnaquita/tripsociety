@@ -86,7 +86,7 @@ include 'header.php';
                 <div class="col">
                     <h5 class="text-center font-weight-bold mt-4">What would you <Br> like to review?</h5>
 
-                    <form action="explore_destination.php" class="mt-3">
+                    <form action="api/review/explore_destination.php" class="mt-3">
                         <div class="input-group">
                             <input type="search" class="form-control form-control-sm" placeholder="Search a destination"
                                 id="search-input">

@@ -4,8 +4,18 @@ include_once "../inc/config.php"; // Adjust the path according to your directory
 
 $outgoing_id = $_SESSION['user']; // Fetch the outgoing user's ID
 
-// Get the search query from GET request
 $search_query = isset($_GET['search']) ? $_GET['search'] : '';
+$filter = isset($_GET['filter']) ? $_GET['filter'] : '';
+
+// Adjust SQL query based on the filter
+$filter_condition = '';
+if ($filter === 'Travel Companion') {
+    $filter_condition = "AND tc.status = 'Accepted'";
+} elseif ($filter === 'Requesting') {
+    $filter_condition = "AND tc.status = 'Requesting'";
+} elseif ($filter === 'Not Travel Companion') {
+    $filter_condition = "AND COALESCE(tc.status, 'Not Travel Companion') = 'Not Travel Companion'";
+}
 
 $sql = "
     SELECT u.id AS user_id, u.name, u.profile_img,
@@ -23,6 +33,7 @@ $sql = "
             OR (m.receiver_id = u.id AND m.sender_id = :outgoing_id)
         )
     WHERE u.name LIKE :search_query
+    $filter_condition
     AND m.date_created = (
         SELECT MAX(m2.date_created)
         FROM tbl_message AS m2
@@ -33,8 +44,6 @@ $sql = "
     GROUP BY u.id
     ORDER BY m.date_created DESC;
 ";
-
-
 
 try {
     $stmt = $pdo->prepare($sql);
@@ -76,7 +85,7 @@ try {
                                 </a>
                                 <div class='flex-grow-1'>
                                     <h6 class='mb-1' style='font-size:15px;'>
-                                        {$user_name} {$badge_html}
+                                        {$user_name}
                                         <div class='dropdown float-right'>
                                             <button class='btn btn-white btn-sm border-0' type='button' id='dropdownMenuButton{$user_id}' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
                                                 <i class='fas fa-ellipsis-h'></i>

@@ -103,7 +103,7 @@ include 'modal/report.php'; ?>
                                         </p>
                                         <div style="margin-top:-7px;" class="star-rating">
                                             ${'<i class="fas fa-star text-warning"></i>'.repeat(fullStars)}
-                                            ${halfStar ? '<i class="fas fa-star-half-alt"></i>' : ''}
+                                            ${halfStar ? '<i class="fas fa-star-half-alt text-warning"></i>' : ''}
                                             ${'<i class="far fa-star text-warning"></i>'.repeat(emptyStars)}
                                         </div>
                                     </div>
@@ -217,26 +217,6 @@ include 'modal/report.php'; ?>
 <?php
 include 'footer.php';
 ?>
-<?php
-if (isset($_SESSION['user'])) {
-    ?>
-    <div style="position:fixed; bottom:0; right:0; margin-bottom:80px; z-index:50; margin-right:15px;">
-        <a type="button" href="write_review.php" class="btn btn-light shadow"
-            style="border-radius:50%; height:50px; width: 50px; padding:15px; background-color:#582fff; box-shadow: 0 4px 6px rgba(0,0,0,0.1); color:white;">
-            <i class="material-icons" style="font-size:20px;">edit</i>
-        </a>
-    </div>
-
-<?php } else {
-    ?>
-    <div style="position:fixed; bottom:0; right:0; margin-bottom:80px; z-index:50; margin-right:15px;">
-        <a type="button" href="login.php" class="btn btn-light p-3 text-white shadow"
-            style="border-radius:50px; background-color:#582fff;"><i class="far fa-edit fa-2x"></i></a>
-    </div>
-
-    <?php
-} ?>
-
 
 <!-- uPDATE sTATUS Modal-->
 <div class="modal fade" id="disclaimerModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"

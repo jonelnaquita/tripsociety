@@ -137,26 +137,88 @@ if (isset($_GET['id'])) {
                             </div>
                         </div>
                         <div class="card-body">
-                            <h5 class="font-weight-bold">Rate your experiences:</h5>
-                            <div class="star-rating">
-                                <i class="far fa-star fa-2x" data-value="1"></i>
-                                <i class="far fa-star fa-2x" data-value="2"></i>
-                                <i class="far fa-star fa-2x" data-value="3"></i>
-                                <i class="far fa-star fa-2x" data-value="4"></i>
-                                <i class="far fa-star fa-2x" data-value="5"></i>
-                            </div>
-                            <input type="hidden" id="rating-input" name="rating" value="0" required>
+                            <h4 class="font-weight-bold mb-4">Rate Your Experiences</h4>
 
-                            <h5 class="mt-3 font-weight-bold">Have you encountered any hazard?</h5>
-                            <select class="form-control w-50" id="hazard-input" name="hazard" required>
-                                <option value="">Select a hazard level</option>
-                                <option value="No Hazard">No Hazard</option>
-                                <option value="Very low hazard">Very low hazard</option>
-                                <option value="Low hazard">Low hazard</option>
-                                <option value="Moderate hazard">Moderate hazard</option>
-                                <option value="High hazard">High hazard</option>
-                                <option value="Extreme hazard">Extreme hazard</option>
-                            </select>
+                            <!-- Question 1 -->
+                            <div class="mb-4">
+                                <h5 class="font-weight-bold">1. Accessibility and Safety of Pathways</h5>
+                                <p>Are the pathways, roads, or trails well-maintained and safe for visitors to walk or
+                                    travel on without significant risks (e.g., steep drops, slippery surfaces, or
+                                    obstacles)?</p>
+                                <div>
+                                    <label class="d-block"><input type="radio" name="q1" value="0" required> No
+                                        Hazard</label>
+                                    <label class="d-block"><input type="radio" name="q1" value="1"> Very Low</label>
+                                    <label class="d-block"><input type="radio" name="q1" value="2"> Low</label>
+                                    <label class="d-block"><input type="radio" name="q1" value="3"> Moderate</label>
+                                    <label class="d-block"><input type="radio" name="q1" value="4"> High</label>
+                                    <label class="d-block"><input type="radio" name="q1" value="5"> Extreme</label>
+                                </div>
+                            </div>
+
+                            <!-- Question 2 -->
+                            <div class="mb-4">
+                                <h5 class="font-weight-bold">2. Weather and Environmental Conditions</h5>
+                                <p>Are there any weather or environmental risks at this destination, such as extreme
+                                    temperatures, sudden storms, or hazardous terrain?</p>
+                                <div>
+                                    <label class="d-block"><input type="radio" name="q2" value="0" required> No
+                                        Hazard</label>
+                                    <label class="d-block"><input type="radio" name="q2" value="1"> Very Low</label>
+                                    <label class="d-block"><input type="radio" name="q2" value="2"> Low</label>
+                                    <label class="d-block"><input type="radio" name="q2" value="3"> Moderate</label>
+                                    <label class="d-block"><input type="radio" name="q2" value="4"> High</label>
+                                    <label class="d-block"><input type="radio" name="q2" value="5"> Extreme</label>
+                                </div>
+                            </div>
+
+                            <!-- Question 3 -->
+                            <div class="mb-4">
+                                <h5 class="font-weight-bold">3. Availability of Safety Measures</h5>
+                                <p>Does the destination have adequate safety measures in place, such as warning signs,
+                                    safety equipment, emergency exits, or trained staff to handle emergencies?</p>
+                                <div>
+                                    <label class="d-block"><input type="radio" name="q3" value="0" required> No
+                                        Hazard</label>
+                                    <label class="d-block"><input type="radio" name="q3" value="1"> Very Low</label>
+                                    <label class="d-block"><input type="radio" name="q3" value="2"> Low</label>
+                                    <label class="d-block"><input type="radio" name="q3" value="3"> Moderate</label>
+                                    <label class="d-block"><input type="radio" name="q3" value="4"> High</label>
+                                    <label class="d-block"><input type="radio" name="q3" value="5"> Extreme</label>
+                                </div>
+                            </div>
+
+                            <!-- Question 4 -->
+                            <div class="mb-4">
+                                <h5 class="font-weight-bold">4. Health and Sanitation Conditions</h5>
+                                <p>Are there any health risks related to the destination, such as contaminated water,
+                                    lack of proper sanitation facilities, or the spread of diseases?</p>
+                                <div>
+                                    <label class="d-block"><input type="radio" name="q4" value="0" required> No
+                                        Hazard</label>
+                                    <label class="d-block"><input type="radio" name="q4" value="1"> Very Low</label>
+                                    <label class="d-block"><input type="radio" name="q4" value="2"> Low</label>
+                                    <label class="d-block"><input type="radio" name="q4" value="3"> Moderate</label>
+                                    <label class="d-block"><input type="radio" name="q4" value="4"> High</label>
+                                    <label class="d-block"><input type="radio" name="q4" value="5"> Extreme</label>
+                                </div>
+                            </div>
+
+                            <!-- Question 5 -->
+                            <div class="mb-4">
+                                <h5 class="font-weight-bold">5. Crowd Control and Security</h5>
+                                <p>Are there sufficient crowd control and security measures in place to ensure the
+                                    safety of visitors, especially during busy times or events?</p>
+                                <div>
+                                    <label class="d-block"><input type="radio" name="q5" value="0" required> No
+                                        Hazard</label>
+                                    <label class="d-block"><input type="radio" name="q5" value="1"> Very Low</label>
+                                    <label class="d-block"><input type="radio" name="q5" value="2"> Low</label>
+                                    <label class="d-block"><input type="radio" name="q5" value="3"> Moderate</label>
+                                    <label class="d-block"><input type="radio" name="q5" value="4"> High</label>
+                                    <label class="d-block"><input type="radio" name="q5" value="5"> Extreme</label>
+                                </div>
+                            </div>
 
                             <div class="mt-3">
                                 <h5 class="font-weight-bold">Write your review</h5>
@@ -243,74 +305,66 @@ if (isset($_GET['id'])) {
 
 <script>
     $(document).ready(function () {
-        $('.star-rating i').on('click', function () {
-            const rating = $(this).data('value');
-            $('#rating-input').val(rating);
-            console.log("Rating selected: ", rating); // Log rating value
-            $('.star-rating i').removeClass('fas blue-star').addClass('far'); // Reset stars
-            $(this).prevAll().addBack().removeClass('far').addClass('fas blue-star'); // Fill stars
-        });
-
-
-        // AJAX request to submit review
         $('.submit-btn').on('click', function () {
-            const rating = $('#rating-input').val();
-            const hazard = $('#hazard-input').val();
-            const review = $('textarea[name="review"]').val(); // Accessing the textarea correctly
+            // Collect ratings from q1 to q5
+            const q1 = parseInt($('input[name="q1"]:checked').val() || 0);
+            const q2 = parseInt($('input[name="q2"]:checked').val() || 0);
+            const q3 = parseInt($('input[name="q3"]:checked').val() || 0);
+            const q4 = parseInt($('input[name="q4"]:checked').val() || 0);
+            const q5 = parseInt($('input[name="q5"]:checked').val() || 0);
 
-            console.log("Submitting review..."); // Log submission
-            console.log("Rating: ", rating, "Hazard: ", hazard, "Review: ", review); // Log all inputs
+            // Calculate the average rating
+            const averageRating = (q1 + q2 + q3 + q4 + q5) / 5;
+
+            // Collect other form data
+            const review = $('textarea[name="review"]').val();
+            const locationId = $('#location-id').val();
 
             // Validate required fields
-            if (rating === '0' || hazard === '') {
-                toastr.error('Please provide a rating and select a hazard level.');
+            if (isNaN(averageRating)) {
+                toastr.error('Please answer all questions before submitting.');
                 return;
             }
 
+            // Prepare form data for AJAX
             const formData = new FormData();
-            formData.append('id', $('#location-id').val());
-            formData.append('rating', rating);
-            formData.append('hazard', hazard);
+            formData.append('location_id', locationId);
+            formData.append('average_rating', averageRating.toFixed(2)); // Save as a float with 2 decimals
             formData.append('review', review);
 
-            // Append images to formData if available
+            // Add uploaded images
             const files = $('#file-input')[0].files;
             for (let i = 0; i < files.length; i++) {
                 formData.append('images[]', files[i]);
             }
 
+            // Submit form via AJAX
             $.ajax({
                 url: 'api/review/add-review.php',
                 type: 'POST',
                 data: formData,
-                contentType: false, // Important for file uploads
-                processData: false, // Important for file uploads
+                contentType: false,
+                processData: false,
                 success: function (response) {
-                    console.log("Response from server: ", response); // Log server response
                     if (response.status === 'success') {
-                        toastr.success('Review submitted successfully!', 'Success');
-                        // Reset form fields
-                        resetForm(); // Call the reset function
+                        toastr.success(response.message);
+                        resetForm();
                     } else {
-                        alert('Error: ' + response.message);
+                        toastr.error(response.message);
                     }
                 },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    console.error("AJAX Error: ", textStatus, errorThrown); // Log AJAX errors
-                    toastr.error('An error occurred while submitting your review. Please try again.');
+                error: function () {
+                    toastr.error('An error occurred while submitting the review.');
                 }
             });
         });
 
-        // Function to reset the form fields
+        // Reset form fields
         function resetForm() {
-            $('#rating-input').val('0');
-            $('#hazard-input').val('');
-            $('textarea[name="review"]').val(''); // Clear the textarea
-            $('.star-rating i').removeClass('fas').addClass('far'); // Reset stars
-            $('#image-preview').empty(); // Clear image previews
-            $('#file-input').val(''); // Reset file input
+            $('input[type="radio"]').prop('checked', false);
+            $('textarea[name="review"]').val('');
+            $('#file-input').val('');
+            $('#image-preview').empty();
         }
     });
-
 </script>

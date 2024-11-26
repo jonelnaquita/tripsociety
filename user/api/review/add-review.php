@@ -1,62 +1,65 @@
 <?php
-session_start();
-include '../../../inc/config.php'; // Include your PDO database connection file
-
-header('Content-Type: application/json'); // Set content type to JSON
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Ensure session is started and user is logged in
+    session_start();
+    include '../../../inc/config.php'; // Include your database connection file
+    header('Content-Type: application/json');
+
     if (!isset($_SESSION['user'])) {
         echo json_encode(['status' => 'error', 'message' => 'User not logged in.']);
         exit;
     }
 
-    $id = $_POST['id'];
-    $user_id = $_SESSION['user'];
-    $rating = $_POST['rating'];
-    $hazard = $_POST['hazard'];
+    $userId = $_SESSION['user'];
+    $locationId = $_POST['location_id'];
+    $averageRating = $_POST['average_rating'];
     $review = $_POST['review'];
     $uploadDir = '../../../admin/review_image/';
     $imagePaths = [];
 
-    date_default_timezone_set('Asia/Manila');
-    $currentTimestamp = date('Y-m-d H:i:s');
-
-    // Validate required fields
-    if (empty($rating) || empty($hazard)) {
-        echo json_encode(['status' => 'error', 'message' => 'Rating, hazard level, and review are required.']);
-        exit;
-    }
-
     if (!empty($_FILES['images']['name'][0])) {
-        $fileCount = count($_FILES['images']['name']);
-
-        for ($i = 0; $i < $fileCount; $i++) {
-            $fileName = basename($_FILES['images']['name'][$i]);
-            $targetFilePath = $uploadDir . $fileName;
-
-            if (move_uploaded_file($_FILES['images']['tmp_name'][$i], $targetFilePath)) {
-                $imagePaths[] = $fileName;
+        foreach ($_FILES['images']['name'] as $key => $filename) {
+            $filePath = $uploadDir . basename($filename);
+            if (move_uploaded_file($_FILES['images']['tmp_name'][$key], $filePath)) {
+                $imagePaths[] = $filename;
             } else {
-                echo json_encode(['status' => 'error', 'message' => 'Failed to upload image: ' . $_FILES['images']['name'][$i]]);
+                echo json_encode(['status' => 'error', 'message' => 'Failed to upload image: ' . $filename]);
                 exit;
             }
         }
     }
+
     $images = implode(',', $imagePaths);
+    $currentTimestamp = date('Y-m-d H:i:s');
+
+    // Determine the hazard level
+    $hazard = null;
+    if ($averageRating >= 0.0 && $averageRating <= 0.49) {
+        $hazard = 'No Hazard'; // No Hazard
+    } elseif ($averageRating >= 0.5 && $averageRating <= 1.49) {
+        $hazard = 'Very Low'; // Very Low
+    } elseif ($averageRating >= 1.5 && $averageRating <= 2.49) {
+        $hazard = 'Low'; // Low
+    } elseif ($averageRating >= 2.5 && $averageRating <= 3.49) {
+        $hazard = 'Moderate'; // Moderate
+    } elseif ($averageRating >= 3.5 && $averageRating <= 4.49) {
+        $hazard = 'High'; // High
+    } elseif ($averageRating >= 4.5 && $averageRating <= 5.0) {
+        $hazard = 'Extreme'; // Extreme
+    }
 
     try {
-        $sql = "INSERT INTO tbl_review (user_id, location_id, rating, hazard, review, images, date_created) VALUES (:user_id, :location_id, :rating, :hazard, :review, :images, :date_created)";
-        $stmt = $pdo->prepare($sql);
-
+        $stmt = $pdo->prepare("
+            INSERT INTO tbl_review (user_id, location_id, rating, hazard, review, images, date_created)
+            VALUES (:user_id, :location_id, :rating, :hazard, :review, :images, :date_created)
+        ");
         $stmt->execute([
-            'user_id' => $user_id,
-            'location_id' => $id,
-            'rating' => $rating,
-            'hazard' => $hazard,
-            'review' => $review,
-            'images' => $images,
-            'date_created' => $currentTimestamp
+            ':user_id' => $userId,
+            ':location_id' => $locationId,
+            ':rating' => $averageRating,
+            ':hazard' => $hazard,
+            ':review' => $review,
+            ':images' => $images,
+            ':date_created' => $currentTimestamp,
         ]);
 
         echo json_encode(['status' => 'success', 'message' => 'Review submitted successfully!']);

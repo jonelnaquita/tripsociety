@@ -1032,12 +1032,19 @@ if (isset($_POST['send_reset_password'])) {
 
 
 if (isset($_GET['view_destination'])) {
-
-
     $query = '%' . $_GET['query'] . '%';
-    $stmt = $pdo->prepare("SELECT location_name, id FROM tbl_location WHERE location_name LIKE ? LIMIT 10");
-    $stmt->execute([$query]);
+    $userId = $_SESSION['user']; // Assuming the user_id is stored in the session
+
+    $stmt = $pdo->prepare("
+        SELECT DISTINCT l.location_name, l.id
+FROM tbl_location l
+INNER JOIN tbl_travel_log t ON l.id = t.location_id
+WHERE l.location_name LIKE ? AND t.user_id = ?
+LIMIT 10
+    ");
+    $stmt->execute([$query, $userId]);
     $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
     if ($results) {
         foreach ($results as $row) {
             echo '<a class="dropdown-item" href="write_review3.php?id=' . $row['id'] . '">' . htmlspecialchars($row['location_name']) . '</a>';
@@ -1045,9 +1052,8 @@ if (isset($_GET['view_destination'])) {
     } else {
         echo '<a class="dropdown-item" href="#">No results found</a>';
     }
-
-
 }
+
 
 
 if (isset($_POST['reset_password1'])) {

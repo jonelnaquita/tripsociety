@@ -142,9 +142,11 @@ include 'header.php';
                     <div class="mt-4">
                         <div class="card-body">
                             <h6 class="font-weight-bold">Upload a photo of your ID card. The photo should be:</h6>
-                            <ul>
+                            <ul class="text-muted" style="font-size: 12px;">
                                 <li>Bright and clear</li>
                                 <li>All corners of the document should be visible</li>
+                                <li>The accepted type of ID are Passport, Driver's License, Voter's ID, and National ID
+                                </li>
                             </ul>
 
                             <?php
