@@ -24,7 +24,7 @@ include "includes/header.php"; ?>
                 <div class="col-lg-6 col-md-8 mx-auto">
                     <div class="card mt-4">
                         <div class="card-header bg-gradient-dark text-white">
-                            <h5 class="card-title mb-0">Top Destinations by Average Rating</h5>
+                            <h5 class="card-title mb-0">Top 5 Destinations</h5>
                             <p class="card-text small mb-0">Based on user reviews</p>
                         </div>
                         <div class="card-body">

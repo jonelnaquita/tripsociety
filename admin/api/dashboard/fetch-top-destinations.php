@@ -7,7 +7,8 @@ try {
             FROM tbl_review tr
             LEFT JOIN tbl_location tl ON tr.location_id = tl.id
             GROUP BY tl.location_name
-            ORDER BY avg_rating DESC";
+            ORDER BY avg_rating DESC
+            LIMIT 5"; // Limit the results to the top 5
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute();

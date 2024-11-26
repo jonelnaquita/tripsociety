@@ -15,7 +15,8 @@ try {
                    END) as avg_hazard
             FROM tbl_review tr
             LEFT JOIN tbl_location tl ON tr.location_id = tl.id
-            GROUP BY tl.location_name";
+            GROUP BY tl.location_name
+            LIMIT 5";
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
