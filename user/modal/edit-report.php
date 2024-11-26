@@ -189,9 +189,9 @@
             dataType: 'json',
             success: function (response) {
                 if (response.success) {
-                    alert('Image removed successfully.');
+                    toastr.success('Image removed successfully.');
                 } else {
-                    alert('Failed to remove the image.');
+                    toastr.error('Failed to remove the image.');
                 }
             }
         });
@@ -215,7 +215,7 @@
                 response = JSON.parse(response);
                 if (response.success) {
                     $('#editReviewModal').modal('hide');
-                    alert('Review updated successfully!');
+                    toastr.success('Review updated successfully!');
                     location.reload();
                 } else {
                     alert(response.message || 'Failed to update the review.');
@@ -228,7 +228,7 @@
                     responseText: xhr.responseText,
                     errorThrown: error,
                 });
-                alert('An error occurred while updating the review.');
+                toastr.error('An error occurred while updating the review.');
             }
         });
     });
