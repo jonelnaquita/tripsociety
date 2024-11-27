@@ -59,13 +59,13 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
 
 
-<div class="content-wrapper">
+<div class="content-wrapper" style="margin-bottom: 100px;">
     <button class="back-button" onclick="goBack()">
         <span class="material-icons">arrow_back</span> Back
     </button>
 
 
-    <section class="content" style="height:1000px;">
+    <section class="content" style="height:100vh;">
         <div class="container-fluid">
             <style>
                 .card-img {
@@ -177,6 +177,8 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
             include 'components/explore-destination/hazard.php';
             include 'components/explore-destination/direction2.php';
             ?>
+
+            <div class="mt-5">.</div>
         </div>
     </section>
 

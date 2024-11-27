@@ -139,6 +139,15 @@ if (isset($_GET['id'])) {
                         <div class="card-body">
                             <h4 class="font-weight-bold mb-4">Rate Your Experiences</h4>
 
+                            <div class="star-rating">
+                                <i class="far fa-star fa-2x" data-value="1"></i>
+                                <i class="far fa-star fa-2x" data-value="2"></i>
+                                <i class="far fa-star fa-2x" data-value="3"></i>
+                                <i class="far fa-star fa-2x" data-value="4"></i>
+                                <i class="far fa-star fa-2x" data-value="5"></i>
+                            </div>
+                            <input type="hidden" id="rating-input" name="rating" value="0" required>
+
                             <!-- Question 1 -->
                             <div class="mb-4">
                                 <h5 class="font-weight-bold">1. Accessibility and Safety of Pathways</h5>
@@ -148,11 +157,15 @@ if (isset($_GET['id'])) {
                                 <div>
                                     <label class="d-block"><input type="radio" name="q1" value="0" required> No
                                         Hazard</label>
-                                    <label class="d-block"><input type="radio" name="q1" value="1"> Very Low</label>
-                                    <label class="d-block"><input type="radio" name="q1" value="2"> Low</label>
-                                    <label class="d-block"><input type="radio" name="q1" value="3"> Moderate</label>
-                                    <label class="d-block"><input type="radio" name="q1" value="4"> High</label>
-                                    <label class="d-block"><input type="radio" name="q1" value="5"> Extreme</label>
+                                    <label class="d-block"><input type="radio" name="q1" value="1" required> Very
+                                        Low</label>
+                                    <label class="d-block"><input type="radio" name="q1" value="2" required> Low</label>
+                                    <label class="d-block"><input type="radio" name="q1" value="3" required>
+                                        Moderate</label>
+                                    <label class="d-block"><input type="radio" name="q1" value="4" required>
+                                        High</label>
+                                    <label class="d-block"><input type="radio" name="q1" value="5" required>
+                                        Extreme</label>
                                 </div>
                             </div>
 
@@ -164,11 +177,15 @@ if (isset($_GET['id'])) {
                                 <div>
                                     <label class="d-block"><input type="radio" name="q2" value="0" required> No
                                         Hazard</label>
-                                    <label class="d-block"><input type="radio" name="q2" value="1"> Very Low</label>
-                                    <label class="d-block"><input type="radio" name="q2" value="2"> Low</label>
-                                    <label class="d-block"><input type="radio" name="q2" value="3"> Moderate</label>
-                                    <label class="d-block"><input type="radio" name="q2" value="4"> High</label>
-                                    <label class="d-block"><input type="radio" name="q2" value="5"> Extreme</label>
+                                    <label class="d-block"><input type="radio" name="q2" value="1" required> Very
+                                        Low</label>
+                                    <label class="d-block"><input type="radio" name="q2" value="2" required> Low</label>
+                                    <label class="d-block"><input type="radio" name="q2" value="3" required>
+                                        Moderate</label>
+                                    <label class="d-block"><input type="radio" name="q2" value="4" required>
+                                        High</label>
+                                    <label class="d-block"><input type="radio" name="q2" value="5" required>
+                                        Extreme</label>
                                 </div>
                             </div>
 
@@ -180,11 +197,15 @@ if (isset($_GET['id'])) {
                                 <div>
                                     <label class="d-block"><input type="radio" name="q3" value="0" required> No
                                         Hazard</label>
-                                    <label class="d-block"><input type="radio" name="q3" value="1"> Very Low</label>
-                                    <label class="d-block"><input type="radio" name="q3" value="2"> Low</label>
-                                    <label class="d-block"><input type="radio" name="q3" value="3"> Moderate</label>
-                                    <label class="d-block"><input type="radio" name="q3" value="4"> High</label>
-                                    <label class="d-block"><input type="radio" name="q3" value="5"> Extreme</label>
+                                    <label class="d-block"><input type="radio" name="q3" value="1" required> Very
+                                        Low</label>
+                                    <label class="d-block"><input type="radio" name="q3" value="2" required> Low</label>
+                                    <label class="d-block"><input type="radio" name="q3" value="3" required>
+                                        Moderate</label>
+                                    <label class="d-block"><input type="radio" name="q3" value="4" required>
+                                        High</label>
+                                    <label class="d-block"><input type="radio" name="q3" value="5" required>
+                                        Extreme</label>
                                 </div>
                             </div>
 
@@ -196,11 +217,15 @@ if (isset($_GET['id'])) {
                                 <div>
                                     <label class="d-block"><input type="radio" name="q4" value="0" required> No
                                         Hazard</label>
-                                    <label class="d-block"><input type="radio" name="q4" value="1"> Very Low</label>
-                                    <label class="d-block"><input type="radio" name="q4" value="2"> Low</label>
-                                    <label class="d-block"><input type="radio" name="q4" value="3"> Moderate</label>
-                                    <label class="d-block"><input type="radio" name="q4" value="4"> High</label>
-                                    <label class="d-block"><input type="radio" name="q4" value="5"> Extreme</label>
+                                    <label class="d-block"><input type="radio" name="q4" value="1" required> Very
+                                        Low</label>
+                                    <label class="d-block"><input type="radio" name="q4" value="2" required> Low</label>
+                                    <label class="d-block"><input type="radio" name="q4" value="3" required>
+                                        Moderate</label>
+                                    <label class="d-block"><input type="radio" name="q4" value="4" required>
+                                        High</label>
+                                    <label class="d-block"><input type="radio" name="q4" value="5" required>
+                                        Extreme</label>
                                 </div>
                             </div>
 
@@ -212,11 +237,15 @@ if (isset($_GET['id'])) {
                                 <div>
                                     <label class="d-block"><input type="radio" name="q5" value="0" required> No
                                         Hazard</label>
-                                    <label class="d-block"><input type="radio" name="q5" value="1"> Very Low</label>
-                                    <label class="d-block"><input type="radio" name="q5" value="2"> Low</label>
-                                    <label class="d-block"><input type="radio" name="q5" value="3"> Moderate</label>
-                                    <label class="d-block"><input type="radio" name="q5" value="4"> High</label>
-                                    <label class="d-block"><input type="radio" name="q5" value="5"> Extreme</label>
+                                    <label class="d-block"><input type="radio" name="q5" value="1" required> Very
+                                        Low</label>
+                                    <label class="d-block"><input type="radio" name="q5" value="2" required> Low</label>
+                                    <label class="d-block"><input type="radio" name="q5" value="3" required>
+                                        Moderate</label>
+                                    <label class="d-block"><input type="radio" name="q5" value="4" required>
+                                        High</label>
+                                    <label class="d-block"><input type="radio" name="q5" value="5" required>
+                                        Extreme</label>
                                 </div>
                             </div>
 
@@ -305,6 +334,14 @@ if (isset($_GET['id'])) {
 
 <script>
     $(document).ready(function () {
+        $('.star-rating i').on('click', function () {
+            const rating = $(this).data('value');
+            $('#rating-input').val(rating);
+            console.log("Rating selected: ", rating); // Log rating value
+            $('.star-rating i').removeClass('fas blue-star').addClass('far'); // Reset stars
+            $(this).prevAll().addBack().removeClass('far').addClass('fas blue-star'); // Fill stars
+        });
+
         $('.submit-btn').on('click', function () {
             // Collect ratings from q1 to q5
             const q1 = parseInt($('input[name="q1"]:checked').val() || 0);
@@ -313,16 +350,20 @@ if (isset($_GET['id'])) {
             const q4 = parseInt($('input[name="q4"]:checked').val() || 0);
             const q5 = parseInt($('input[name="q5"]:checked').val() || 0);
 
+            // Create a comma-separated string of hazard levels
+            const hazardLevels = `${q1},${q2},${q3},${q4},${q5}`;
+
             // Calculate the average rating
             const averageRating = (q1 + q2 + q3 + q4 + q5) / 5;
 
             // Collect other form data
             const review = $('textarea[name="review"]').val();
             const locationId = $('#location-id').val();
+            const review_rating = $('#rating-input').val();
 
             // Validate required fields
-            if (isNaN(averageRating)) {
-                toastr.error('Please answer all questions before submitting.');
+            if (isNaN(averageRating) || !review || !locationId || !review_rating) {
+                toastr.error('Please fill in all required fields before submitting.');
                 return;
             }
 
@@ -330,7 +371,9 @@ if (isset($_GET['id'])) {
             const formData = new FormData();
             formData.append('location_id', locationId);
             formData.append('average_rating', averageRating.toFixed(2)); // Save as a float with 2 decimals
+            formData.append('hazard_levels', hazardLevels); // Add hazard levels
             formData.append('review', review);
+            formData.append('rating', review_rating);
 
             // Add uploaded images
             const files = $('#file-input')[0].files;
@@ -347,8 +390,9 @@ if (isset($_GET['id'])) {
                 processData: false,
                 success: function (response) {
                     if (response.status === 'success') {
-                        toastr.success(response.message);
-                        resetForm();
+                        //toastr.success(response.message);
+                        location.reload();
+                        //resetForm();
                     } else {
                         toastr.error(response.message);
                     }
@@ -359,12 +403,80 @@ if (isset($_GET['id'])) {
             });
         });
 
-        // Reset form fields
-        function resetForm() {
-            $('input[type="radio"]').prop('checked', false);
-            $('textarea[name="review"]').val('');
-            $('#file-input').val('');
-            $('#image-preview').empty();
+    });
+</script>
+
+
+<script>
+    $(document).ready(function () {
+        const locationId = $('#location-id').val();
+        const userId = <?php echo json_encode($_SESSION['user']); ?>;
+
+        // Function to load existing review
+        function loadReview() {
+            $.ajax({
+                url: "api/review/check-review.php",
+                type: "POST",
+                data: {
+                    location_id: locationId,
+                    user_id: userId
+                },
+                dataType: "json",
+                success: function (response) {
+                    console.log("Fetched Response:", response);
+
+                    if (response.status === "found") {
+                        // Populate rating, questions, and review
+                        $('#rating-input').val(response.rating);
+                        $('.star-rating i').removeClass('fas').addClass('far'); // Reset stars
+                        $('.star-rating i:lt(' + response.rating + ')').addClass('fas'); // Highlight stars
+
+                        $('input[name="q1"][value="' + response.q1 + '"]').prop('checked', true);
+                        $('input[name="q2"][value="' + response.q2 + '"]').prop('checked', true);
+                        $('input[name="q3"][value="' + response.q3 + '"]').prop('checked', true);
+                        $('input[name="q4"][value="' + response.q4 + '"]').prop('checked', true);
+                        $('input[name="q5"][value="' + response.q5 + '"]').prop('checked', true);
+
+                        $('textarea[name="review"]').val(response.review);
+
+                        // Populate image previews
+                        const imagePreview = $('#image-preview');
+                        imagePreview.empty(); // Clear previous images
+                        if (response.images && response.images.length > 0) {
+                            response.images.forEach(image => {
+                                const imagePath = `../admin/review_image/${image}`;
+                                const imgTag = `<img src="${imagePath}" alt="Review Image" class="img-thumbnail m-1" style="width: 100px; height: 100px;">`;
+                                imagePreview.append(imgTag);
+                            });
+                        }
+
+                        // Update the submit button to say 'Update Review'
+                        $('.submit-btn').html('<i class="fas fa-check-circle"></i> Update Review');
+                    } else {
+                        console.log("No review found");
+                        // Clear form if no review is found
+                        $('#rating-input').val('');
+                        $('.star-rating i').removeClass('fas').addClass('far'); // Reset stars
+                        $('input[name="q1"], input[name="q2"], input[name="q3"], input[name="q4"], input[name="q5"]').prop('checked', false);
+                        $('textarea[name="review"]').val('');
+                        $('#image-preview').empty(); // Clear images
+                        $('.submit-btn').html('<i class="fas fa-check-circle"></i> Submit Review');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("AJAX Error:", error);
+                    console.error("Response Text:", xhr.responseText);
+                    alert("An error occurred while checking the review. Please try again later.");
+                }
+            });
         }
+
+        // Real-time trigger: Call loadReview when location changes
+        $('#location-id').on('change', function () {
+            loadReview();
+        });
+
+        // Initial check on page load
+        loadReview();
     });
 </script>
