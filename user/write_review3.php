@@ -110,26 +110,60 @@ if (isset($_GET['id'])) {
         margin: 5px;
     }
 
-    .remove-image {
-        background: none;
-        border: none;
-        color: white;
-        font-size: 16px;
-        cursor: pointer;
-        border-radius: 50%;
+    .image-container {
+        width: 100px;
+        height: 100px;
+        position: relative;
+        /* Ensures absolute child elements are positioned relative to this container */
+        border-radius: 5px;
+        /* Optional: Matching img-thumbnail radius */
+        overflow: hidden;
+        /* Keeps elements contained within the image boundary */
+    }
+
+    .image-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        /* Ensures the image fits perfectly without distortion */
+        border-radius: 5px;
+        /* Matches the container's corner radius */
     }
 
     .delete-image {
         width: 18px;
-        /* Smaller button size */
+        /* Adjust for desired button size */
         height: 18px;
-        /* Keep the same height as width to make it circular */
+        /* Keep it circular */
+        position: absolute;
+        /* Positioned within the container */
+        top: 2px;
+        /* Space from the top */
+        right: 2px;
+        /* Space from the right */
         padding: 0;
-        /* Remove padding to maintain size */
         font-size: 11px;
-        /* Adjust icon size */
+        /* Icon size */
         border-radius: 50%;
-        /* Ensure the button is circular */
+        background-color: rgba(220, 53, 69, 0.8);
+        /* Semi-transparent red */
+        color: #fff;
+        border: none;
+        /* Removes default border */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+
+    .delete-image:hover {
+        background-color: rgba(220, 53, 69, 1);
+        /* Solid red on hover */
+    }
+
+    .delete-image i {
+        line-height: 1;
+        /* Proper alignment of the icon */
     }
 </style>
 
