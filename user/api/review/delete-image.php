@@ -12,6 +12,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Check if the file exists and delete it
         if (file_exists($imagePath)) {
             unlink($imagePath);
+        } else {
+            // Log and return an error if the image doesn't exist
+            echo json_encode(['success' => false, 'message' => 'Image file does not exist.']);
+            exit;
         }
 
         // Remove the image from the database
@@ -20,16 +24,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt->bindParam(':id', $reviewId, PDO::PARAM_INT);
         $stmt->execute();
 
-        // Get the existing images and split them into an array
-        $existingImages = explode(',', $stmt->fetch(PDO::FETCH_ASSOC)['images']);
+        // Fetch images and handle potential issues if no images are found
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($result === false) {
+            echo json_encode(['success' => false, 'message' => 'Review not found.']);
+            exit;
+        }
 
+        $existingImages = explode(',', $result['images']);
         // Remove the deleted image from the array
         $updatedImages = array_diff($existingImages, [$imageName]);
+
+        // If the image list is empty after removal, set the images column to null or an empty string
+        $updatedImagesStr = empty($updatedImages) ? '' : implode(',', $updatedImages);
 
         // Update the database with the remaining images
         $query = "UPDATE tbl_review SET images = :images WHERE id = :id";
         $stmt = $pdo->prepare($query);
-        $stmt->bindParam(':images', implode(',', $updatedImages), PDO::PARAM_STR);
+        $stmt->bindValue(':images', $updatedImagesStr, PDO::PARAM_STR);
         $stmt->bindParam(':id', $reviewId, PDO::PARAM_INT);
 
         if ($stmt->execute()) {

@@ -4,16 +4,17 @@
         <div class="modal-content rounded-0">
             <div class="modal-body text-center">
                 <p class="mb-4">Are you sure you want to delete this review?</p>
-                <div class="d-flex justify-content-center footer-button">
+                <div>
                     <button type="button" class="btn btn-secondary cancel-btn rounded-pill mr-2"
                         data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-danger rounded-pill delete-btn"
-                        id="confirmDeleteBtn">Delete</button>
+                    <button type="button" class="btn btn-danger rounded-pill"
+                        id="confirmDeleteReviewBtn">Delete</button>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 
 
 <style>
@@ -41,7 +42,7 @@
         color: #000;
     }
 
-    .delete-btn {
+    .delete-btn-2 {
         background-color: #e57373;
         /* Material red color */
         border: none;

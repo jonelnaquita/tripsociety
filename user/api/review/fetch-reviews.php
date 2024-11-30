@@ -18,7 +18,7 @@ if (isset($_SESSION['user'])) {
     $conditions_str = implode(' OR ', $conditions);
 
     // Modify the query to include the like count from tbl_review_reaction
-    $query = "SELECT tr.*, tu.id AS user_id, tl.location_name, tl.city, tu.name, tu.profile_img, tr.user_id AS review_user_id,
+    $query = "SELECT tr.*, tu.id AS user_id, tl.id AS location_id, tl.location_name, tl.city, tu.name, tu.profile_img, tr.user_id AS review_user_id,
           COUNT(trr.id) AS like_count,
           (SELECT COUNT(*) FROM tbl_review_reaction WHERE user_id = :user_id AND review_id = tr.id) AS user_liked,
           (SELECT COUNT(*) FROM tbl_travel_companion WHERE user_id = :user_id AND companion_id = tr.user_id) AS request_sent

@@ -35,6 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $response = [
                 "status" => "found",
+                "id" => $review['id'], // Include review ID
                 "rating" => $review['rating'],
                 "q1" => $hazardLevels[0] ?? null,
                 "q2" => $hazardLevels[1] ?? null,

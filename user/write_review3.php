@@ -76,6 +76,21 @@ if (isset($_GET['id'])) {
         border-radius: 5px;
     }
 
+    .image-upload {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    .image-upload img {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
     .card-header {
         background: #582fff;
     }
@@ -102,6 +117,19 @@ if (isset($_GET['id'])) {
         font-size: 16px;
         cursor: pointer;
         border-radius: 50%;
+    }
+
+    .delete-image {
+        width: 18px;
+        /* Smaller button size */
+        height: 18px;
+        /* Keep the same height as width to make it circular */
+        padding: 0;
+        /* Remove padding to maintain size */
+        font-size: 11px;
+        /* Adjust icon size */
+        border-radius: 50%;
+        /* Ensure the button is circular */
     }
 </style>
 
@@ -259,7 +287,8 @@ if (isset($_GET['id'])) {
                                 <h5 class="font-weight-bold">Share some photos of your visit</h5>
                                 <div class="row">
                                     <div class="col-auto">
-                                        <div class="image-preview" id="image-preview"></div>
+                                        <div id="image-preview" style="display: none;"></div>
+                                        <div id="image-upload"></div>
                                     </div>
                                     <div class="col-auto">
                                         <label for="file-input" class="file-input-label ml-2" style="margin-top:25px;">
@@ -294,7 +323,7 @@ if (isset($_GET['id'])) {
     $(document).ready(function () {
         $('#file-input').on('change', function () {
             const files = this.files;
-            const previewContainer = $('#image-preview');
+            const previewContainer = $('#image-upload');
             previewContainer.empty(); // Clear previous previews
 
             // Check the number of files selected
@@ -314,7 +343,7 @@ if (isset($_GET['id'])) {
                     const imageHtml = `
                     <div class="image-wrapper position-relative">
                         <img src="${e.target.result}" alt="Image" class="img-thumbnail" style="width: 100px; height: 100px;">
-                        <button class="btn btn-danger btn-sm remove-image" style="position: absolute; top: 0; right: 0;">&times;</button>
+                        <button class="btn btn-danger btn-sm remove-image" style="position: absolute; top: 40; right: 40;">&times;</button>
                     </div>
                 `;
                     previewContainer.append(imageHtml);
@@ -439,15 +468,26 @@ if (isset($_GET['id'])) {
 
                         $('textarea[name="review"]').val(response.review);
 
-                        // Populate image previews
-                        const imagePreview = $('#image-preview');
-                        imagePreview.empty(); // Clear previous images
-                        if (response.images && response.images.length > 0) {
-                            response.images.forEach(image => {
+                        // Handle image previews with delete button
+                        if (response.images && response.images.length > 0 && response.images.some(image => image.trim() !== '')) {
+                            console.log("Images found:", response.images); // Debugging log
+                            console.log("Review ID:", response.id);
+                            const imagePreview = response.images.map(image => {
                                 const imagePath = `../admin/review_image/${image}`;
-                                const imgTag = `<img src="${imagePath}" alt="Review Image" class="img-thumbnail m-1" style="width: 100px; height: 100px;">`;
-                                imagePreview.append(imgTag);
-                            });
+                                return `
+                                <div class="image-container position-relative d-inline-block m-1">
+                                    <img src="${imagePath}" class="img-thumbnail" style="width: 100px; height: 100px;">
+                                    <button class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 delete-image rounded-circle" data-image="${image}" data-review-id="${response.id}">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+
+                            `;
+                            }).join('');
+                            $('#image-preview').html(imagePreview).show(); // Append images and show container
+                        } else {
+                            console.log("No valid images found, hiding image preview"); // Debugging log
+                            $('#image-preview').empty().hide(); // Clear and hide container if no valid images
                         }
 
                         // Update the submit button to say 'Update Review'
@@ -459,7 +499,7 @@ if (isset($_GET['id'])) {
                         $('.star-rating i').removeClass('fas').addClass('far'); // Reset stars
                         $('input[name="q1"], input[name="q2"], input[name="q3"], input[name="q4"], input[name="q5"]').prop('checked', false);
                         $('textarea[name="review"]').val('');
-                        $('#image-preview').empty(); // Clear images
+                        $('#image-preview').empty().hide(); // Clear and hide image container
                         $('.submit-btn').html('<i class="fas fa-check-circle"></i> Submit Review');
                     }
                 },
@@ -478,5 +518,38 @@ if (isset($_GET['id'])) {
 
         // Initial check on page load
         loadReview();
+
+        // Delete image on button click
+        $(document).on('click', '.delete-image', function () {
+            const imageName = $(this).data('image');
+            const reviewId = $(this).data('review-id');
+
+            $.ajax({
+                url: 'api/review/delete-image.php',
+                type: 'POST',
+                data: {
+                    review_id: reviewId,
+                    image_name: imageName
+                },
+                dataType: 'json',
+                success: function (response) {
+                    if (response.success) {
+                        // Remove the image preview from the DOM
+                        $(`button[data-image="${imageName}"]`).closest('.image-container').remove();
+                        console.log('Image deleted successfully');
+                    } else {
+                        alert('Failed to delete image: ' + response.message);  // Show detailed error message from PHP
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("AJAX Error:", error);
+                    console.error("Response Text:", xhr.responseText);  // Log the response text for better debugging
+                    alert("An error occurred while deleting the image. Please try again later.");
+                }
+            });
+        });
+
     });
+
+
 </script>

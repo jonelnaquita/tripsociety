@@ -5,6 +5,7 @@
 include '../inc/session_user.php';
 include 'header.php';
 include 'modal/report.php';
+include 'modal/review.php';
 include 'modal/edit-report.php'; ?>
 
 <head>
@@ -74,9 +75,17 @@ include 'modal/edit-report.php'; ?>
                                     </button>
                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                                         ${isOwnReview
-                                    ? `<a class="dropdown-item text-center" style="font-size:13px;" href="#" data-id="${location.id}" data-toggle="modal" data-target="#editReviewModal">
-                                                Edit Report
-                                            </a>`
+                                    ? ` <a class="dropdown-item text-left" style="font-size:13px;" href="write_review3.php?id=${location.location_id}">
+                                            Edit
+                                        </a>
+                                        <a class="dropdown-item text-left delete-review" 
+                                            style="font-size:13px;" 
+                                            href="#" 
+                                            data-id="${location.id}" 
+                                            data-toggle="modal" 
+                                            data-target="#deleteConfirmationModal"> 
+                                                Delete
+                                        </a>`
                                     : `<a class="dropdown-item text-center" style="font-size:13px;" href="#" data-id="${location.id}" data-toggle="modal" data-target="#reportPostModal">
                                                 Report Post
                                             </a>`}
@@ -210,6 +219,43 @@ include 'modal/edit-report.php'; ?>
                     });
                 });
             };
+
+
+            let reviewIdToDelete = null;
+
+            // Trigger when delete button is clicked
+            $(document).on('click', '.delete-review', function () {
+                reviewIdToDelete = $(this).data('id'); // Fetch the data-id
+                console.log('Review ID:', reviewIdToDelete); // Debugging
+            });
+
+            // Confirm delete action
+            $('#confirmDeleteReviewBtn').on('click', function () {
+                if (reviewIdToDelete) {
+                    $.ajax({
+                        url: 'api/review/delete-review2.php',
+                        type: 'POST',
+                        data: { id: reviewIdToDelete },
+                        success: function (response) {
+                            console.log('Server response:', response); // Debugging
+                            if (response.status === 'success') {
+                                toastr.success(response.message);
+                                $(`[data-id="${reviewIdToDelete}"]`).closest('.review-item').remove();
+                                $('#deleteConfirmationModal').modal('hide');
+                                fetchReviews();
+                            } else {
+                                toastr.error(response.message);
+                            }
+                        },
+                        error: function () {
+                            toastr.error('An error occurred while trying to delete the review.');
+                        }
+                    });
+                } else {
+                    console.error('No review ID to delete.');
+                }
+            });
+
         });
     </script>
 
@@ -308,5 +354,11 @@ include 'footer.php';
         } else {
             toastr.error('Please select a violation reason.');
         }
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+
     });
 </script>
