@@ -377,7 +377,7 @@ if (isset($_GET['id'])) {
                     const imageHtml = `
                     <div class="image-wrapper position-relative">
                         <img src="${e.target.result}" alt="Image" class="img-thumbnail" style="width: 100px; height: 100px;">
-                        <button class="btn btn-danger btn-sm remove-image" style="position: absolute; top: 40; right: 40;">&times;</button>
+                        <button class="btn btn-danger btn-sm delete-image" style="position: absolute; top: 40; right: 40;">&times;</button>
                     </div>
                 `;
                     previewContainer.append(imageHtml);
@@ -388,7 +388,7 @@ if (isset($_GET['id'])) {
         });
 
         // Handle removing images
-        $(document).on('click', '.remove-image', function () {
+        $(document).on('click', '.delete-image', function () {
             $(this).closest('.image-wrapper').remove();
         });
     });
@@ -511,7 +511,7 @@ if (isset($_GET['id'])) {
                                 return `
                                 <div class="image-container position-relative d-inline-block m-1">
                                     <img src="${imagePath}" class="img-thumbnail" style="width: 100px; height: 100px;">
-                                    <button class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 delete-image rounded-circle" data-image="${image}" data-review-id="${response.id}">
+                                    <button class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 delete-image remove-image rounded-circle" data-image="${image}" data-review-id="${response.id}">
                                         <i class="fas fa-times"></i>
                                     </button>
                                 </div>
@@ -554,7 +554,7 @@ if (isset($_GET['id'])) {
         loadReview();
 
         // Delete image on button click
-        $(document).on('click', '.delete-image', function () {
+        $(document).on('click', '.remove-image', function () {
             const imageName = $(this).data('image');
             const reviewId = $(this).data('review-id');
 
